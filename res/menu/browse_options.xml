@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_parent"
+        android:title="@string/menu_parent"
+        android:titleCondensed="@string/menu_parent_condensed"
+        android:icon="@drawable/ic_menu_up"
+        android:showAsAction="always|withText" />
+    <item
+        android:id="@+id/menu_home"
+        android:title="@string/browse_home"
+        android:icon="@drawable/ic_menu_home"
+        android:showAsAction="always|withText" />
+    <item
+        android:id="@+id/menu_set_home"
+        android:title="@string/menu_set_home"
+        android:icon="@drawable/ic_menu_set_as"
+        android:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        android:visible="false" />
+</menu>

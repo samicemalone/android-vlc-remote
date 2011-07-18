@@ -2,11 +2,13 @@
 <!-- Translated by jogios@users.sourceforge.net -->
 <resources>
     <string name="app_name">VLC Remote</string>
-    <string name="description">Control remoto para el reproductor multimedia VideoLAN Client (VLC).</string>
+    <string name="description">Control remoto para el reproductor multimedia VideoLAN Client (VLC).
+    </string>
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="settings">Opciones</string>
     <string name="troubleshooting">Solución de problemas</string>
+    <string name="troubleshooting_condensed">Solución de problemas</string>
     <string name="scan">Escanear</string>
     <string name="playlist_title">Lista de Reproducción</string>
     <string name="volume">Volumen: </string>
@@ -21,7 +23,11 @@
     <string name="summary_wifi_disconnected">Aviso: La red Wi-Fi está desconectada</string>
     <string name="summary_not_in_range">No está dentro del rango</string>
     <string name="summary_remembered">Recordada</string>
-    <string name="summary_forbidden">Por favor edita el archivo <b>.hosts</b> en tu PC</string>
+    <string name="summary_forbidden">
+        Por favor edita el archivo
+        <b>.hosts</b>
+        en tu PC
+    </string>
     <string name="context_forget">Olvidar</string>
     <string name="progress_scanning">Escaneando</string>
     <string name="vlc_servers">Servidores VLC</string>
@@ -49,4 +55,7 @@
     <string name="playlist_loop">Bucle</string>
     <string name="playlist_repeat">Repetir</string>
     <string name="service_label">Servicio Remoto de VLC</string>
+    <string name="goto_playback">"Reproducción"</string>
+    <string name="goto_start">"Biblioteca"</string>
+    <string name="nowplaying_title">"Reproduciendo"</string>
 </resources>

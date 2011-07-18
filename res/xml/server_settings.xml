@@ -7,7 +7,7 @@
         android:title="@string/wifi"
         android:summary="@string/summary_wifi_disconnected"
         android:persistent="false" />
-    <org.peterbaldwin.client.android.portsweep.ProgressCategory
+    <org.peterbaldwin.sweep.ProgressCategory
         android:key="servers"
         android:title="@string/vlc_servers"
         android:persistent="false" />

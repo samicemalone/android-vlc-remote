@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
     <ImageButton
-        android:id="@+id/button_input"
-        android:src="@drawable/ic_media_eject"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <ImageButton
-        android:id="@+id/button_playlist"
-        android:src="@drawable/ic_media_playlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <ImageButton
+        style="@style/ToggleButton"
         android:id="@+id/button_fullscreen"
-        android:src="@drawable/ic_media_fullscreen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+        android:src="@drawable/ic_mp_fullscreen" />
     <ImageButton
-        android:id="@+id/button_ratio"
-        android:src="@drawable/ic_media_ratio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        style="@style/ToggleButton"
+        android:id="@+id/playlist_button_repeat"
+        android:src="@drawable/ic_mp_repeat_off_btn"
+        android:contentDescription="@string/playlist_repeat" />
+    <ImageButton
+        style="@style/ToggleButton"
+        android:id="@+id/playlist_button_shuffle"
+        android:src="@drawable/ic_mp_shuffle_off_btn"
+        android:contentDescription="@string/playlist_shuffle" />
 </merge>

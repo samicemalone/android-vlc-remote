@@ -5,7 +5,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="settings">Settings</string>
+    <!-- Label for menu item to refresh a view (playlist, browse, etc.) -->
+    <string name="refresh">Refresh</string>
     <string name="troubleshooting">Troubleshooting</string>
+    <string name="troubleshooting_condensed">Help</string>
     <string name="scan">Scan</string>
     <string name="playlist_title">Playlist</string>
     <string name="volume">Volume: </string>
@@ -20,7 +23,11 @@
     <string name="summary_wifi_disconnected">Warning: Wi-Fi is disconnected</string>
     <string name="summary_not_in_range">Not in range</string>
     <string name="summary_remembered">Remembered</string>
-    <string name="summary_forbidden">Please edit <b>.hosts</b> file on your PC</string>
+    <string name="summary_forbidden">
+        Please edit
+        <b>.hosts</b>
+        file on your PC
+    </string>
     <string name="context_forget">Forget</string>
     <string name="progress_scanning">Scanning</string>
     <string name="vlc_servers">VLC Servers</string>
@@ -33,10 +40,16 @@
     <string name="no_media">No media selected</string>
     <string name="context_open">Open</string>
     <string name="context_play">Play</string>
+    <!-- Context menu to set the selected directory as the home directory -->
+    <string name="menu_set_home">Set as home</string>
     <string name="context_stream">Stream</string>
     <string name="context_enqueue">Add to playlist</string>
     <string name="context_dequeue">Remove from playlist</string>
     <string name="context_search">Search</string>
+    <!-- Menu item to navigate to parent directory -->
+    <string name="menu_parent">Parent Directory</string>
+    <!-- Menu item to navigate to parent directory (condensed) -->
+    <string name="menu_parent_condensed">Parent</string>
     <string name="menu_clear_playlist">Clear playlist</string>
     <string name="mediasearch">Search for %s using:</string>
     <string name="emptyplaylist">Playlist is empty.</string>
@@ -48,4 +61,25 @@
     <string name="playlist_loop">Loop</string>
     <string name="playlist_repeat">Repeat</string>
     <string name="service_label">VLC Remote Service</string>
+    
+    <!-- Label for tab containing playback controls -->
+    <string name="goto_playback">Playback</string>
+    
+    <!-- Label for music library tab -->
+    <string name="goto_start">Library</string>
+    
+    <!-- Label for tab containing information about the currently playing track -->
+    <string name="nowplaying_title">Now playing</string>
+    
+    <!-- Label for DVD navigation tab -->
+    <string name="tab_dvd">DVD</string>
+    
+    <!-- Label for playlist tab -->
+    <string name="tab_playlist">Playlist</string>
+    
+    <!-- Label indicating that a part of the app is still experimental and may not work reliably -->
+    <string name="experimental">Experimental</string>
+    
+    <!-- Instructions for using DVD navigation gestures -->
+    <string name="dvd_instructions">Swipe left, right, up, and down to navigate DVD menus. Tap to select a menu item.</string>
 </resources>

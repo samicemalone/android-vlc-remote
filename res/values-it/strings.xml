@@ -6,6 +6,7 @@
     <string name="cancel">Annulla</string>
     <string name="settings">Impostazioni</string>
     <string name="troubleshooting">Risoluzione dei problemi</string>
+    <string name="troubleshooting_condensed">Risoluzione dei problemi</string>
     <string name="scan">Scansione</string>
     <string name="playlist_title">Playlist</string>
     <string name="volume">Volume: </string>
@@ -20,7 +21,11 @@
     <string name="summary_wifi_disconnected">Attenzione: Wi-Fi disconnesso</string>
     <string name="summary_not_in_range">Fuori range</string>
     <string name="summary_remembered">Memorizzato</string>
-    <string name="summary_forbidden">Modifica il file <b>.hosts</b> del tuo pc</string>
+    <string name="summary_forbidden">
+        Modifica il file
+        <b>.hosts</b>
+        del tuo pc
+    </string>
     <string name="context_forget">Annulla</string>
     <string name="progress_scanning">Scansione</string>
     <string name="vlc_servers">Server VLC</string>
@@ -47,4 +52,7 @@
     <string name="playlist_loop">Ciclo</string>
     <string name="playlist_repeat">Ripeti</string>
     <string name="service_label">Servizio VLC Remoto</string>
+    <string name="goto_playback">"Riproduci"</string>
+    <string name="goto_start">"Raccolta"</string>
+    <string name="nowplaying_title">"In esecuzione"</string>
 </resources>

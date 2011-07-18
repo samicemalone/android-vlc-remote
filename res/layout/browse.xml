@@ -4,32 +4,26 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <ListView
-        android:id="@id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:fastScrollEnabled="true" />
-    <LinearLayout
-        android:orientation="horizontal"
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@android:id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        style="@android:style/ButtonBar">
-        <Button
-            android:id="@+id/browse_button_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/browse_home"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_menu_home" />
-        <Button
-            android:id="@+id/browse_button_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/browse_close"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_menu_close_clear_cancel" />
-    </LinearLayout>
+        android:singleLine="true"
+        android:ellipsize="start" />
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:id="@android:id/empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center" />
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fastScrollEnabled="true" />
+    </FrameLayout>
 </LinearLayout>

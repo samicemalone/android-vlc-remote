@@ -6,6 +6,7 @@
     <string name="cancel">Cancel·la</string>
     <string name="settings">Paràmetres</string>
     <string name="troubleshooting">Problemes</string>
+    <string name="troubleshooting_condensed">Problemes</string>
     <string name="scan">Escaneja</string>
     <string name="playlist_title">Llista de reproducció</string>
     <string name="volume">Volum: </string>
@@ -46,4 +47,7 @@
     <string name="playlist_loop">Bucle</string>
     <string name="playlist_repeat">Repeteix</string>
     <string name="service_label">Servei remot de l\'VLC</string>
+    <string name="goto_playback">"Reproducció"</string>
+    <string name="goto_start">"Biblioteca"</string>
+    <string name="nowplaying_title">"Reproducció actual"</string>
 </resources>

@@ -22,26 +22,4 @@
             android:visibility="gone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </FrameLayout>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        style="@android:style/ButtonBar">
-        <ImageButton
-            android:id="@+id/playlist_button_shuffle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/playlist_shuffle"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_weight="1"
-            android:src="@drawable/ic_mp_shuffle_off_btn" />
-        <ImageButton
-            android:id="@+id/playlist_button_repeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/playlist_repeat"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_weight="1"
-            android:src="@drawable/ic_mp_repeat_off_btn" />
-    </LinearLayout>
 </LinearLayout>
