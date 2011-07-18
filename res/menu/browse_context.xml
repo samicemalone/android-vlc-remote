@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/context_open" android:title="@string/context_open" />
+    <item android:id="@+id/context_play" android:title="@string/context_play" />
+    <item android:id="@+id/context_stream" android:title="@string/context_stream" />
+    <item android:id="@+id/context_enqueue" android:title="@string/context_enqueue" />
+</menu>

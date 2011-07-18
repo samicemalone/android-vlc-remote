@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.peterbaldwin.client.android.vlcremote"
+    android:versionName="0.4.2" android:versionCode="42">
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="7"/>
+    <supports-screens android:largeScreens="true"
+        android:normalScreens="true" android:smallScreens="true"
+        android:anyDensity="true" android:resizeable="true" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="true" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <application android:icon="@drawable/icon"
+        android:label="@string/app_name" android:debuggable="true"
+        android:description="@string/description">
+        <activity android:name=".PlaybackActivity" android:label="@string/app_name"
+            android:launchMode="singleTask" android:finishOnTaskLaunch="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.openintents.remote.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="cdda" />
+                <data android:scheme="dvd" />
+                <data android:scheme="dvdsimple" />
+                <data android:scheme="file" />
+                <data android:scheme="ftp" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsh" />
+                <data android:scheme="rtsp" />
+                <data android:scheme="udp" />
+                <data android:scheme="vcd" />
+
+                <!-- For a list of supported content types, see vlc.desktop -->
+                <data android:mimeType="application/ogg" />
+                <data android:mimeType="application/ram" />
+                <data android:mimeType="application/smil" />
+                <data android:mimeType="application/vnd.rn-realmedia" />
+                <data android:mimeType="application/x-extension-m4a" />
+                <data android:mimeType="application/x-extension-mp4" />
+                <data android:mimeType="application/x-flac" />
+                <data android:mimeType="application/x-flash-video" />
+                <data android:mimeType="application/x-matroska" />
+                <data android:mimeType="application/x-ogg" />
+                <data android:mimeType="application/x-quicktime-media-link" />
+                <data android:mimeType="application/x-quicktimeplayer" />
+                <!-- <data android:mimeType="application/x-shockwave-flash" /> -->
+                <data android:mimeType="application/x-shorten" />
+                <data android:mimeType="application/x-smil" />
+                <data android:mimeType="application/xspf+xml" />
+                <data android:mimeType="audio/3gpp" />
+                <data android:mimeType="audio/ac3" />
+                <data android:mimeType="audio/AMR" />
+                <data android:mimeType="audio/AMR-WB" />
+                <data android:mimeType="audio/basic" />
+                <data android:mimeType="audio/mp4" />
+                <data android:mimeType="audio/mpeg" />
+                <data android:mimeType="audio/mpegurl" />
+                <data android:mimeType="audio/vnd.rn-realaudio" />
+                <data android:mimeType="audio/x-ape" />
+                <data android:mimeType="audio/x-flac" />
+                <data android:mimeType="audio/x-it" />
+                <data android:mimeType="audio/x-m4a" />
+                <data android:mimeType="audio/x-matroska" />
+                <data android:mimeType="audio/x-mod" />
+                <data android:mimeType="audio/x-mp3" />
+                <data android:mimeType="audio/x-mpeg" />
+                <data android:mimeType="audio/x-mpegurl" />
+                <data android:mimeType="audio/x-ms-asf" />
+                <data android:mimeType="audio/x-ms-asx" />
+                <data android:mimeType="audio/x-ms-wax" />
+                <data android:mimeType="audio/x-ms-wma" />
+                <data android:mimeType="audio/x-musepack" />
+                <data android:mimeType="audio/x-pn-aiff" />
+                <data android:mimeType="audio/x-pn-au" />
+                <data android:mimeType="audio/x-pn-realaudio" />
+                <data android:mimeType="audio/x-pn-realaudio-plugin" />
+                <data android:mimeType="audio/x-pn-wav" />
+                <data android:mimeType="audio/x-pn-windows-acm" />
+                <data android:mimeType="audio/x-realaudio" />
+                <data android:mimeType="audio/x-real-audio" />
+                <data android:mimeType="audio/x-scpls" />
+                <data android:mimeType="audio/x-tta" />
+                <data android:mimeType="audio/x-wav" />
+                <data android:mimeType="audio/x-wav" />
+                <data android:mimeType="audio/x-wavpack" />
+                <data android:mimeType="image/vnd.rn-realpix" />
+                <data android:mimeType="image/x-pict" />
+                <data android:mimeType="misc/ultravox" />
+                <data android:mimeType="text/google-video-pointer" />
+                <data android:mimeType="text/x-google-video-pointer" />
+                <data android:mimeType="video/3gpp" />
+                <data android:mimeType="video/dv" />
+                <data android:mimeType="video/fli" />
+                <data android:mimeType="video/flv" />
+                <data android:mimeType="video/mp4" />
+                <data android:mimeType="video/mp4v-es" />
+                <data android:mimeType="video/mpeg" />
+                <data android:mimeType="video/msvideo" />
+                <data android:mimeType="video/quicktime" />
+                <data android:mimeType="video/vivo" />
+                <data android:mimeType="video/vnd.divx" />
+                <data android:mimeType="video/vnd.rn-realvideo" />
+                <data android:mimeType="video/vnd.vivo" />
+                <data android:mimeType="video/x-anim" />
+                <data android:mimeType="video/x-avi" />
+                <data android:mimeType="video/x-flc" />
+                <data android:mimeType="video/x-fli" />
+                <data android:mimeType="video/x-flic" />
+                <data android:mimeType="video/x-m4v" />
+                <data android:mimeType="video/x-matroska" />
+                <data android:mimeType="video/x-mpeg" />
+                <data android:mimeType="video/x-ms-asf" />
+                <data android:mimeType="video/x-msvideo" />
+                <data android:mimeType="video/x-ms-wm" />
+                <data android:mimeType="video/x-ms-wmv" />
+                <data android:mimeType="video/x-ms-wmx" />
+                <data android:mimeType="video/x-ms-wvx" />
+                <data android:mimeType="video/x-nsv" />
+                <data android:mimeType="video/x-ogm+ogg" />
+                <data android:mimeType="video/x-theora+ogg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="ftp" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsh" />
+                <data android:scheme="rtsp" />
+                <data android:scheme="udp" />
+
+                <!-- For a list of supported content types, see vlc.desktop -->
+                <data android:mimeType="application/ogg" />
+                <data android:mimeType="application/ram" />
+                <data android:mimeType="application/smil" />
+                <data android:mimeType="application/vnd.rn-realmedia" />
+                <data android:mimeType="application/x-extension-m4a" />
+                <data android:mimeType="application/x-extension-mp4" />
+                <data android:mimeType="application/x-flac" />
+                <data android:mimeType="application/x-flash-video" />
+                <data android:mimeType="application/x-matroska" />
+                <data android:mimeType="application/x-ogg" />
+                <data android:mimeType="application/x-quicktime-media-link" />
+                <data android:mimeType="application/x-quicktimeplayer" />
+                <!-- <data android:mimeType="application/x-shockwave-flash" /> -->
+                <data android:mimeType="application/x-shorten" />
+                <data android:mimeType="application/x-smil" />
+                <data android:mimeType="application/xspf+xml" />
+                <data android:mimeType="audio/3gpp" />
+                <data android:mimeType="audio/ac3" />
+                <data android:mimeType="audio/AMR" />
+                <data android:mimeType="audio/AMR-WB" />
+                <data android:mimeType="audio/basic" />
+                <data android:mimeType="audio/mp4" />
+                <data android:mimeType="audio/mpeg" />
+                <data android:mimeType="audio/mpegurl" />
+                <data android:mimeType="audio/vnd.rn-realaudio" />
+                <data android:mimeType="audio/x-ape" />
+                <data android:mimeType="audio/x-flac" />
+                <data android:mimeType="audio/x-it" />
+                <data android:mimeType="audio/x-m4a" />
+                <data android:mimeType="audio/x-matroska" />
+                <data android:mimeType="audio/x-mod" />
+                <data android:mimeType="audio/x-mp3" />
+                <data android:mimeType="audio/x-mpeg" />
+                <data android:mimeType="audio/x-mpegurl" />
+                <data android:mimeType="audio/x-ms-asf" />
+                <data android:mimeType="audio/x-ms-asx" />
+                <data android:mimeType="audio/x-ms-wax" />
+                <data android:mimeType="audio/x-ms-wma" />
+                <data android:mimeType="audio/x-musepack" />
+                <data android:mimeType="audio/x-pn-aiff" />
+                <data android:mimeType="audio/x-pn-au" />
+                <data android:mimeType="audio/x-pn-realaudio" />
+                <data android:mimeType="audio/x-pn-realaudio-plugin" />
+                <data android:mimeType="audio/x-pn-wav" />
+                <data android:mimeType="audio/x-pn-windows-acm" />
+                <data android:mimeType="audio/x-realaudio" />
+                <data android:mimeType="audio/x-real-audio" />
+                <data android:mimeType="audio/x-scpls" />
+                <data android:mimeType="audio/x-tta" />
+                <data android:mimeType="audio/x-wav" />
+                <data android:mimeType="audio/x-wav" />
+                <data android:mimeType="audio/x-wavpack" />
+                <data android:mimeType="image/vnd.rn-realpix" />
+                <data android:mimeType="image/x-pict" />
+                <data android:mimeType="misc/ultravox" />
+                <data android:mimeType="text/google-video-pointer" />
+                <data android:mimeType="text/x-google-video-pointer" />
+                <data android:mimeType="video/3gpp" />
+                <data android:mimeType="video/dv" />
+                <data android:mimeType="video/fli" />
+                <data android:mimeType="video/flv" />
+                <data android:mimeType="video/mp4" />
+                <data android:mimeType="video/mp4v-es" />
+                <data android:mimeType="video/mpeg" />
+                <data android:mimeType="video/msvideo" />
+                <data android:mimeType="video/quicktime" />
+                <data android:mimeType="video/vivo" />
+                <data android:mimeType="video/vnd.divx" />
+                <data android:mimeType="video/vnd.rn-realvideo" />
+                <data android:mimeType="video/vnd.vivo" />
+                <data android:mimeType="video/x-anim" />
+                <data android:mimeType="video/x-avi" />
+                <data android:mimeType="video/x-flc" />
+                <data android:mimeType="video/x-fli" />
+                <data android:mimeType="video/x-flic" />
+                <data android:mimeType="video/x-m4v" />
+                <data android:mimeType="video/x-matroska" />
+                <data android:mimeType="video/x-mpeg" />
+                <data android:mimeType="video/x-ms-asf" />
+                <data android:mimeType="video/x-msvideo" />
+                <data android:mimeType="video/x-ms-wm" />
+                <data android:mimeType="video/x-ms-wmv" />
+                <data android:mimeType="video/x-ms-wmx" />
+                <data android:mimeType="video/x-ms-wvx" />
+                <data android:mimeType="video/x-nsv" />
+                <data android:mimeType="video/x-ogm+ogg" />
+                <data android:mimeType="video/x-theora+ogg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI with a MIME type -->
+                <data android:scheme="cdda" />
+                <data android:scheme="dvd" />
+                <data android:scheme="dvdsimple" />
+                <data android:scheme="file" />
+                <data android:scheme="ftp" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsh" />
+                <data android:scheme="rtsp" />
+                <data android:scheme="udp" />
+                <data android:scheme="vcd" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- URI without a MIME type -->
+                <data android:scheme="cdda" />
+                <data android:scheme="dvd" />
+                <data android:scheme="dvdsimple" />
+                <data android:scheme="file" />
+                <data android:scheme="ftp" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsh" />
+                <data android:scheme="rtsp" />
+                <data android:scheme="udp" />
+                <data android:scheme="vcd" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity android:name=".BrowseActivity" />
+        <activity android:name=".PlaylistActivity" />
+        <activity android:label="@string/title_pick_server"
+            android:name="org.peterbaldwin.client.android.portsweep.PickServerActivity" />
+        <receiver android:name=".MediaAppWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action
+                    android:name="org.peterbaldwin.vlcremote.intent.action.MANUAL_APPWIDGET_UPDATE" />
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.EXCEPTION" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+        <service android:name=".StatusService" android:label="@string/service_label">
+            <intent-filter>
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.ALBUM_ART" />
+                <action android:name="org.peterbaldwin.vlcremote.intent.action.EXCEPTION" />
+            </intent-filter>
+        </service>
+        <receiver android:name="PhoneStateChangedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest> 

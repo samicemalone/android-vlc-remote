@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:padding="8dip"
+		android:orientation="vertical">
+		<TextView style="?android:attr/textAppearanceSmall"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/label_hostname" />
+		<EditText android:id="@+id/edit_hostname"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:singleLine="true" />
+		<TextView style="?android:attr/textAppearanceSmall"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/label_port" />
+		<EditText android:id="@+id/edit_port" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:singleLine="true"
+			android:numeric="integer" />
+	</LinearLayout>
+</ScrollView>

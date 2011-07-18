@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:gravity="center_vertical">
+    <TextView
+        android:id="@android:id/text1"
+        android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:paddingLeft="9dip"
+        android:paddingRight="9dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toLeftOf="@android:id/icon" />
+    <TextView
+        android:id="@android:id/text2"
+        android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:paddingLeft="9dip"
+        android:paddingRight="9dip"
+        android:layout_below="@android:id/text1"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toLeftOf="@android:id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@android:id/icon"
+        android:src="@drawable/stat_notify_musicplayer"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_marginRight="12dip" />
+</RelativeLayout>

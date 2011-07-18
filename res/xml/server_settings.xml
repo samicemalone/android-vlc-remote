@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/title_pick_server">
+    <CheckBoxPreference
+        android:key="wifi"
+        android:title="@string/wifi"
+        android:summary="@string/summary_wifi_disconnected"
+        android:persistent="false" />
+    <org.peterbaldwin.client.android.portsweep.ProgressCategory
+        android:key="servers"
+        android:title="@string/vlc_servers"
+        android:persistent="false" />
+    <Preference
+        android:key="add_server"
+        android:title="@string/add_server"
+        android:persistent="false" />
+</PreferenceScreen>
