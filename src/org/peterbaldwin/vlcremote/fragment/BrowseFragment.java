@@ -111,7 +111,9 @@ public class BrowseFragment extends ListFragment implements
         mAdapter = new DirectoryAdapter(context);
         setListAdapter(mAdapter);
         registerForContextMenu(getListView());
-        getLoaderManager().initLoader(Data.DIRECTORY, Bundle.EMPTY, this);
+        if (mMediaServer != null) {
+            getLoaderManager().initLoader(Data.DIRECTORY, Bundle.EMPTY, this);
+        }
     }
 
     @Override

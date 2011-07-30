@@ -101,8 +101,9 @@ public class PlaylistFragment extends ListFragment implements
 
         registerForContextMenu(getListView());
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(LOADER_PLAYLIST, null, this);
+        if (mMediaServer != null) {
+            getLoaderManager().initLoader(LOADER_PLAYLIST, null, this);
+        }
     }
 
     @Override
@@ -192,6 +193,7 @@ public class PlaylistFragment extends ListFragment implements
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
+        reload();
     }
 
     private void removeItem(PlaylistItem item) {
@@ -298,7 +300,9 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     public void reload() {
-        getLoaderManager().restartLoader(LOADER_PLAYLIST, null, this);
+        if (mMediaServer != null) {
+            getLoaderManager().restartLoader(LOADER_PLAYLIST, null, this);
+        }
     }
 
     private class StatusReceiver extends BroadcastReceiver {

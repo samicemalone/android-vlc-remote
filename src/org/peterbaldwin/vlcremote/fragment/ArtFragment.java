@@ -60,7 +60,9 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_IMAGE, null, this);
+        if (mMediaServer != null) {
+            getLoaderManager().initLoader(LOADER_IMAGE, Bundle.EMPTY, this);
+        }
     }
 
     @Override
@@ -98,7 +100,10 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
-    }
+        if (mMediaServer != null) {
+            getLoaderManager().restartLoader(LOADER_IMAGE, Bundle.EMPTY, this);
+        }
+    } 
 
     private void onStatusChanged(Status status) {
         Track track = status.getTrack();
