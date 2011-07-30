@@ -312,7 +312,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mPlayback.setMediaServer(mMediaServer);
         mButtons.setMediaServer(mMediaServer);
         mVolume.setMediaServer(mMediaServer);
-        mArt.setMediaServer(mMediaServer);
+        if (mArt != null) {
+            mArt.setMediaServer(mMediaServer);
+        }
         mPlaylist.setMediaServer(mMediaServer);
         mBrowse.setMediaServer(mMediaServer);
         mStatus.setMediaServer(mMediaServer);
