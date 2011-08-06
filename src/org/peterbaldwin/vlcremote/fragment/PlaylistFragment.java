@@ -291,10 +291,10 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     void onStatusChanged(Status status) {
-        String name = status.getTrack().getName();
-        if (!TextUtils.equals(name, mCurrent)) {
+        String title = status.getTrack().getTitle();
+        if (!TextUtils.equals(title, mCurrent)) {
             // Reload the playlist and scroll to the new current track
-            mCurrent = name;
+            mCurrent = title;
             reload();
         }
     }
