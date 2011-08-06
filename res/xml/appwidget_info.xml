@@ -4,4 +4,5 @@
     android:minWidth="294dip"
     android:minHeight="72dip"
     android:updatePeriodMillis="86400000"
-    android:initialLayout="@layout/album_appwidget" />
+    android:initialLayout="@layout/album_appwidget"
+    android:previewImage="@drawable/appwidget_preview" />

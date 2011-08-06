@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="appwidget_text">#ffffffff</color>
+    <color name="appwidget_button_press">#b26899ff</color>
+    <color name="appwidget_button_focus">#b299cc00</color>
 </resources>
 

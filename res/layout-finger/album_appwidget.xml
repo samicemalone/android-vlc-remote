@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2009 The Android Open Source Project
 
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-  
-          http://www.apache.org/licenses/LICENSE-2.0
-  
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
-     
-     Modifications:
-     -Moved control_play button to left side of widget
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+    Modifications:
+    -Moved control_play button to left side of widget
+    -Changed background
+    -Changed button backgrounds
+    -Changed formatting
+    -Adjusted margins and padding
+    -Removed dividers
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_margin="8dp"
     android:orientation="horizontal"
     android:background="@drawable/appwidget_bg">
-        
+
     <ImageButton
         android:id="@+id/control_play"
         android:layout_width="0dip"
         android:layout_weight="1"
         android:layout_height="fill_parent"
         android:src="@drawable/ic_appwidget_music_play"
-        android:background="@drawable/appwidget_button_center"
-        android:scaleType="center"
-        />
-    
-    <ImageView
-        android:layout_width="1dip"
-        android:layout_height="fill_parent"
-        android:background="@drawable/appwidget_divider"
-        />
+        android:background="@drawable/appwidget_button"
+        android:scaleType="center" />
 
-   <LinearLayout
+    <LinearLayout
         android:id="@+id/album_appwidget"
         android:layout_width="0dip"
         android:layout_weight="3"
@@ -48,10 +48,9 @@
         android:gravity="center_vertical"
         android:clickable="true"
         android:focusable="true"
-        android:background="@drawable/appwidget_button_left"
+        android:background="@drawable/appwidget_button"
         android:paddingLeft="18dip"
-        android:paddingRight="8dip"
-        >
+        android:paddingRight="8dip">
 
         <TextView
             android:id="@+id/title"
@@ -63,8 +62,7 @@
             android:singleLine="true"
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="10dip"
-            android:ellipsize="none"
-            />
+            android:ellipsize="none" />
 
         <TextView
             android:id="@+id/artist"
@@ -75,24 +73,16 @@
             android:singleLine="true"
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="10dip"
-            android:ellipsize="none"
-            />
+            android:ellipsize="none" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="1dip"
-        android:layout_height="fill_parent"
-        android:background="@drawable/appwidget_divider"
-        />
-        
     <ImageButton
         android:id="@+id/control_next"
         android:layout_width="0dip"
         android:layout_weight="1"
         android:layout_height="fill_parent"
         android:src="@drawable/ic_appwidget_music_next"
-        android:background="@drawable/appwidget_button_right"
-        android:scaleType="center"
-        />
+        android:background="@drawable/appwidget_button"
+        android:scaleType="center" />
 
 </LinearLayout>

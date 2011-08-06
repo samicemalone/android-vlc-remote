@@ -35,14 +35,7 @@
       res/drawable-finger/ic_tab_playlists.xml
       res/drawable-finger/ic_tab_songs.xmlg
       res/drawable-hdpi-finger/albumart_mp_unknown.png
-      res/drawable-hdpi-finger/appwidget_bg.9.png
       res/drawable-hdpi-finger/appwidget_divider.9.png
-      res/drawable-hdpi-finger/appwidget_inner_focus_c.9.png
-      res/drawable-hdpi-finger/appwidget_inner_focus_l.9.png
-      res/drawable-hdpi-finger/appwidget_inner_focus_r.9.png
-      res/drawable-hdpi-finger/appwidget_inner_press_c.9.png
-      res/drawable-hdpi-finger/appwidget_inner_press_l.9.png
-      res/drawable-hdpi-finger/appwidget_inner_press_r.9.png
       res/drawable-hdpi-finger/ic_appwidget_music_next.png
       res/drawable-hdpi-finger/ic_appwidget_music_pause.png
       res/drawable-hdpi-finger/ic_appwidget_music_play.png
@@ -54,14 +47,7 @@
       res/drawable-hdpi-finger/stat_notify_musicplayer.png
       res/drawable-hdpi/ic_popup_sync_2.png
       res/drawable-mdpi-finger/albumart_mp_unknown.png
-      res/drawable-mdpi-finger/appwidget_bg.9.png
       res/drawable-mdpi-finger/appwidget_divider.9.png
-      res/drawable-mdpi-finger/appwidget_inner_focus_c.9.png
-      res/drawable-mdpi-finger/appwidget_inner_focus_l.9.png
-      res/drawable-mdpi-finger/appwidget_inner_focus_r.9.png
-      res/drawable-mdpi-finger/appwidget_inner_press_c.9.png
-      res/drawable-mdpi-finger/appwidget_inner_press_l.9.png
-      res/drawable-mdpi-finger/appwidget_inner_press_r.9.png
       res/drawable-mdpi-finger/ic_appwidget_music_next.png
       res/drawable-mdpi-finger/ic_appwidget_music_pause.png
       res/drawable-mdpi-finger/ic_appwidget_music_play.png
