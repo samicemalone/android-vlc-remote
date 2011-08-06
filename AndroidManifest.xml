@@ -2,8 +2,8 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.peterbaldwin.client.android.vlcremote"
-    android:versionName="0.5.2"
-    android:versionCode="52">
+    android:versionName="0.5.3"
+    android:versionCode="53">
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="11" />
