@@ -75,7 +75,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private static final String STATE_INPUT = "vlc:input";
     private static final String STATE_TAB = "vlc:tab";
 
-    private static final String TAB_PLAYBACK = "playback";
     private static final String TAB_MEDIA = "media";
     private static final String TAB_PLAYLIST = "playlist";
     private static final String TAB_BROWSE = "browse";
@@ -148,7 +147,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         if (mTabHost != null) {
             mTabHost.setup();
-            addTab(TAB_PLAYBACK, R.id.tab_playback, R.string.goto_playback, R.drawable.ic_tab_songs);
             addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
             addTab(TAB_PLAYLIST, R.id.tab_playlist, R.string.tab_playlist,
                     R.drawable.ic_tab_playlists);
@@ -238,7 +236,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         String tabId = mTabHost != null ? mTabHost.getCurrentTabTag() : null;
-        boolean visible = tabId == null || TAB_PLAYBACK.equals(tabId) | TAB_MEDIA.equals(tabId);
+        boolean visible = tabId == null || TAB_MEDIA.equals(tabId);
         menu.findItem(R.id.menu_preferences).setVisible(visible);
         menu.findItem(R.id.menu_help).setVisible(visible);
         return menu.hasVisibleItems();

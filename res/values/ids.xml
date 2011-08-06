@@ -29,9 +29,6 @@
         name="fragment_navigation" />
     <item
         type="id"
-        name="tab_playback" />
-    <item
-        type="id"
         name="tab_media" />
     <item
         type="id"

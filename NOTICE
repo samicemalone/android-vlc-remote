@@ -21,19 +21,6 @@
 
    This software includes artwork created for the Android
    Open Source Project, licensed under the Apache License, Version 2.0:
-      res/drawable-finger/ic_tab_albums.xml
-      res/drawable-finger/ic_tab_artists.xml
-      res/drawable-finger/ic_tab_playback.xml
-      res/drawable-finger/ic_tab_playlists.xml
-      res/drawable-finger/ic_tab_songs.xml
-      res/drawable-finger/appwidget_button_center.xml
-      res/drawable-finger/appwidget_button_left.xml
-      res/drawable-finger/appwidget_button_right.xml
-      res/drawable-finger/ic_tab_albums.xml
-      res/drawable-finger/ic_tab_artists.xml
-      res/drawable-finger/ic_tab_playback.xml
-      res/drawable-finger/ic_tab_playlists.xml
-      res/drawable-finger/ic_tab_songs.xmlg
       res/drawable-hdpi-finger/albumart_mp_unknown.png
       res/drawable-hdpi-finger/appwidget_divider.9.png
       res/drawable-hdpi-finger/ic_appwidget_music_next.png
@@ -58,10 +45,8 @@
       res/drawable-mdpi-finger/ic_mp_repeat_off_btn.png
       res/drawable-mdpi-finger/stat_notify_musicplayer.png
       res/drawable-mdpi/ic_popup_sync_2.png
-      res/drawable-mdpi/ic_menu_close_clear_cancel.png
       res/drawable-mdpi/ic_menu_home.png
       res/drawable-mdpi/ic_menu_scan_network.png
-      res/drawable-hdpi/ic_menu_close_clear_cancel.png
       res/drawable-hdpi/ic_menu_home.png
       res/drawable-hdpi/ic_menu_scan_network.png
       res/drawable-hdpi-finger/ic_mp_album_playback.png
@@ -74,7 +59,6 @@
       res/drawable-hdpi-v11/ic_menu_set_as.png
       res/drawable-hdpi-v9/panel_background.9.png
       res/drawable-hdpi/ic_menu_archive.png
-      res/drawable-hdpi/ic_menu_close_clear_cancel.png
       res/drawable-hdpi/ic_menu_help.png
       res/drawable-hdpi/ic_menu_home.png
       res/drawable-hdpi/ic_menu_preferences.png
@@ -115,7 +99,6 @@
       res/drawable-mdpi-v11/ic_menu_set_as.png
       res/drawable-mdpi-v9/panel_background.9.png
       res/drawable-mdpi/ic_menu_archive.png
-      res/drawable-mdpi/ic_menu_close_clear_cancel.png
       res/drawable-mdpi/ic_menu_help.png
       res/drawable-mdpi/ic_menu_home.png
       res/drawable-mdpi/ic_menu_preferences.png
@@ -136,7 +119,10 @@
       res/drawable-mdpi/ic_volume_off_small.png
       res/drawable-mdpi/ic_volume_small.png
       res/drawable-mdpi/panel_background.9.png
-
+      res/drawable-mdpi/ic_menu_clear_playlist.png
+      res/drawable-ldpi/ic_menu_clear_playlist.png
+      res/drawable-hdpi/ic_menu_clear_playlist.png
+      
    This software includes graphics derived from artwork created for the Android
    Open Source Project, licensed under the Apache License, Version 2.0:
       res/drawable-mdpi/ic_nav_left_selected.png
@@ -186,21 +172,13 @@
    Richard C. G. Øiestad of Furu systems, licensed under
    the terms of the GNU General Public License:
       scalable/ic_media_volume_muted.svg
-      scalable/ic_media_eject.svg
-      scalable/ic_media_playlist.svg
       scalable/ic_media_volume_high.svg
-      scalable/ic_media_playlist_clear.svg
       scalable/ic_media_seek_backward.svg
       scalable/ic_media_volume_medium.svg
       scalable/ic_media_volume_low.svg
-      scalable/ic_media_fullscreen.svg
-      scalable/ic_media_ratio.svg
       scalable/ic_media_playback_pause.svg
-      scalable/ic_media_optical.svg
       scalable/ic_media_playback_stop.svg
-      scalable/ic_media_playlist_repeat.svg
       scalable/ic_media_playback_start.svg
-      scalable/ic_media_playlist_shuffle.svg
       scalable/ic_media_seek_forward.svg
       scalable/ic_media_skip_backward.svg
       scalable/ic_media_skip_forward.svg
@@ -209,59 +187,35 @@
    Richard C. G. Øiestad of Furu systems, which is licensed under
    the terms of the GNU General Public License:
       res/drawable-ldpi/ic_media_volume_muted.png
-      res/drawable-ldpi/ic_media_eject.png
-      res/drawable-ldpi/ic_media_playlist.png
       res/drawable-ldpi/ic_media_volume_high.png
-      res/drawable-ldpi/ic_media_playlist_clear.png
       res/drawable-ldpi/ic_media_seek_backward.png
       res/drawable-ldpi/ic_media_volume_medium.png
       res/drawable-ldpi/ic_media_volume_low.png
-      res/drawable-ldpi/ic_media_fullscreen.png
-      res/drawable-ldpi/ic_media_ratio.png
       res/drawable-ldpi/ic_media_playback_pause.png
-      res/drawable-ldpi/ic_media_optical.png
       res/drawable-ldpi/ic_media_playback_stop.png
-      res/drawable-ldpi/ic_media_playlist_repeat.png
       res/drawable-ldpi/ic_media_playback_start.png
-      res/drawable-ldpi/ic_media_playlist_shuffle.png
       res/drawable-ldpi/ic_media_seek_forward.png
       res/drawable-ldpi/ic_media_skip_backward.png
       res/drawable-ldpi/ic_media_skip_forward.png
       res/drawable-mdpi/ic_media_volume_muted.png
-      res/drawable-mdpi/ic_media_eject.png
-      res/drawable-mdpi/ic_media_playlist.png
       res/drawable-mdpi/ic_media_volume_high.png
-      res/drawable-mdpi/ic_media_playlist_clear.png
       res/drawable-mdpi/ic_media_seek_backward.png
       res/drawable-mdpi/ic_media_volume_medium.png
       res/drawable-mdpi/ic_media_volume_low.png
-      res/drawable-mdpi/ic_media_fullscreen.png
-      res/drawable-mdpi/ic_media_ratio.png
       res/drawable-mdpi/ic_media_playback_pause.png
-      res/drawable-mdpi/ic_media_optical.png
       res/drawable-mdpi/ic_media_playback_stop.png
-      res/drawable-mdpi/ic_media_playlist_repeat.png
       res/drawable-mdpi/ic_media_playback_start.png
-      res/drawable-mdpi/ic_media_playlist_shuffle.png
       res/drawable-mdpi/ic_media_seek_forward.png
       res/drawable-mdpi/ic_media_skip_backward.png
       res/drawable-mdpi/ic_media_skip_forward.png
       res/drawable-hdpi/ic_media_volume_muted.png
-      res/drawable-hdpi/ic_media_eject.png
-      res/drawable-hdpi/ic_media_playlist.png
       res/drawable-hdpi/ic_media_volume_high.png
-      res/drawable-hdpi/ic_media_playlist_clear.png
       res/drawable-hdpi/ic_media_seek_backward.png
       res/drawable-hdpi/ic_media_volume_medium.png
       res/drawable-hdpi/ic_media_volume_low.png
-      res/drawable-hdpi/ic_media_fullscreen.png
-      res/drawable-hdpi/ic_media_ratio.png
       res/drawable-hdpi/ic_media_playback_pause.png
-      res/drawable-hdpi/ic_media_optical.png
       res/drawable-hdpi/ic_media_playback_stop.png
-      res/drawable-hdpi/ic_media_playlist_repeat.png
       res/drawable-hdpi/ic_media_playback_start.png
-      res/drawable-hdpi/ic_media_playlist_shuffle.png
       res/drawable-hdpi/ic_media_seek_forward.png
       res/drawable-hdpi/ic_media_skip_backward.png
       res/drawable-hdpi/ic_media_skip_forward.png

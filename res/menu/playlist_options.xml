@@ -8,5 +8,5 @@
     <item
         android:id="@+id/menu_clear_playlist"
         android:title="@string/menu_clear_playlist"
-        android:icon="@drawable/ic_menu_close_clear_cancel" />
+        android:icon="@drawable/ic_menu_clear_playlist" />
 </menu>
