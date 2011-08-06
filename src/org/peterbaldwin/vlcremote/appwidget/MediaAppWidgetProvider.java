@@ -92,7 +92,8 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
             cancelPendingUpdate(context);
         } else if (Intents.ACTION_MANUAL_APPWIDGET_UPDATE.equals(action)
                 || ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
-            update(context);
+            int[] appWidgetIds = null;
+            update(context, appWidgetIds);
         } else {
             super.onReceive(context, intent);
         }
@@ -123,15 +124,20 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        update(context);
+        update(context, appWidgetIds);
     }
 
-    private void update(Context context) {
+    private void update(Context context, int[] appWidgetIds) {
         Preferences preferences = Preferences.get(context);
         String authority = preferences.getAuthority();
         if (authority != null) {
             MediaServer server = new MediaServer(context, authority);
             server.status().get();
+        } else {
+            CharSequence text1 = context.getText(R.string.noserver);
+            CharSequence text2 = "";
+            Boolean playing = null;
+            performUpdate(context, text1, text2, playing, appWidgetIds);
         }
     }
 
@@ -180,12 +186,6 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
      * Link up various button actions using {@link PendingIntent}.
      */
     private void linkButtons(Context context, RemoteViews views, Boolean playing) {
-        Preferences preferences = Preferences.get(context);
-        String authority = preferences.getAuthority();
-        if (authority == null) {
-            return;
-        }
-        MediaServer server = new MediaServer(context, authority);
         {
             int requestCode = 0;
             Intent intent = getLaunchIntent(context);
@@ -194,6 +194,13 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
                     flags);
             views.setOnClickPendingIntent(R.id.album_appwidget, pendingIntent);
         }
+        
+        Preferences preferences = Preferences.get(context);
+        String authority = preferences.getAuthority();
+        if (authority == null) {
+            return;
+        }
+        MediaServer server = new MediaServer(context, authority);
 
         if (playing != null) {
             PendingIntent intent = server.status().command.playback.pendingPause();
