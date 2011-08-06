@@ -76,7 +76,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private static final String STATE_TAB = "vlc:tab";
 
     private static final String TAB_PLAYBACK = "playback";
-    private static final String TAB_INFO = "info";
     private static final String TAB_MEDIA = "media";
     private static final String TAB_PLAYLIST = "playlist";
     private static final String TAB_BROWSE = "browse";
