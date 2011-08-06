@@ -149,9 +149,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         if (mTabHost != null) {
             mTabHost.setup();
-            // TODO: Internationalize labels
             addTab(TAB_PLAYBACK, R.id.tab_playback, R.string.goto_playback, R.drawable.ic_tab_songs);
-            addTab(TAB_INFO, R.id.tab_info, R.string.nowplaying_title, R.drawable.ic_tab_artists);
             addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
             addTab(TAB_PLAYLIST, R.id.tab_playlist, R.string.tab_playlist,
                     R.drawable.ic_tab_playlists);
