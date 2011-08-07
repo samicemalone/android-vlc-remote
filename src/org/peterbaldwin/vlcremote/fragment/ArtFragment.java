@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
+
     private static final int LOADER_IMAGE = 1;
 
     private BroadcastReceiver mStatusReceiver;
@@ -85,6 +86,9 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
     public Loader<Drawable> onCreateLoader(int id, Bundle args) {
         Context context = getActivity();
         Uri uri = mArtUrl != null ? Uri.parse(mArtUrl) : null;
+        if (uri != null) {
+            uri = resizeImage(uri);
+        }
         return new ImageLoader(context, mMediaServer, uri);
     }
 
@@ -112,6 +116,25 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
             mArtUrl = artUrl;
             getLoaderManager().restartLoader(LOADER_IMAGE, null, this);
         }
+    }
+
+    private static Uri resizeImage(Uri uri) {
+        if (isJamendoImage(uri)) {
+            return resizeJamendoImage(uri);
+        } else {
+            return uri;
+        }
+    }
+
+    private static boolean isJamendoImage(Uri uri) {
+        return "imgjam.com".equals(uri.getAuthority()) && uri.getPathSegments().size() != 0
+                && uri.getLastPathSegment().matches("1\\.\\d+\\.jpg");
+    }
+
+    private static Uri resizeJamendoImage(Uri uri) {
+        String path = uri.getPath();
+        path = path.replace("/" + uri.getLastPathSegment(), "/1.400.jpg");
+        return uri.buildUpon().path(path).build();
     }
 
     private class StatusReceiver extends BroadcastReceiver {
