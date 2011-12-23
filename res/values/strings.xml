@@ -69,7 +69,7 @@
     <string name="goto_start">Library</string>
     
     <!-- Label for tab containing information about the currently playing track -->
-    <string name="nowplaying_title">Now playing</string>
+    <string name="nowplaying_title">Playing</string>
     
     <!-- Label for DVD navigation tab -->
     <string name="tab_dvd">DVD</string>
