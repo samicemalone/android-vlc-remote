@@ -29,9 +29,11 @@ import android.telephony.TelephonyManager;
  * Automatically pauses media when there is an incoming call.
  */
 public class PhoneStateChangedReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+
         if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(action)) {
             Preferences preferences = Preferences.get(context);
             String authority = preferences.getAuthority();

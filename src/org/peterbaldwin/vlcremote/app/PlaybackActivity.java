@@ -18,7 +18,6 @@
 package org.peterbaldwin.vlcremote.app;
 
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.sweep.PickServerActivity;
 import org.peterbaldwin.vlcremote.fragment.ArtFragment;
 import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
 import org.peterbaldwin.vlcremote.fragment.ButtonsFragment;

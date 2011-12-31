@@ -24,6 +24,8 @@
     <string name="summary_wifi_connected">Connected to {0}</string>
     <string name="summary_wifi_disconnected">Warning: Wi-Fi is disconnected</string>
     <string name="summary_not_in_range">Not in range</string>
+    <string name="pause_for_call">Pause for phone calls</string>
+    <string name="summary_pause_for_call">Pause media playback during phone calls</string>
     <string name="summary_remembered">Remembered</string>
     <string name="summary_forbidden">
         Please edit

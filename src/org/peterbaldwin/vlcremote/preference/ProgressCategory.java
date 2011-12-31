@@ -18,7 +18,7 @@
  * 2. Don't send change notifications unless something actually changed.
  */
 
-package org.peterbaldwin.sweep;
+package org.peterbaldwin.vlcremote.preference;
 
 import org.peterbaldwin.client.android.vlcremote.R;
 

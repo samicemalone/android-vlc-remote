@@ -69,7 +69,7 @@ public final class Preferences {
         long end = System.currentTimeMillis();
         return start < end && (end - start) < DateUtils.HOUR_IN_MILLIS;
     }
-
+    
     public boolean clearResumeOnIdle() {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.remove(PREFERENCE_RESUME_ON_IDLE);
@@ -99,7 +99,7 @@ public final class Preferences {
     public boolean setBrowseDirectory(String dir) {
         return mPreferences.edit().putString(PREFERENCE_BROWSE_DIRECTORY, dir).commit();
     }
-
+    
     public ArrayList<String> getRememberedServers() {
         return fromJSONArray(mPreferences.getString(PREFERENCE_REMEMBERED_SERVERS, "[]"));
     }

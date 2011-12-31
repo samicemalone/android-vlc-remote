@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.sweep;
+package org.peterbaldwin.vlcremote.sweep;
 
 import android.os.Handler;
 import android.os.HandlerThread;

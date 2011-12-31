@@ -1,54 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.peterbaldwin.client.android.vlcremote"
-    android:versionName="0.5.3"
-    android:versionCode="53">
+    android:versionCode="53"
+    android:versionName="0.5.3" >
+
     <uses-sdk
         android:minSdkVersion="4"
         android:targetSdkVersion="11" />
+
     <supports-screens
-        android:xlargeScreens="true"
+        android:anyDensity="true"
         android:largeScreens="true"
         android:normalScreens="true"
+        android:resizeable="true"
         android:smallScreens="true"
-        android:anyDensity="true"
-        android:resizeable="true" />
+        android:xlargeScreens="true" />
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="true" />
     <uses-feature
         android:name="android.hardware.wifi"
         android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
-        android:icon="@drawable/icon"
-        android:logo="@drawable/icon"
-        android:label="@string/app_name"
-        android:hardwareAccelerated="true"
         android:description="@string/description"
-        android:theme="@style/Theme">
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:logo="@drawable/icon"
+        android:theme="@style/Theme" >
         <activity
             android:name=".PlaybackActivity"
+            android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:finishOnTaskLaunch="true">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="org.openintents.remote.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="cdda" />
                 <data android:scheme="dvd" />
                 <data android:scheme="dvdsimple" />
@@ -153,8 +161,10 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="ftp" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
@@ -254,6 +264,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- URI with a MIME type -->
                 <data android:scheme="cdda" />
@@ -272,6 +283,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- URI without a MIME type -->
                 <data android:scheme="cdda" />
@@ -287,14 +299,16 @@
                 <data android:scheme="udp" />
                 <data android:scheme="vcd" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:label="@string/title_pick_server"
-            android:name="org.peterbaldwin.sweep.PickServerActivity" />
-        <receiver android:name=".MediaAppWidgetProvider">
+            android:name="org.peterbaldwin.vlcremote.app.PickServerActivity"
+            android:label="@string/settings" />
+
+        <receiver android:name=".MediaAppWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -302,23 +316,27 @@
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.EXCEPTION" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info" />
         </receiver>
+
         <service
             android:name="org.peterbaldwin.vlcremote.service.StatusService"
-            android:label="@string/service_label">
+            android:label="@string/service_label" >
             <intent-filter>
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.ART" />
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.ERROR" />
             </intent-filter>
         </service>
-        <receiver android:name="org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver">
+
+        <receiver android:name="org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
     </application>
-</manifest> 
+
+</manifest>

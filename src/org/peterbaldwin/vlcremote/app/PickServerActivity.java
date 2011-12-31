@@ -15,17 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.sweep;
+package org.peterbaldwin.vlcremote.app;
 
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.preference.ProgressCategory;
+import org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver;
+import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.SupplicantState;
@@ -36,6 +41,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.text.TextUtils;
@@ -56,10 +62,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PickServerActivity extends PreferenceActivity implements PortSweeper.Callback,
-        DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener, OnPreferenceChangeListener {
 
+    
     private static final String TAG = "PickServer";
 
+    private static final String PACKAGE_NAME = R.class.getPackage().getName();
+
+    private static final ComponentName PHONE_STATE_RECEIVER = new ComponentName(PACKAGE_NAME,
+            PhoneStateChangedReceiver.class.getName());
+    
     public static final String EXTRA_PORT = "org.peterbaldwin.portsweep.intent.extra.PORT";
     public static final String EXTRA_FILE = "org.peterbaldwin.portsweep.intent.extra.FILE";
     public static final String EXTRA_WORKERS = "org.peterbaldwin.portsweep.intent.extra.WORKERS";
@@ -68,6 +80,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
+    private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
 
     public static final String STATE_HOSTS = "hosts";
 
@@ -92,7 +105,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private PortSweeper mPortSweeper;
 
     private BroadcastReceiver mReceiver;
-
+    
     private AlertDialog mDialogAddServer;
     private EditText mEditHostname;
     private EditText mEditPort;
@@ -106,9 +119,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private ArrayList<String> mRemembered;
 
     private CheckBoxPreference mPreferenceWiFi;
+    private CheckBoxPreference mPreferencePauseForCall;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,8 +131,12 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
+        mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
+        
+        mPreferencePauseForCall.setOnPreferenceChangeListener(this);
+        mPreferencePauseForCall.setChecked(getPauseForCall());
 
         Intent intent = getIntent();
         mPort = intent.getIntExtra(EXTRA_PORT, 0);
@@ -383,10 +401,22 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             // Undo checkbox toggle
             updateWifiInfo();
             return true;
+        } else if (preference == mPreferencePauseForCall) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else {
             String server = preference.getTitle().toString();
             pick(server);
             return true;
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if (preference == mPreferencePauseForCall) {
+            setPauseForCall(Boolean.TRUE.equals(newValue));
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -502,6 +532,24 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             mPreferenceWiFi.setChecked(false);
             mPreferenceWiFi.setSummary(R.string.summary_wifi_disconnected);
         }
+    }
+
+    private boolean getPauseForCall() {
+        switch (getPackageManager().getComponentEnabledSetting(PHONE_STATE_RECEIVER)) {
+            case PackageManager.COMPONENT_ENABLED_STATE_DEFAULT:
+            case PackageManager.COMPONENT_ENABLED_STATE_ENABLED:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void setPauseForCall(boolean enabled) {
+        getPackageManager().setComponentEnabledSetting(
+                PHONE_STATE_RECEIVER,
+                enabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 
     private class MyBroadcastReceiver extends BroadcastReceiver {

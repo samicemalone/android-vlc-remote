@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/title_pick_server">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pause_for_call"
+        android:persistent="false"
+        android:summary="@string/summary_pause_for_call"
+        android:title="@string/pause_for_call" />
     <CheckBoxPreference
         android:key="wifi"
-        android:title="@string/wifi"
+        android:persistent="false"
         android:summary="@string/summary_wifi_disconnected"
-        android:persistent="false" />
-    <org.peterbaldwin.sweep.ProgressCategory
+        android:title="@string/wifi" />
+
+    <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"
-        android:title="@string/vlc_servers"
-        android:persistent="false" />
+        android:persistent="false"
+        android:title="@string/vlc_servers" />
+
     <Preference
         android:key="add_server"
-        android:title="@string/add_server"
-        android:persistent="false" />
+        android:persistent="false"
+        android:title="@string/add_server" />
+
 </PreferenceScreen>
