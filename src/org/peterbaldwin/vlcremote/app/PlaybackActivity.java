@@ -48,6 +48,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,6 +63,8 @@ import java.util.ArrayList;
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
         View.OnClickListener {
 
+    private static final String TAG = "PlaybackActivity";
+    
     private static final int REQUEST_PICK_SERVER = 1;
 
     private static final Uri URI_TROUBLESHOOTING = Uri
@@ -361,6 +364,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     }
 
     private void changeInput(String input) {
+        if (mMediaServer == null) {
+            Log.w(TAG, "No server selected");
+            return;
+        }   
         mInput = input;
         if (mInput != null) {
             mMediaServer.status().command.input.play(mInput);
