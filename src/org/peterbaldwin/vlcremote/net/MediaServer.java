@@ -17,6 +17,10 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import org.apache.http.Header;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.protocol.HTTP;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.Playlist;
@@ -162,6 +166,12 @@ public final class MediaServer {
             URL url = new URL(spec);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             try {
+                String usernamePassword = mUri.getUserInfo();
+                if (usernamePassword != null) {
+                    Header authorization = BasicScheme.authenticate(
+                            new UsernamePasswordCredentials(usernamePassword), HTTP.UTF_8, false);
+                    http.setRequestProperty(authorization.getName(), authorization.getValue());
+                }
                 return (T) handler.getContent(http);
             } finally {
                 http.disconnect();

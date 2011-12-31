@@ -38,6 +38,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -95,6 +96,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private AlertDialog mDialogAddServer;
     private EditText mEditHostname;
     private EditText mEditPort;
+    private EditText mEditUser;
+    private EditText mEditPassword;
 
     private String mFile;
     private int mPort;
@@ -301,11 +304,12 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                 View view = inflater.inflate(R.layout.add_server, null);
                 mEditHostname = (EditText) view.findViewById(R.id.edit_hostname);
                 mEditPort = (EditText) view.findViewById(R.id.edit_port);
+                mEditUser = (EditText) view.findViewById(R.id.edit_user);
+                mEditPassword = (EditText) view.findViewById(R.id.edit_password);
                 builder.setView(view);
                 builder.setPositiveButton(R.string.ok, this);
                 builder.setNegativeButton(R.string.cancel, this);
                 mDialogAddServer = builder.create();
-                setPort(mPort);
                 return mDialogAddServer;
             default:
                 return super.onCreateDialog(id);
@@ -319,8 +323,16 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                 case DialogInterface.BUTTON_POSITIVE:
                     String hostname = getHostname();
                     int port = getPort();
-                    String server = hostname + ":" + port;
-                    pick(server);
+                    String user = getUser();
+                    String password = getPassword();
+
+                    StringBuilder server = new StringBuilder();
+                    if (!TextUtils.isEmpty(user)) {
+                        server.append(user).append(':').append(password).append('@');
+                    }
+                    server.append(hostname).append(':').append(port);
+
+                    pick(server.toString());
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     dialog.dismiss();
@@ -436,19 +448,24 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         return mEditHostname.getText().toString();
     }
 
-    private int getPort() {
-        String stringValue = String.valueOf(mEditPort.getText());
-        if (stringValue.length() != 0) {
-            try {
-                return Integer.parseInt(stringValue);
-            } catch (NumberFormatException e) {
-            }
-        }
-        return 0;
+    private String getUser() {
+        return mEditUser.getText().toString();
     }
 
-    private void setPort(int port) {
-        mEditPort.setText(String.valueOf(port));
+    private String getPassword() {
+        return mEditPassword.getText().toString();
+    }
+
+    private int getPort() {
+        String value = String.valueOf(mEditPort.getText());
+        if (!TextUtils.isEmpty(value)) {
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Invalid port number: " + value);
+            }
+        }
+        return mPort;
     }
 
     @Override
