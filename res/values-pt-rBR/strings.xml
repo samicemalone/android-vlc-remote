@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Remoto para VLC</string>
+    <string name="description">Controle remoto para o VideoLAN Client (VLC) media player.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="settings">Configurações</string>
+    <string name="troubleshooting">Solução de problemas</string>
+    <string name="scan">Procurar</string>
+    <string name="playlist_title">Lista de reprodução</string>
+    <string name="volume">Volume: </string>
+    <string name="error_does_not_exist">A pasta selecionado não existe.</string>
+    <string name="title">VLC Remote [{0}]</string>
+    <string name="title_pick_server">Escolha um servidor</string>
+    <string name="add_server">Adicione um servidor VLC</string>
+    <string name="label_hostname">Hostname ou enderço IP</string>
+    <string name="label_port">Porta</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="summary_wifi_connected">Conectado a {0}</string>
+    <string name="summary_wifi_disconnected">Aviso: Wi-Fi está desconectado</string>
+    <string name="summary_not_in_range">Fora do alcance</string>
+    <string name="summary_remembered">Lembrado</string>
+    <string name="summary_forbidden">Please edit <b>.hosts</b> file on your PC</string>
+    <string name="context_forget">Esquecer</string>
+    <string name="progress_scanning">Procurando</string>
+    <string name="vlc_servers">Servidores VLC</string>
+    <string name="search_label">Entrada</string>
+    <string name="search_hint">Entre a MRL</string>
+    <string name="browse_empty">Nenhum arquivo encontrado</string>
+    <string name="browse_home">Início</string>
+    <string name="browse_close">Fechar</string>
+    <string name="connection_error">Erro na conexão</string>
+    <string name="no_media">Nenhuma mídia selecionada</string>
+    <string name="context_open">Abrir</string>
+    <string name="context_play">Play</string>
+    <string name="context_stream">Stream</string>
+    <string name="context_enqueue">Adicionar a lista de reprodução</string>
+    <string name="context_dequeue">Remover da lista de reprodução</string>
+    <string name="context_search">Procurar</string>
+    <string name="menu_clear_playlist">Limpar lista de reprodução</string>
+    <string name="mediasearch">Procure por %s usando:</string>
+    <string name="emptyplaylist">Lista de reprodução vazia.</string>
+    <string name="noserver">Servidor não selecionado</string>
+    <string name="section_parent">⇧</string>
+    <string name="loading">Carregando…</string>
+    <string name="sethome">Home set to %s</string>
+    <string name="playlist_shuffle">Embaralhar</string>
+    <string name="playlist_loop">Repetir lista</string>
+    <string name="playlist_repeat">Repetir</string>
+    <string name="service_label">Servidor remoto VLC</string>
+
+</resources>
