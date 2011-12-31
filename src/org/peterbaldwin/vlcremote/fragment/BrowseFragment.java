@@ -199,8 +199,8 @@ public class BrowseFragment extends ListFragment implements
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.browse_context, menu);
-        menu.findItem(R.id.context_open).setVisible(isDirectory(menuInfo));
-        menu.findItem(R.id.context_stream).setVisible(!isDirectory(menuInfo));
+        menu.findItem(R.id.browse_context_open).setVisible(isDirectory(menuInfo));
+        menu.findItem(R.id.browse_context_stream).setVisible(!isDirectory(menuInfo));
     }
 
     @Override
@@ -211,19 +211,19 @@ public class BrowseFragment extends ListFragment implements
             if (info.position < mAdapter.getCount()) {
                 File file = mAdapter.getItem(info.position);
                 switch (item.getItemId()) {
-                    case R.id.context_open:
+                    case R.id.browse_context_open:
                         openDirectory(file);
                         return true;
-                    case R.id.context_play:
+                    case R.id.browse_context_play:
                         mMediaServer.status().command.input.play(file.getMrl(), file.getOptions());
                         return true;
-                    case R.id.context_stream:
+                    case R.id.browse_context_stream:
                         mMediaServer.status().command.input.play(file.getMrl(),
                                 file.getStreamingOptions());
                         Intent intent = file.getIntentForStreaming(mMediaServer.getAuthority());
                         startActivity(intent);
                         return true;
-                    case R.id.context_enqueue:
+                    case R.id.browse_context_enqueue:
                         mMediaServer.status().command.input.enqueue(file.getMrl());
                         return true;
                 }

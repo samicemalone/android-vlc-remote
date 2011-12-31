@@ -152,7 +152,7 @@ public class PlaylistFragment extends ListFragment implements
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.playlist_context, menu);
 
-            MenuItem searchItem = menu.findItem(R.id.context_search);
+            MenuItem searchItem = menu.findItem(R.id.playlist_context_search);
             searchItem.setVisible(isSearchable(item));
         }
     }
@@ -176,13 +176,13 @@ public class PlaylistFragment extends ListFragment implements
             if (info.position < mAdapter.getCount()) {
                 PlaylistItem item = mAdapter.getItem(info.position);
                 switch (menuItem.getItemId()) {
-                    case R.id.context_play:
+                    case R.id.playlist_context_play:
                         selectItem(item);
                         return true;
-                    case R.id.context_dequeue:
+                    case R.id.playlist_context_dequeue:
                         removeItem(item);
                         return true;
-                    case R.id.context_search:
+                    case R.id.playlist_context_search:
                         searchForItem(item);
                         return true;
                 }

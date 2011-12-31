@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/context_play" android:title="@string/context_play" />
-    <item android:id="@+id/context_dequeue" android:title="@string/context_dequeue" />
-    <item android:id="@+id/context_search" android:title="@string/context_search" />
+    <item android:id="@+id/playlist_context_play" android:title="@string/context_play" />
+    <item android:id="@+id/playlist_context_dequeue" android:title="@string/context_dequeue" />
+    <item android:id="@+id/playlist_context_search" android:title="@string/context_search" />
 </menu>
