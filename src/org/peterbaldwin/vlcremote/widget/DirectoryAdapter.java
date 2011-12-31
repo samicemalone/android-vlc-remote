@@ -45,11 +45,23 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
 
     /** {@inheritDoc} */
     public int getPositionForSection(int section) {
+        if (section < 0) {
+            section = 0;
+        }
+        if (section >= mPositionForSection.length) {
+            section = mPositionForSection.length - 1;
+        }
         return mPositionForSection[section];
     }
 
     /** {@inheritDoc} */
     public int getSectionForPosition(int position) {
+        if (position < 0) {
+            position = 0;
+        }
+        if (position >= mSectionForPosition.length) {
+            position = mSectionForPosition.length - 1;
+        }
         return mSectionForPosition[position];
     }
 
