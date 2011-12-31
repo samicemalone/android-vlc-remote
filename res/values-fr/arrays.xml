@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="service_values">
+        <item>mtp%7Blongname%3D%22MTP%20devices%22%7D</item>
+        <item>v4l%7Blongname%3D%22Video%20capture%22%7D</item>
+        <item>alsa%7Blongname%3D%22Audio%20capture%22%7D</item>
+        <item>sap%7Blongname%3D%22Network%20streams%20%28SAP%29%22%7D</item>
+        <item>lua%7Bsd%3D%27metachannels%27%2Clongname%3D%27Channels.com%27%7D</item>
+        <item>picture_dir%7Blongname%3D%22My%20Pictures%22%7D</item>
+        <item>lua%7Bsd%3D%27jamendo%27%2Clongname%3D%27Jamendo%20Selections%27%7D</item>
+        <item>lua%7Bsd%3D%27icecast%27%2Clongname%3D%27Icecast%20Directory%27%7D</item>
+        <item>lua%7Bsd%3D%27fmc%27%2Clongname%3D%27Free%20Music%20Charts%27%7D</item>
+        <item>xcb_apps%7Blongname%3D%22Screen%20capture%22%7D</item>
+        <item>video_dir%7Blongname%3D%22My%20Videos%22%7D</item>
+        <item>disc%7Blongname%3D%22Discs%22%7D</item>
+        <item>lua%7Bsd%3D%27freebox%27%2Clongname%3D%27Freebox%20TV%27%7D</item>
+        <item>podcast%7Blongname%3D%22Podcasts%22%7D</item>
+        <item>bonjour%7Blongname%3D%22Bonjour%20services%22%7D</item>
+        <item>audio_dir%7Blongname%3D%22My%20Music%22%7D</item>
+    </string-array>
+    <string-array name="service_labels">
+        <item>Périphériques MTP</item>
+        <item>Capture vidéo</item>
+        <item>Capture audio</item>
+        <item>Flux réseau (SAP)</item>
+        <item>Channels.com</item>
+        <item>Mes images</item>
+        <item>Sélections Jamendo</item>
+        <item>Icecast Directory</item>
+        <item>Free Music Charts</item>
+        <item>Screen capture</item>
+        <item>Mes Vidéos</item>
+        <item>Disques</item>
+        <item>Freebox TV</item>
+        <item>Podcasts</item>
+        <item>Services Bonjour</item>
+        <item>Ma Musique</item>
+    </string-array>
+
+</resources>

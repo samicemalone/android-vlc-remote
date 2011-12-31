@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Télécommande pour VLC</string>
+    <string name="description">Contrôle à distance pour le lecteur multimédia VideoLAN Client (VLC).</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="settings">Paramètres</string>
+    <!-- Label for menu item to refresh a view (playlist, browse, etc.) -->
+    <string name="refresh">Actualiser</string>
+    <string name="troubleshooting">Dépannage</string>
+    <string name="troubleshooting_condensed">Aide</string>
+    <string name="scan">Rechercher</string>
+    <string name="playlist_title">Liste de lecture</string>
+    <string name="volume">Volume : </string>
+    <string name="error_does_not_exist">"Le dossier sélectionné n'existe pas."</string>
+    <string name="title">VLC Remote [{0}]</string>
+    <string name="title_pick_server">Choisissez un serveur</string>
+    <string name="add_server">Ajouter un serveur VLC</string>
+    <string name="label_hostname">"Nom d'hôte ou addresse IP"</string>
+    <string name="label_port">Port</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="summary_wifi_connected">Connecté à {0}</string>
+    <string name="summary_wifi_disconnected">Attention: le Wi-Fi est déconnecté</string>
+    <string name="summary_not_in_range">Hors de portée</string>
+    <string name="summary_remembered">Mémorisé</string>
+    <string name="summary_forbidden">"Merci d'éditer le fichier <b>.hosts</b> sur votre PC"</string>
+    <string name="context_forget">Oublier</string>
+    <string name="progress_scanning">Recherche en cours</string>
+    <string name="vlc_servers">Serveurs VLC</string>
+    <string name="search_label">Entrée</string>
+    <string name="search_hint">Entrer MRL</string>
+    <string name="browse_empty">Aucun fichier trouvé</string>
+    <string name="browse_home">Accueil</string>
+    <string name="browse_close">Fermer</string>
+    <string name="connection_error">Pas de connexion</string>
+    <string name="no_media">Aucun média sélectionné</string>
+    <string name="context_open">Ouvrir</string>
+    <string name="context_play">Lire</string>
+    <!-- Context menu to set the selected directory as the home directory -->
+    <string name="menu_set_home">Définir comme accueil</string>
+    <string name="context_stream">Streamer</string>
+    <string name="context_enqueue">Ajouter à la liste</string>
+    <string name="context_dequeue">Retirer de la liste</string>
+    <string name="context_search">Rechercher</string>
+    <!-- Menu item to navigate to parent directory -->
+    <string name="menu_parent">Dossier parent</string>
+    <!-- Menu item to navigate to parent directory (condensed) -->
+    <string name="menu_parent_condensed">Parent</string>
+    <string name="menu_clear_playlist">Vider la liste</string>
+    <string name="mediasearch">Rechercher %s en utilisant :</string>
+    <string name="emptyplaylist">Liste de lecture vide.</string>
+    <string name="noserver">Serveur non sélectionné.</string>
+    <string name="section_parent">"?"</string>
+    <string name="loading">Chargement…</string>
+    <string name="sethome">Accueil défini sur %s</string>
+    <string name="playlist_shuffle">Aléatoire</string>
+    <string name="playlist_loop">En boucle</string>
+    <string name="playlist_repeat">Répéter</string>
+    <string name="service_label">VLC Remote Service</string>
+
+    <!-- Label for tab containing playback controls -->
+    <string name="goto_playback">Lecture</string>
+
+    <!-- Label for music library tab -->
+    <string name="goto_start">Bibliothèque</string>
+
+    <!-- Label for tab containing information about the currently playing track -->
+    <string name="nowplaying_title">En cours</string>
+
+    <!-- Label for DVD navigation tab -->
+    <string name="tab_dvd">DVD</string>
+
+    <!-- Label for playlist tab -->
+    <string name="tab_playlist">Liste de lecture</string>
+
+    <!-- Label indicating that a part of the app is still experimental and may not work reliably -->
+    <string name="experimental">Expérimental</string>
+
+    <!-- Instructions for using DVD navigation gestures -->
+    <string name="dvd_instructions">Glissez dans une direction (haut, bas, gauche, droite) pour naviguer dans les menus du DVD. Tapotez pour sélectionner un élement du menu</string>
+
+</resources>
