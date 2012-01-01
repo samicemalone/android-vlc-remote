@@ -27,7 +27,7 @@ public class ImageLoader extends ModelLoader<Drawable> {
     @Override
     public Drawable loadInBackground() {
         Resources res = getContext().getResources();
-        if (mUri != null) {
+        if (mUri != null && "http".equals(mUri.getScheme())) {
             try {
                 return new BitmapDrawable(res, mMediaServer.image(mUri).read());
             } catch (IOException e) {
