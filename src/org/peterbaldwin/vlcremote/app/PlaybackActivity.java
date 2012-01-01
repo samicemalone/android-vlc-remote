@@ -210,7 +210,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mPlaylist.setHasOptionsMenu(TAB_PLAYLIST.equals(tabId) || mTabHost == null);
         mBrowse.setHasOptionsMenu(TAB_BROWSE.equals(tabId) && mDrawer == null);
         if (Build.VERSION.SDK_INT > 11) {
-            invalidateOptionsMenu();
+            try {
+                getClass().getMethod("invalidateOptionsMenu").invoke(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
