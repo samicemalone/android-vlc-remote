@@ -327,7 +327,7 @@ public final class MediaServer {
 
                 public PlaybackInterface loop() {
                     execute("command=pl_loop");
-                    mDelay += 500;
+                    mDelay += DELAY;
                     return this;
                 }
 
