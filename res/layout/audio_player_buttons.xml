@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <ImageButton
-        style="@style/ToggleButton"
-        android:id="@+id/button_fullscreen"
-        android:src="@drawable/ic_mp_fullscreen" />
-    <ImageButton
-        style="@style/ToggleButton"
         android:id="@+id/playlist_button_repeat"
-        android:src="@drawable/ic_mp_repeat_off_btn"
-        android:contentDescription="@string/playlist_repeat" />
-    <ImageButton
         style="@style/ToggleButton"
+        android:contentDescription="@string/playlist_repeat"
+        android:src="@drawable/ic_mp_repeat_off_btn" />
+
+    <ImageButton
         android:id="@+id/playlist_button_shuffle"
-        android:src="@drawable/ic_mp_shuffle_off_btn"
-        android:contentDescription="@string/playlist_shuffle" />
+        style="@style/ToggleButton"
+        android:contentDescription="@string/playlist_shuffle"
+        android:src="@drawable/ic_mp_shuffle_off_btn" />
+
+    <ImageButton
+        android:id="@+id/button_hotkeys"
+        style="@style/ToggleButton"
+        android:contentDescription="@string/hotkeys"
+        android:src="@drawable/ic_mp_more_btn" />
+
 </merge>

@@ -50,6 +50,11 @@
     <string name="context_enqueue">Add to playlist</string>
     <string name="context_dequeue">Remove from playlist</string>
     <string name="context_search">Search</string>
+    <string name="toggle_fullscreen">Toggle fullscreen</string>
+    <string name="audio_track">Audio track</string>
+    <string name="subtitle_track">Subtitle track</string>
+    <string name="aspect_ratio">Aspect ratio</string>
+    <string name="crop">Video crop</string>
     <!-- Menu item to navigate to parent directory -->
     <string name="menu_parent">Parent Directory</string>
     <!-- Menu item to navigate to parent directory (condensed) -->
@@ -86,4 +91,10 @@
     
     <!-- Instructions for using DVD navigation gestures -->
     <string name="dvd_instructions">Swipe left, right, up, and down to navigate DVD menus. Tap to select a menu item.</string>
+    
+    <!-- Label for button to dismiss a dialog -->
+    <string name="close">Close</string>
+    
+    <!-- Content description for hotkeys menu -->
+    <string name="hotkeys">Hotkeys</string>
 </resources>

@@ -156,17 +156,17 @@
       res/drawable-hdpi/ic_nav_right_normal.png
       res/drawable-hdpi/ic_nav_activate_pressed.png
       res/drawable-hdpi/ic_menu_up.png
-      res/drawable-hdpi-finger/ic_mp_fullscreen.png
       res/drawable-hdpi-v11/ic_menu_up.png
       res/drawable-hdpi/ic_menu_up.png
       res/drawable-hdpi/ic_navigation_off.png
       res/drawable-hdpi/ic_navigation_on.png
       res/drawable-ldpi/ic_menu_up.png
-      res/drawable-mdpi-finger/ic_mp_fullscreen.png
       res/drawable-mdpi-v11/ic_menu_up.png
       res/drawable-mdpi/ic_menu_up.png
       res/drawable-mdpi/ic_navigation_off.png
       res/drawable-mdpi/ic_navigation_on.png
+      res/drawable-hdpi/ic_mp_more_btn.png
+      res/drawable-mdpi/ic_mp_more_btn.png
 
    This software includes illustrations by 
    Richard C. G. Øiestad of Furu systems, licensed under

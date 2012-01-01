@@ -1,116 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:orientation="vertical" >
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1" >
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:orientation="horizontal"
-            android:padding="72dp">
+            android:padding="72dp" >
+
             <LinearLayout
                 android:layout_width="380dp"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
                 android:paddingLeft="16dp"
-                android:paddingRight="32dp">
+                android:paddingRight="32dp" >
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.ArtFragment"
                     android:id="@id/fragment_art"
+                    android:name="org.peterbaldwin.vlcremote.fragment.ArtFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1.0"
-                    android:layout_marginBottom="32dp" />
+                    android:layout_marginBottom="32dp"
+                    android:layout_weight="1.0" />
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.VolumeFragment"
                     android:id="@id/fragment_volume"
+                    android:name="org.peterbaldwin.vlcremote.fragment.VolumeFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp" />
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.ButtonsFragment"
                     android:id="@id/fragment_buttons"
+                    android:name="org.peterbaldwin.vlcremote.fragment.ButtonsFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="32dp">
+                    android:layout_marginBottom="32dp" >
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="horizontal">
-                        <include layout="@layout/audio_player_buttons" />
+                        android:orientation="horizontal" >
+
                         <ImageButton
-                            style="@style/ToggleButton"
                             android:id="@+id/button_navigation"
-                            android:src="@drawable/ic_navigation_off"
-                            android:onClick="onClick" />
+                            style="@style/ToggleButton"
+                            android:onClick="onClick"
+                            android:src="@drawable/ic_navigation_off" />
+
+                        <include layout="@layout/audio_player_buttons" />
                     </LinearLayout>
                 </fragment>
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.InfoFragment"
                     android:id="@id/fragment_info"
+                    android:name="org.peterbaldwin.vlcremote.fragment.InfoFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
             <ViewFlipper
                 android:id="@+id/flipper"
                 android:layout_width="0dp"
-                android:layout_weight="1.0"
                 android:layout_height="fill_parent"
+                android:layout_weight="1.0"
                 android:inAnimation="@android:anim/fade_in"
-                android:outAnimation="@android:anim/fade_out">
+                android:outAnimation="@android:anim/fade_out" >
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.PlaylistFragment"
                     android:id="@id/fragment_playlist"
+                    android:name="org.peterbaldwin.vlcremote.fragment.PlaylistFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.NavigationFragment"
                     android:id="@id/fragment_navigation"
+                    android:name="org.peterbaldwin.vlcremote.fragment.NavigationFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </ViewFlipper>
         </LinearLayout>
+
         <SlidingDrawer
             android:id="@+id/drawer"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="horizontal"
-
+            android:content="@+id/content"
             android:handle="@+id/handle"
-            android:content="@+id/content">
+            android:orientation="horizontal" >
 
             <ImageView
                 android:id="@id/handle"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:src="@drawable/ic_menu_archive"
-                android:padding="8dp" />
+                android:padding="8dp"
+                android:src="@drawable/ic_menu_archive" />
 
             <FrameLayout
                 android:id="@id/content"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/dialog_full_holo_dark">
+                android:background="@drawable/dialog_full_holo_dark" >
+
                 <fragment
-                    android:name="org.peterbaldwin.vlcremote.fragment.BrowseFragment"
                     android:id="@id/fragment_browse"
+                    android:name="org.peterbaldwin.vlcremote.fragment.BrowseFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </FrameLayout>
         </SlidingDrawer>
     </FrameLayout>
+
     <fragment
-        android:name="org.peterbaldwin.vlcremote.fragment.PlaybackFragment"
         android:id="@id/fragment_playback"
+        android:name="org.peterbaldwin.vlcremote.fragment.PlaybackFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
+
 </LinearLayout>

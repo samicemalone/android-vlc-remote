@@ -21,6 +21,8 @@ import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.fragment.ArtFragment;
 import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
 import org.peterbaldwin.vlcremote.fragment.ButtonsFragment;
+import org.peterbaldwin.vlcremote.fragment.HotkeyDialog;
+import org.peterbaldwin.vlcremote.fragment.HotkeyListener;
 import org.peterbaldwin.vlcremote.fragment.InfoFragment;
 import org.peterbaldwin.vlcremote.fragment.NavigationFragment;
 import org.peterbaldwin.vlcremote.fragment.PlaybackFragment;
@@ -61,7 +63,7 @@ import android.widget.ViewFlipper;
 import java.util.ArrayList;
 
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
-        View.OnClickListener {
+        View.OnClickListener, HotkeyListener {
 
     private static final String TAG = "PlaybackActivity";
     
@@ -180,6 +182,14 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             onNewIntent(getIntent());
         }
     }
+    
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        if (fragment instanceof HotkeyDialog) {
+            ((HotkeyDialog) fragment).setHotkeyListener(this);
+        }
+    }
 
     private void addTab(String tag, int content, int label, int icon) {
         if (mTabHost.findViewById(content) != null) {
@@ -208,6 +218,14 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 mFlipper.showNext();
                 updateNavigationButton(v);
                 break;
+        }
+    }
+    /** {@inheritDoc} */
+    public void onHotkey(String keycode) {
+        if ("toggle-fullscreen".equals(keycode)) {
+            mMediaServer.status().command.fullscreen();
+        } else {
+            mMediaServer.status().command.key(keycode);
         }
     }
 

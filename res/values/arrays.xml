@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array
-        name="service_values">
+
+    <string-array name="service_values">
         <item>mtp%7Blongname%3D%22MTP%20devices%22%7D</item>
         <item>v4l%7Blongname%3D%22Video%20capture%22%7D</item>
         <item>alsa%7Blongname%3D%22Audio%20capture%22%7D</item>
@@ -19,8 +19,7 @@
         <item>bonjour%7Blongname%3D%22Bonjour%20services%22%7D</item>
         <item>audio_dir%7Blongname%3D%22My%20Music%22%7D</item>
     </string-array>
-    <string-array
-        name="service_labels">
+    <string-array name="service_labels">
         <item>MTP devices</item>
         <item>Video capture</item>
         <item>Audio capture</item>
@@ -38,4 +37,17 @@
         <item>Bonjour services</item>
         <item>My Music</item>
     </string-array>
+    <string-array name="hotkey_labels">
+        <item>@string/toggle_fullscreen</item>
+        <item>@string/audio_track</item>
+        <item>@string/subtitle_track</item>
+        <item>@string/aspect_ratio</item>
+    </string-array>
+    <string-array name="hotkey_codes">
+        <item>toggle-fullscreen</item>
+        <item>audio-track</item>
+        <item>subtitle-track</item>
+        <item>aspect-ratio</item>
+    </string-array>
+
 </resources>

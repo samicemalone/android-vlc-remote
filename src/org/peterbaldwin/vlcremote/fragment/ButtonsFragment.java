@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 public final class ButtonsFragment extends Fragment implements View.OnClickListener {
+
+    private static final String DIALOG_HOTKEYS = "hotkeys";
 
     private MediaServer mMediaServer;
 
@@ -45,6 +48,8 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     private boolean mRandom;
     private boolean mRepeat;
     private boolean mLoop;
+
+    private View mHotkeysButton;
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
@@ -63,11 +68,11 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);
+        mHotkeysButton = view.findViewById(R.id.button_hotkeys);
 
         mButtonShuffle.setOnClickListener(this);
         mButtonRepeat.setOnClickListener(this);
-
-        view.findViewById(R.id.button_fullscreen).setOnClickListener(this);
+        mHotkeysButton.setOnClickListener(this);
     }
 
     @Override
@@ -89,8 +94,9 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     /** {@inheritDoc} */
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_fullscreen:
-                mMediaServer.status().command.fullscreen();
+            case R.id.button_hotkeys:
+                DialogFragment dialog = new HotkeyDialog();
+                dialog.show(getFragmentManager(), DIALOG_HOTKEYS);
                 break;
             case R.id.playlist_button_shuffle:
                 mMediaServer.status().command.playback.random();
@@ -138,7 +144,7 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
                 break;
         }
     }
-
+    
     private int getShuffleResId() {
         if (mRandom) {
             return R.drawable.ic_mp_shuffle_on_btn;
