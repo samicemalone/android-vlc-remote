@@ -175,15 +175,17 @@ public class BrowseFragment extends ListFragment implements
         }
     }
 
-    private boolean openParentDirectory() {
+    private void openParentDirectory() {
         for (int position = 0, n = mAdapter.getCount(); position < n; position++) {
             File file = mAdapter.getItem(position);
             if (file.isDirectory() && "..".equals(file.getName())) {
                 openDirectory(file);
-                return true;
+                return;
             }
         }
-        return false;
+        
+        // Open the list of drives if there is no parent directory entry
+        openDirectory("");
     }
 
     private void showSetHomeToast() {
