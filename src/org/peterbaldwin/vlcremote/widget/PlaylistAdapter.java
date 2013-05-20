@@ -101,6 +101,12 @@ public final class PlaylistAdapter extends BaseAdapter {
             notifyDataSetInvalidated();
         }
     }
+    
+    public PlaylistItem remove(int position) {
+        PlaylistItem item =  mItems.remove(position);
+        notifyDataSetChanged();
+        return item;
+    }
 
     public List<PlaylistItem> getItems() {
         int count = getCount();

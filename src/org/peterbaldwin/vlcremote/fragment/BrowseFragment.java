@@ -18,6 +18,7 @@
 package org.peterbaldwin.vlcremote.fragment;
 
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.loader.DirectoryLoader;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
@@ -45,9 +46,14 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import org.peterbaldwin.vlcremote.app.EnqueueObservable;
 
 public class BrowseFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Directory>> {
+        LoaderManager.LoaderCallbacks<Remote<Directory>>, EnqueueObservable {
+    
     private interface Data {
         int DIRECTORY = 1;
     }
@@ -55,6 +61,8 @@ public class BrowseFragment extends ListFragment implements
     private interface State {
         String DIRECTORY = "vlc:directory";
     }
+    
+    private List<EnqueueObserver> observers;
 
     private DirectoryAdapter mAdapter;
 
@@ -68,6 +76,29 @@ public class BrowseFragment extends ListFragment implements
 
     private TextView mEmpty;
 
+    public void registerObserver(EnqueueObserver o) {
+        if(observers == null) {
+            observers = new LinkedList<EnqueueObserver>();
+        }
+        observers.add(o);
+    }
+
+    public void notifyEnqueue() {
+        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
+            it.next().onEnqueue();
+        }
+    }
+    
+    public void notifyPlaylistVisible() {
+        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
+            it.next().onPlaylistVisible();
+        }
+    }
+
+    public void unregisterObserver(EnqueueObserver o) {
+        observers.remove(o);
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -227,6 +258,7 @@ public class BrowseFragment extends ListFragment implements
                         return true;
                     case R.id.browse_context_enqueue:
                         mMediaServer.status().command.input.enqueue(file.getMrl());
+                        notifyEnqueue();
                         return true;
                 }
             }

@@ -52,10 +52,11 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 
 public class PlaylistFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Playlist>> {
-
+        LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver {
+    
     private static final int LOADER_PLAYLIST = 1;
 
     private Context mContext;
@@ -69,6 +70,19 @@ public class PlaylistFragment extends ListFragment implements
     private BroadcastReceiver mStatusReceiver;
 
     private String mCurrent;
+    
+    private boolean mNeedsReload = false;
+    
+    public void onEnqueue() {
+        mNeedsReload = true;
+    }
+    
+    public void onPlaylistVisible() {
+        if(mNeedsReload) {
+            reload();
+            mNeedsReload = false;
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -180,7 +194,7 @@ public class PlaylistFragment extends ListFragment implements
                         selectItem(item);
                         return true;
                     case R.id.playlist_context_dequeue:
-                        removeItem(item);
+                        removeItem(item, info.position);
                         return true;
                     case R.id.playlist_context_search:
                         searchForItem(item);
@@ -196,10 +210,11 @@ public class PlaylistFragment extends ListFragment implements
         reload();
     }
 
-    private void removeItem(PlaylistItem item) {
+    private void removeItem(PlaylistItem item, int position) {
         int id = item.getId();
         // TODO: Register observer and notify observers when playlist item is
         // deleted
+        mAdapter.remove(position);
         mMediaServer.status().command.playback.delete(id);
     }
 

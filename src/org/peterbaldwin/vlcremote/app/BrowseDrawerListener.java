@@ -51,6 +51,7 @@ final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
     public void onDrawerClosed() {
         finishActionMode();
         mDrawer.getHandle().setVisibility(View.VISIBLE);
+        mBrowse.notifyPlaylistVisible();
     }
 
     private void startActionMode() {

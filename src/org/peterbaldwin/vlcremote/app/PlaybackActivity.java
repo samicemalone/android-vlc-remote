@@ -142,6 +142,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mInfo = findFragmentById(R.id.fragment_info);
         mPlaylist = findFragmentById(R.id.fragment_playlist);
         mBrowse = findFragmentById(R.id.fragment_browse);
+        mBrowse.registerObserver(mPlaylist);
         mServicesDiscovery = findFragmentById(R.id.fragment_services_discovery);
         mNavigation = findFragmentById(R.id.fragment_navigation);
 
@@ -206,6 +207,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void onTabChanged(String tabId) {
         if (TAB_PLAYLIST.equals(tabId)) {
             mPlaylist.selectCurrentTrack();
+            mBrowse.notifyPlaylistVisible();
         }
         mPlaylist.setHasOptionsMenu(TAB_PLAYLIST.equals(tabId) || mTabHost == null);
         mBrowse.setHasOptionsMenu(TAB_BROWSE.equals(tabId) && mDrawer == null);
