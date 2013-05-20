@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Remote for VLC</string>
+    <string name="app_name">VLC Remote</string>
     <string name="description">Remote control for VideoLAN Client (VLC) media player.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
