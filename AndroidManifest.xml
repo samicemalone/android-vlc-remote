@@ -306,7 +306,11 @@
         </activity>
         <activity
             android:name="org.peterbaldwin.vlcremote.app.PickServerActivity"
-            android:label="@string/settings" />
+            android:label="@string/settings">
+                <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="org.peterbaldwin.vlcremote.app.PlaybackActivity" />
+        </activity>
 
         <receiver android:name=".MediaAppWidgetProvider" >
             <intent-filter>

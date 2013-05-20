@@ -294,6 +294,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         Preferences preferences = Preferences.get(this);
         ArrayList<String> remembered = preferences.getRememberedServers();
         Intent intent = new Intent(this, PickServerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(PickServerActivity.EXTRA_PORT, 8080);
         intent.putExtra(PickServerActivity.EXTRA_FILE, "/requests/status.xml");
         intent.putStringArrayListExtra(PickServerActivity.EXTRA_REMEMBERED, remembered);

@@ -133,6 +133,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.server_settings);
 
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        
         PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
@@ -527,6 +529,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             case MENU_SCAN:
                 startSweep();
                 return true;
+            case android.R.id.home:
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
