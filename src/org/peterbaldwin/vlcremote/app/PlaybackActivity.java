@@ -321,7 +321,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 if (mMediaServer == null) {
                     finish();
                 }
-
+                mPlaylist.reload();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);

@@ -7,6 +7,7 @@ import org.peterbaldwin.vlcremote.model.Track;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Preferences;
 
 public final class PlaylistAdapter extends BaseAdapter {
 
@@ -29,6 +32,7 @@ public final class PlaylistAdapter extends BaseAdapter {
             LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.playlist_list_item, parent, false);
         }
+        boolean fileNamesOnly = Preferences.get(view.getContext()).isFileNamesOnlySet();
         TextView text1 = (TextView) view.findViewById(android.R.id.text1);
         TextView text2 = (TextView) view.findViewById(android.R.id.text2);
         View icon = view.findViewById(android.R.id.icon);
@@ -36,15 +40,28 @@ public final class PlaylistAdapter extends BaseAdapter {
         if (item instanceof Track) {
             Track track = (Track) item;
             if (!TextUtils.isEmpty(track.getTitle())) {
-                text1.setText(track.getTitle());
+                if(fileNamesOnly) {
+                    Log.d("PLAYLIIST", item.getName());
+                    text1.setText(File.baseName(item.getName()));
+                } else {
+                    text1.setText(track.getTitle());
+                }
                 text2.setText(track.getArtist());
             } else {
-                text1.setText(item.getName());
+                if(fileNamesOnly) {
+                    text1.setText(File.baseName(item.getName()));
+                } else {
+                    text1.setText(item.getName());
+                }
                 text2.setText("");
             }
             icon.setVisibility(track.isCurrent() ? View.VISIBLE : View.GONE);
         } else {
-            text1.setText(item.getName());
+            if(fileNamesOnly) {
+                text1.setText(File.baseName(item.getName()));
+            } else {
+                text1.setText(item.getName());
+            }
             text2.setText("");
             icon.setVisibility(View.GONE);
         }

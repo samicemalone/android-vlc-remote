@@ -13,7 +13,12 @@
         android:persistent="false"
         android:summary="@string/summary_wifi_disconnected"
         android:title="@string/wifi" />
-
+    <CheckBoxPreference
+        android:key="file_names_only"
+        android:title="@string/file_names_only"
+        android:summary="@string/summary_file_names_only"
+        android:persistent="true" />
+    
     <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"
         android:persistent="false"

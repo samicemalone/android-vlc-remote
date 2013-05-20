@@ -31,6 +31,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Preferences;
 
 public class InfoFragment extends Fragment {
 
@@ -66,10 +68,15 @@ public class InfoFragment extends Fragment {
         super.onPause();
     }
 
-    void onStatusChanged(Status status) {
+    public void onStatusChanged(Context context, Status status) {
         setText(mArtist, status.getTrack().getArtist());
         setText(mAlbum, status.getTrack().getAlbum());
-        setText(mTrack, status.getTrack().getTitle());
+        boolean fileNamesOnly = Preferences.get(context).isFileNamesOnlySet();
+        if(fileNamesOnly) {
+            setText(mTrack, File.baseName(status.getTrack().getName()));
+        } else {
+            setText(mTrack, status.getTrack().getTitle());
+        }
     }
 
     private static void setText(TextView textView, String value) {
@@ -83,7 +90,7 @@ public class InfoFragment extends Fragment {
             if (Intents.ACTION_STATUS.equals(action)) {
                 // TODO: Filter by authority
                 Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
-                onStatusChanged(status);
+                onStatusChanged(context, status);
             }
         }
     }

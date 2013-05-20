@@ -60,6 +60,7 @@ import java.net.HttpURLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.peterbaldwin.vlcremote.model.Preferences;
 
 public final class PickServerActivity extends PreferenceActivity implements PortSweeper.Callback,
         DialogInterface.OnClickListener, OnPreferenceChangeListener {
@@ -78,6 +79,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     public static final String EXTRA_REMEMBERED = "org.peterbaldwin.portsweep.intent.extra.REMEMBERED";
 
     private static final String KEY_WIFI = "wifi";
+    private static final String KEY_FILE_NAMES_ONLY = "file_names_only";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
     private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
@@ -120,6 +122,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     private CheckBoxPreference mPreferenceWiFi;
     private CheckBoxPreference mPreferencePauseForCall;
+    private CheckBoxPreference mPreferenceFileNamesOnly;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
     
@@ -132,6 +135,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
         mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
+        mPreferenceFileNamesOnly = (CheckBoxPreference) preferenceScreen.findPreference(KEY_FILE_NAMES_ONLY);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
         
@@ -403,6 +407,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             return true;
         } else if (preference == mPreferencePauseForCall) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (preference == mPreferenceFileNamesOnly) {
+            Preferences preferences = Preferences.get(this);
+            preferences.setFileNamesOnly(mPreferenceFileNamesOnly.isChecked());
+            return true;
         } else {
             String server = preference.getTitle().toString();
             pick(server);

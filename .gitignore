@@ -3,3 +3,4 @@ bin/
 classes/
 local.properties
 *~
+private/

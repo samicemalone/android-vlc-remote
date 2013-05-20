@@ -21,6 +21,8 @@
     <string name="label_user">User (default: none)</string>
     <string name="label_password">Password (default: none)</string>
     <string name="wifi">Wi-Fi</string>
+    <string name="file_names_only">Show file names</string>
+    <string name="summary_file_names_only">Shows the file names instead of the title</string>
     <string name="summary_wifi_connected">Connected to {0}</string>
     <string name="summary_wifi_disconnected">Warning: Wi-Fi is disconnected</string>
     <string name="summary_not_in_range">Not in range</string>

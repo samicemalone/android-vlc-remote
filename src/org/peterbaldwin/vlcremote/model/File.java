@@ -37,6 +37,23 @@ public final class File {
             return null;
         }
     }
+    
+    public static String baseName(String path) {
+        if(path == null) {
+            return null;
+        }
+        String fileProtocol = "file:///";
+        int offset = 0;
+        if(path.startsWith(fileProtocol)) {
+            offset = fileProtocol.length();
+        }
+        int bslash = path.lastIndexOf('\\');
+        int fslash = path.substring(offset).lastIndexOf('/') + offset;
+        if(fslash == -1 && bslash == -1) {
+            return path;
+        }
+        return path.substring(Math.max(bslash, fslash) + 1);
+    }
 
     private String mType;
     private Long mSize;

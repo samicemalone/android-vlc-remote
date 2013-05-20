@@ -43,6 +43,8 @@ public final class Preferences {
     private static final String PREFERENCE_HOME_DIRECTORY = "home_directory";
 
     private static final String PREFERENCE_RESUME_ON_IDLE = "resume_on_idle";
+    
+    private static final String PREFERENCE_FILE_NAMES_ONLY = "file_names_only";
 
     private SharedPreferences mPreferences;
 
@@ -73,6 +75,16 @@ public final class Preferences {
     public boolean clearResumeOnIdle() {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.remove(PREFERENCE_RESUME_ON_IDLE);
+        return editor.commit();
+    }
+    
+    public boolean isFileNamesOnlySet() {
+        return mPreferences.getBoolean(PREFERENCE_FILE_NAMES_ONLY, false);
+    }
+	
+    public boolean setFileNamesOnly(boolean hidePaths) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(PREFERENCE_FILE_NAMES_ONLY, hidePaths);
         return editor.commit();
     }
 

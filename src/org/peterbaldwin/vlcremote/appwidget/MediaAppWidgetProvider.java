@@ -40,6 +40,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
+import org.peterbaldwin.vlcremote.model.File;
 
 /**
  * Simple widget to show currently playing album art along with play/pause and
@@ -62,10 +63,19 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
                 text2 = "";
             } else {
                 Track track = status.getTrack();
-                text1 = track.getTitle();
+                boolean fileNamesOnly = Preferences.get(context).isFileNamesOnlySet();
+                if(fileNamesOnly) {
+                    text1 = File.baseName(track.getTitle());
+                } else {
+                    text1 = track.getTitle();
+                }
                 text2 = track.getArtist();
                 if (TextUtils.isEmpty(text1) && TextUtils.isEmpty(text2)) {
-                    text1 = track.getName();
+                    if(fileNamesOnly) {
+                        text1 = File.baseName(track.getName());
+                    } else {
+                        text1 = track.getName();
+                    }
                 }
             }
             int[] appWidgetIds = null;
