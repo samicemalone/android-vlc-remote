@@ -152,7 +152,7 @@ public final class MediaServer {
         protected final <T> Remote<T> load(ContentHandler handler) {
             String spec = mUri.toString();
             try {
-                T data = read(handler);
+                T data = (T) read(handler);
                 return Remote.data(data);
             } catch (Throwable t) {
                 Log.e(TAG, "Unable to load: " + spec, t);
