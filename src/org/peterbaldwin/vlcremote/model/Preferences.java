@@ -45,6 +45,8 @@ public final class Preferences {
     private static final String PREFERENCE_RESUME_ON_IDLE = "resume_on_idle";
     
     private static final String PREFERENCE_FILE_NAMES_ONLY = "file_names_only";
+    
+    private static final String PREFERENCE_HIDE_DVD_TAB = "hide_dvd_tab";
 
     private SharedPreferences mPreferences;
 
@@ -85,6 +87,16 @@ public final class Preferences {
     public boolean setFileNamesOnly(boolean hidePaths) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putBoolean(PREFERENCE_FILE_NAMES_ONLY, hidePaths);
+        return editor.commit();
+    }
+    
+    public boolean isHideDVDTabSet() {
+        return mPreferences.getBoolean(PREFERENCE_HIDE_DVD_TAB, false);
+    }
+	
+    public boolean setHideDVDTab(boolean hideTab) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(PREFERENCE_HIDE_DVD_TAB, hideTab);
         return editor.commit();
     }
 

@@ -80,6 +80,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_FILE_NAMES_ONLY = "file_names_only";
+    private static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
     private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
@@ -123,6 +124,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private CheckBoxPreference mPreferenceWiFi;
     private CheckBoxPreference mPreferencePauseForCall;
     private CheckBoxPreference mPreferenceFileNamesOnly;
+    private CheckBoxPreference mPreferenceHideDVDTab;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
     
@@ -136,6 +138,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
         mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
         mPreferenceFileNamesOnly = (CheckBoxPreference) preferenceScreen.findPreference(KEY_FILE_NAMES_ONLY);
+        mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
         
@@ -410,6 +413,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         } else if (preference == mPreferenceFileNamesOnly) {
             Preferences preferences = Preferences.get(this);
             preferences.setFileNamesOnly(mPreferenceFileNamesOnly.isChecked());
+            return true;
+        } else if (preference == mPreferenceHideDVDTab) {
+            Preferences preferences = Preferences.get(this);
+            preferences.setHideDVDTab(mPreferenceHideDVDTab.isChecked());
             return true;
         } else {
             String server = preference.getTitle().toString();

@@ -18,6 +18,11 @@
         android:title="@string/file_names_only"
         android:summary="@string/summary_file_names_only"
         android:persistent="true" />
+    <CheckBoxPreference
+        android:key="hide_dvd_tab"
+        android:title="@string/hide_dvd_tab"
+        android:summary="@string/summary_hide_dvd_tab"
+        android:persistent="true" />
     
     <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"

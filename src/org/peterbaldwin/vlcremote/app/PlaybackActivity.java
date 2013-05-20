@@ -147,6 +147,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mNavigation = findFragmentById(R.id.fragment_navigation);
 
         Context context = this;
+        Preferences preferences = Preferences.get(context);
         mVolumePanel = new VolumePanel(context);
 
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -157,6 +158,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     R.drawable.ic_tab_playlists);
             addTab(TAB_BROWSE, R.id.tab_browse, R.string.goto_start, R.drawable.ic_tab_playback);
             addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
+            if(preferences.isHideDVDTabSet()) {
+                mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(3));
+            }
             mTabHost.setOnTabChangedListener(this);
             onTabChanged(mTabHost.getCurrentTabTag());
         } else {
@@ -173,7 +177,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
 
-        Preferences preferences = Preferences.get(context);
         String authority = preferences.getAuthority();
         if (authority != null) {
             changeServer(authority);
