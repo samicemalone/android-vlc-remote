@@ -520,6 +520,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         super.onCreateOptionsMenu(menu);
         MenuItem scan = menu.add(0, MENU_SCAN, 0, R.string.scan);
         scan.setIcon(R.drawable.ic_menu_scan_network);
+        scan.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
     }
 
