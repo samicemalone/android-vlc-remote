@@ -16,5 +16,5 @@
         android:id="@android:id/progress"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:max="1024" />
+        android:max="512" />
 </LinearLayout>

@@ -32,5 +32,5 @@
         android:layout_marginBottom="14dip"
         android:layout_marginLeft="25dip"
         android:layout_marginRight="25dip"
-        android:max="1024" />
+        android:max="512" />
 </LinearLayout>
