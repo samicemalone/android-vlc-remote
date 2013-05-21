@@ -49,7 +49,7 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:orientation="horizontal"
-                                android:gravity="center">
+                                android:gravity="right">
                                 <include layout="@layout/audio_player_buttons" />
                             </LinearLayout>
                         </fragment>

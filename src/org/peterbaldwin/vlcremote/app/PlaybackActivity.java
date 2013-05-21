@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
@@ -244,7 +245,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.playback_options, menu);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getMenuInflater().inflate(R.menu.playback_options_land, menu);            
+        } else {
+            getMenuInflater().inflate(R.menu.playback_options, menu);
+        }
         return true;
     }
 
@@ -255,6 +260,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         boolean visible = tabId == null || TAB_MEDIA.equals(tabId);
         menu.findItem(R.id.menu_preferences).setVisible(visible);
         menu.findItem(R.id.menu_help).setVisible(visible);
+        menu.setGroupVisible(R.id.group_vlc_actions, visible);
         return menu.hasVisibleItems();
     }
 
@@ -268,6 +274,21 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 Intent intent = new Intent(Intent.ACTION_VIEW, URI_TROUBLESHOOTING);
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
                 startActivity(intent);
+                return true;
+            case R.id.menu_playlist_cycle_crop:
+                mMediaServer.status().command.key("crop");
+                return true;
+            case R.id.menu_playlist_cycle_subtitles:
+                mMediaServer.status().command.key("subtitle-track");
+                return true;
+            case R.id.menu_playlist_button_fullscreen:
+                mMediaServer.status().command.fullscreen();
+                return true;
+            case R.id.menu_playlist_cycle_audio_track:
+                mMediaServer.status().command.key("audio-track");
+                return true;
+            case R.id.menu_playlist_cycle_aspect_ratio:
+                mMediaServer.status().command.key("aspect-ratio");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -323,7 +344,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mMediaServer = new MediaServer(context, authority);
         mPlayback.setMediaServer(mMediaServer);
         mButtons.setMediaServer(mMediaServer);
-        mBottomActionBar.setMediaServer(mMediaServer);
+        if(mBottomActionBar != null) {
+            mBottomActionBar.setMediaServer(mMediaServer);
+        }
         mVolume.setMediaServer(mMediaServer);
         if (mArt != null) {
             mArt.setMediaServer(mMediaServer);

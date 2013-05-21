@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -70,6 +71,11 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
         mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
 
         setupImageButtonListeners(mButtonShuffle, mButtonRepeat, mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
+        
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mButtonPlaylistSeekBackward.setVisibility(View.GONE);
+            mButtonPlaylistSeekForward.setVisibility(View.GONE);
+        }
     }
     
     private void setupImageButtonListeners(ImageButton... imageButtons) {

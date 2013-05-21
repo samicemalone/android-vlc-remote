@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">    
+    <group android:id="@+id/group_vlc_actions">
+        <item
+            android:id="@+id/menu_playlist_cycle_crop"
+            android:title="@string/crop"
+            android:icon="@drawable/ic_menu_crop"
+            android:showAsAction="always" />
+        <item
+            android:id="@+id/menu_playlist_cycle_subtitles"
+            android:title="@string/subtitle_track"
+            android:icon="@drawable/ic_menu_start_conversation"
+            android:showAsAction="always" />
+        <item
+            android:id="@+id/menu_playlist_button_fullscreen"
+            android:title="@string/toggle_fullscreen"
+            android:icon="@drawable/ic_media_fullscreen"
+            android:showAsAction="always" />
+        <item
+            android:id="@+id/menu_playlist_cycle_audio_track"
+            android:title="@string/audio_track"
+            android:icon="@drawable/ic_media_cycle_audio_track"
+            android:showAsAction="always" />
+        <item
+            android:id="@+id/menu_playlist_cycle_aspect_ratio"
+            android:title="@string/aspect_ratio"
+            android:icon="@drawable/ic_menu_chat_dashboard"
+            android:showAsAction="always" />
+    </group>
+    <item
+        android:id="@+id/menu_preferences"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_menu_preferences"
+        android:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_help"
+        android:title="@string/troubleshooting"
+        android:titleCondensed="@string/troubleshooting_condensed"
+        android:icon="@drawable/ic_menu_help" />
+</menu>

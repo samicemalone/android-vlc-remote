@@ -9,12 +9,13 @@
         android:id="@android:id/icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="5dp"
         android:src="@drawable/ic_media_volume_medium" />
     <SeekBar
         style="?android:attr/progressBarStyleHorizontal"
         android:id="@android:id/progress"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:minWidth="150dp"
         android:max="512" />
 </LinearLayout>
