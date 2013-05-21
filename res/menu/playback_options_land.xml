@@ -29,13 +29,13 @@
             android:showAsAction="always" />
     </group>
     <item
-        android:id="@+id/menu_preferences"
-        android:title="@string/settings"
-        android:icon="@drawable/ic_menu_preferences"
-        android:showAsAction="ifRoom" />
-    <item
         android:id="@+id/menu_help"
         android:title="@string/troubleshooting"
         android:titleCondensed="@string/troubleshooting_condensed"
         android:icon="@drawable/ic_menu_help" />
+    <item
+        android:id="@+id/menu_preferences"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_menu_preferences"
+        android:showAsAction="ifRoom" />
 </menu>
