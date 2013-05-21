@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/actionBarItemBackground"
+    android:gravity="center_horizontal">
+
+    <ImageButton
+        android:id="@+id/menu_playlist_cycle_crop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/crop"
+        android:src="@drawable/ic_menu_crop" />
+    
+    <ImageButton
+        android:id="@+id/menu_playlist_cycle_subtitles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/subtitle_track"
+        android:src="@drawable/ic_menu_start_conversation" />
+    
+    <ImageButton
+        android:id="@+id/menu_playlist_button_fullscreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/toggle_fullscreen"
+        android:src="@drawable/ic_media_fullscreen" />
+
+    <ImageButton
+        android:id="@+id/menu_playlist_cycle_audio_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/audio_track"
+        android:src="@drawable/ic_media_cycle_audio_track" />
+
+    <ImageButton
+        android:id="@+id/menu_playlist_cycle_aspect_ratio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/aspect_ratio"
+        android:src="@drawable/ic_menu_chat_dashboard" />    
+
+</LinearLayout>

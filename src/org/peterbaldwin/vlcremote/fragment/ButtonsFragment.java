@@ -17,26 +17,24 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.MediaServer;
 
-public final class ButtonsFragment extends Fragment implements View.OnClickListener {
-
-    private static final String DIALOG_HOTKEYS = "hotkeys";
+public final class ButtonsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     private MediaServer mMediaServer;
 
@@ -44,12 +42,12 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
     private ImageButton mButtonShuffle;
     private ImageButton mButtonRepeat;
+    private ImageButton mButtonPlaylistSeekBackward;
+    private ImageButton mButtonPlaylistSeekForward;
 
     private boolean mRandom;
     private boolean mRepeat;
     private boolean mLoop;
-
-    private View mHotkeysButton;
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
@@ -68,11 +66,17 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);
-        mHotkeysButton = view.findViewById(R.id.button_hotkeys);
+        mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
+        mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
 
-        mButtonShuffle.setOnClickListener(this);
-        mButtonRepeat.setOnClickListener(this);
-        mHotkeysButton.setOnClickListener(this);
+        setupImageButtonListeners(mButtonShuffle, mButtonRepeat, mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
+    }
+    
+    private void setupImageButtonListeners(ImageButton... imageButtons) {
+        for(ImageButton b : imageButtons) {
+            b.setOnClickListener(this);
+            b.setOnLongClickListener(this);
+        }
     }
 
     @Override
@@ -94,9 +98,11 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     /** {@inheritDoc} */
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_hotkeys:
-                DialogFragment dialog = new HotkeyDialog();
-                dialog.show(getFragmentManager(), DIALOG_HOTKEYS);
+            case R.id.action_button_seek_backward:
+                mMediaServer.status().command.seek(Uri.encode("-10"));
+                break;
+            case R.id.action_button_seek_forward:
+                mMediaServer.status().command.seek(Uri.encode("+10"));
                 break;
             case R.id.playlist_button_shuffle:
                 mMediaServer.status().command.playback.random();
@@ -173,6 +179,11 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
         mLoop = status.isLoop();
         mRepeat = status.isRepeat();
         updateButtons();
+    }
+
+    public boolean onLongClick(View v) {
+        Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     private class StatusReceiver extends BroadcastReceiver {

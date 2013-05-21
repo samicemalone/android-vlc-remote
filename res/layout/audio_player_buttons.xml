@@ -1,22 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    
+    <ImageButton
+        android:id="@+id/action_button_seek_backward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/seek_backwards"
+		android:src="@drawable/ic_media_seek_backward" />
+    
     <ImageButton
         android:id="@+id/playlist_button_repeat"
-        style="@style/ToggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
         android:contentDescription="@string/playlist_repeat"
         android:src="@drawable/ic_mp_repeat_off_btn" />
 
     <ImageButton
         android:id="@+id/playlist_button_shuffle"
-        style="@style/ToggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
         android:contentDescription="@string/playlist_shuffle"
         android:src="@drawable/ic_mp_shuffle_off_btn" />
 
     <ImageButton
-        android:id="@+id/button_hotkeys"
-        style="@style/ToggleButton"
-        android:contentDescription="@string/hotkeys"
-        android:src="@drawable/ic_mp_more_btn" />
+        android:id="@+id/action_button_seek_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/actionBarItemBackground"
+        style="?android:attr/actionButtonStyle"
+        android:contentDescription="@string/seek_forwards"
+		android:src="@drawable/ic_media_seek_forward" />
 
 </merge>

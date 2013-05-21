@@ -17,25 +17,6 @@
 
 package org.peterbaldwin.vlcremote.app;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.fragment.ArtFragment;
-import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
-import org.peterbaldwin.vlcremote.fragment.ButtonsFragment;
-import org.peterbaldwin.vlcremote.fragment.HotkeyDialog;
-import org.peterbaldwin.vlcremote.fragment.HotkeyListener;
-import org.peterbaldwin.vlcremote.fragment.InfoFragment;
-import org.peterbaldwin.vlcremote.fragment.NavigationFragment;
-import org.peterbaldwin.vlcremote.fragment.PlaybackFragment;
-import org.peterbaldwin.vlcremote.fragment.PlaylistFragment;
-import org.peterbaldwin.vlcremote.fragment.ServicesDiscoveryFragment;
-import org.peterbaldwin.vlcremote.fragment.StatusFragment;
-import org.peterbaldwin.vlcremote.fragment.VolumeFragment;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Preferences;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.widget.VolumePanel;
-
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,11 +40,27 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.ViewFlipper;
-
 import java.util.ArrayList;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.fragment.ArtFragment;
+import org.peterbaldwin.vlcremote.fragment.BottomActionbarFragment;
+import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
+import org.peterbaldwin.vlcremote.fragment.ButtonsFragment;
+import org.peterbaldwin.vlcremote.fragment.InfoFragment;
+import org.peterbaldwin.vlcremote.fragment.NavigationFragment;
+import org.peterbaldwin.vlcremote.fragment.PlaybackFragment;
+import org.peterbaldwin.vlcremote.fragment.PlaylistFragment;
+import org.peterbaldwin.vlcremote.fragment.ServicesDiscoveryFragment;
+import org.peterbaldwin.vlcremote.fragment.StatusFragment;
+import org.peterbaldwin.vlcremote.fragment.VolumeFragment;
+import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
-        View.OnClickListener, HotkeyListener {
+        View.OnClickListener {
 
     private static final String TAG = "PlaybackActivity";
     
@@ -95,6 +92,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private ArtFragment mArt;
 
     private ButtonsFragment mButtons;
+    
+    private BottomActionbarFragment mBottomActionBar;
 
     private VolumeFragment mVolume;
 
@@ -138,6 +137,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mPlayback = findFragmentById(R.id.fragment_playback);
         mArt = findFragmentById(R.id.fragment_art);
         mButtons = findFragmentById(R.id.fragment_buttons);
+        mBottomActionBar = findFragmentById(R.id.fragment_bottom_actionbar);
         mVolume = findFragmentById(R.id.fragment_volume);
         mInfo = findFragmentById(R.id.fragment_info);
         mPlaylist = findFragmentById(R.id.fragment_playlist);
@@ -186,14 +186,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             onNewIntent(getIntent());
         }
     }
-    
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        super.onAttachFragment(fragment);
-        if (fragment instanceof HotkeyDialog) {
-            ((HotkeyDialog) fragment).setHotkeyListener(this);
-        }
-    }
 
     private void addTab(String tag, int content, int label, int icon) {
         if (mTabHost.findViewById(content) != null) {
@@ -230,14 +222,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 mFlipper.showNext();
                 updateNavigationButton(v);
                 break;
-        }
-    }
-    /** {@inheritDoc} */
-    public void onHotkey(String keycode) {
-        if ("toggle-fullscreen".equals(keycode)) {
-            mMediaServer.status().command.fullscreen();
-        } else {
-            mMediaServer.status().command.key(keycode);
         }
     }
 
@@ -339,6 +323,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mMediaServer = new MediaServer(context, authority);
         mPlayback.setMediaServer(mMediaServer);
         mButtons.setMediaServer(mMediaServer);
+        mBottomActionBar.setMediaServer(mMediaServer);
         mVolume.setMediaServer(mMediaServer);
         if (mArt != null) {
             mArt.setMediaServer(mMediaServer);
