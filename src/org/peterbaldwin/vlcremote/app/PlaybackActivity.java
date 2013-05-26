@@ -261,7 +261,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        Log.e("VLCC", getResources().getConfiguration().screenWidthDp + "");
         String tabId = mTabHost != null ? mTabHost.getCurrentTabTag() : null;
         boolean visible = tabId == null || TAB_MEDIA.equals(tabId);
         menu.findItem(R.id.menu_preferences).setVisible(visible);
