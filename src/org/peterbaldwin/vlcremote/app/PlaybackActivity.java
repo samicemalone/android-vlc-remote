@@ -71,6 +71,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             .parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
 
     private static final String FRAGMENT_STATUS = "vlc:status";
+    private static final String FRAGMENT_BOTTOMBAR = "vlc:bottombar";
 
     private static final int VOLUME_LEVEL_UNKNOWN = -1;
 
@@ -137,8 +138,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mStatus = findOrAddFragment(FRAGMENT_STATUS, StatusFragment.class);
         mPlayback = findFragmentById(R.id.fragment_playback);
         mArt = findFragmentById(R.id.fragment_art);
+        if(findViewById(R.id.fragment_bottom_actionbar) != null) {
+            mBottomActionBar = findOrReplaceFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
+        } else {
+            mBottomActionBar = null;
+        }
         mButtons = findFragmentById(R.id.fragment_buttons);
-        mBottomActionBar = findFragmentById(R.id.fragment_bottom_actionbar);
         mVolume = findFragmentById(R.id.fragment_volume);
         mInfo = findFragmentById(R.id.fragment_info);
         mPlaylist = findFragmentById(R.id.fragment_playlist);
@@ -161,6 +166,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
             if(preferences.isHideDVDTabSet()) {
                 mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(3));
+            }
+            View dvdNav = findViewById(R.id.button_navigation);
+            if(dvdNav != null) {
+                dvdNav.setVisibility(View.GONE);
             }
             mTabHost.setOnTabChangedListener(this);
             onTabChanged(mTabHost.getCurrentTabTag());
@@ -245,22 +254,22 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getMenuInflater().inflate(R.menu.playback_options_land, menu);            
-        } else {
-            getMenuInflater().inflate(R.menu.playback_options, menu);
-        }
+        getMenuInflater().inflate(R.menu.playback_options, menu);            
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        Log.e("VLCC", getResources().getConfiguration().screenWidthDp + "");
         String tabId = mTabHost != null ? mTabHost.getCurrentTabTag() : null;
         boolean visible = tabId == null || TAB_MEDIA.equals(tabId);
         menu.findItem(R.id.menu_preferences).setVisible(visible);
         menu.findItem(R.id.menu_help).setVisible(visible);
         menu.setGroupVisible(R.id.group_vlc_actions, visible);
+        if((mBottomActionBar != null) || (mButtons != null && mButtons.isAllButtonsVisible())) {
+            menu.setGroupVisible(R.id.group_vlc_actions, false);
+        }
         return menu.hasVisibleItems();
     }
 
@@ -555,7 +564,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             if (fragment == null) {
                 fragment = fragmentClass.newInstance();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(fragment, FRAGMENT_STATUS);
+                fragmentTransaction.add(fragment, tag);
                 fragmentTransaction.commit();
                 fragmentManager.executePendingTransactions();
             }
@@ -563,6 +572,24 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         } catch (InstantiationException e) {
             throw new IllegalArgumentException(e);
         } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private <T extends Fragment> T findOrReplaceFragment(int res, String tag, Class<T> fragmentClass) {
+        try {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            T fragment = (T) fragmentManager.findFragmentByTag(tag);
+            if (fragment == null) {
+                fragment = fragmentClass.newInstance();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(res, fragment, tag);
+                fragmentTransaction.commit();
+                fragmentManager.executePendingTransactions();
+            }
+            return fragment;
+        } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
     }

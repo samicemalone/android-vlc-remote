@@ -69,11 +69,12 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content" />
 
-                <fragment
+                <FrameLayout
                     android:id="@+id/fragment_bottom_actionbar"
-                    android:name="org.peterbaldwin.vlcremote.fragment.BottomActionbarFragment"
+                    
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+                </FrameLayout>
             </LinearLayout>
 
             <FrameLayout

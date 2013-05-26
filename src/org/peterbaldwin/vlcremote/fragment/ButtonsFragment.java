@@ -21,7 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
@@ -46,6 +46,8 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     private ImageButton mButtonPlaylistSeekBackward;
     private ImageButton mButtonPlaylistSeekForward;
 
+    private boolean isAllButtonsVisible;
+    
     private boolean mRandom;
     private boolean mRepeat;
     private boolean mLoop;
@@ -65,24 +67,42 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         View view = getView();
 
+        new CommonPlaybackButtonsListenener(getActivity(), mMediaServer).setUp(view);
+        
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);
         mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
         mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
+        isAllButtonsVisible = view.findViewById(R.id.audio_player_buttons_second_row) != null;
+        getActivity().invalidateOptionsMenu();
 
         setupImageButtonListeners(mButtonShuffle, mButtonRepeat, mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mButtonPlaylistSeekBackward.setVisibility(View.GONE);
-            mButtonPlaylistSeekForward.setVisibility(View.GONE);
+        if(getResources().getConfiguration().screenWidthDp >= 480) {
+            // seek buttons are displayed in playback fragment if >= 480dp
+            hideImageButton(mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         }
     }
     
     private void setupImageButtonListeners(ImageButton... imageButtons) {
         for(ImageButton b : imageButtons) {
-            b.setOnClickListener(this);
-            b.setOnLongClickListener(this);
+            if(b != null) {
+                b.setOnClickListener(this);
+                b.setOnLongClickListener(this);
+            }
         }
+    }
+    
+    private void hideImageButton(ImageButton... imageButtons) {
+        for(ImageButton b : imageButtons) {
+            if(b != null) {
+                b.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public boolean isAllButtonsVisible() {
+        return isAllButtonsVisible;
     }
 
     @Override
