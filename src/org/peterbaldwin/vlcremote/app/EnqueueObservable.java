@@ -19,7 +19,7 @@ package org.peterbaldwin.vlcremote.app;
 
 /**
  *
- * @author Ice
+ * @author Sam Malone
  */
 public interface EnqueueObservable {
     
