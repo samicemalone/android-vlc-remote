@@ -66,6 +66,8 @@ public final class Track implements PlaylistItem, Serializable {
     private String mArtUrl;
 
     private String mTrackId;
+    
+    private boolean mIsVideo;
 
     public int getId() {
         return mId;
@@ -244,6 +246,32 @@ public final class Track implements PlaylistItem, Serializable {
 
     public void setTrackId(String trackId) {
         this.mTrackId = trackId;
+    }
+    
+    /**
+     * Add a stream type for the Track.
+     * @param streamType "Video" for a video track, anything else implies audio
+     */
+    public void addStreamType(String streamType) {
+        if("Video".equals(streamType)) {
+            mIsVideo = true;
+        }
+    }
+    
+    /**
+     * Checks if the Track is video.
+     * @return true if video, false if audio
+     */
+    public boolean isVideo() {
+        return mIsVideo;
+    }
+    
+    /**
+     * Checks if the Track is audio.
+     * @return true if audio, false if video
+     */
+    public boolean isAudio() {
+        return !mIsVideo;
     }
 
     @Override

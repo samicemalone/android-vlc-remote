@@ -264,6 +264,11 @@ final class StatusContentHandler extends XmlContentHandler<Status> {
                         mTrack.setArtUrl(unescape(body));
                     }
                 }
+                if (mCategoryName != null && mCategoryName.startsWith("Stream")) {
+                    if ("Type".equalsIgnoreCase(mInfoName)) {
+                        mTrack.addStreamType(unescape(body));
+                    }
+                }
                 mInfoName = null;
             }
         });
