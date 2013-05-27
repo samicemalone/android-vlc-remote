@@ -58,7 +58,7 @@ public class EpisodeParser {
         }
     }
     
-        /**
+    /**
      * Attempt to parse the given file path into an Episode object
      * @param path Episode Path
      * @return Parsed Episode or null
@@ -70,21 +70,31 @@ public class EpisodeParser {
             Matcher m = p.matcher(fileName);
             if (m.find()) {
                 e = new Episode();
-                e.setShow(StringUtil.toTitleCase(m.group(1).replaceAll("\\.|_", " ").trim()));
+                e.setShow(formatMatch(m.group(1)));
                 e.setSeasonNo(Integer.valueOf(m.group(2)));
                 try {
                     e.setEpisodeNo(Integer.valueOf(m.group(3)));
                 } catch(NumberFormatException ex) {
                     // no episode. group(3) should be episode name
-                    e.setEpisodeName(StringUtil.toTitleCase(m.group(3).replaceAll("\\.|_", " ").trim()));
+                    e.setEpisodeName(formatMatch(m.group(3)));
                 }
                 if(m.groupCount() == 4) {
-                    e.setEpisodeName(StringUtil.toTitleCase(m.group(4).replaceAll("\\.|_", " ").trim()));
+                    e.setEpisodeName(formatMatch(m.group(4)));
                 }
                 return e;
             }
         }
         return null;
+    }
+    
+    /**
+     * Formats a matched string by replacing delimeter character with spaces
+     * and converts into title case.
+     * @param matchedString
+     * @return 
+     */
+    private String formatMatch(String matchedString) {
+        return StringUtil.toTitleCase(matchedString.replaceAll("\\.|_", " "));
     }
     
 }
