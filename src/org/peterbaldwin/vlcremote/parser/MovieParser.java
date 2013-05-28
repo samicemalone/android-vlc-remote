@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Movie;
+import org.peterbaldwin.vlcremote.model.VideoSources;
 import org.peterbaldwin.vlcremote.util.StringUtil;
 
 /**
@@ -57,7 +58,7 @@ public class MovieParser {
                 movie.setMovieName(StringUtil.formatMatch(m.group(1)));
                 movie.setYear(Integer.valueOf(m.group(2)));
                 movie.setQuality(m.group(3));
-                movie.setSource(m.group(4));
+                movie.setSource(VideoSources.getFormattedSource(m.group(4)));
                 return movie;
             }
         }
