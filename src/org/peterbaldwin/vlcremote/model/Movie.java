@@ -22,6 +22,8 @@ package org.peterbaldwin.vlcremote.model;
  */
 public class Movie implements MediaDisplayInfo {
     
+    public final static int UNKNOWN_YEAR = 0;
+    
     private String movieName;
     private String quality;
     private String source;
@@ -35,9 +37,13 @@ public class Movie implements MediaDisplayInfo {
     }
 
     public Movie() {
-        
+        year = UNKNOWN_YEAR;
     }
 
+    /**
+     * Get the movie name
+     * @return movie name or null if not set
+     */
     public String getMovieName() {
         return movieName;
     }
@@ -46,6 +52,10 @@ public class Movie implements MediaDisplayInfo {
         this.movieName = movieName;
     }
 
+    /**
+     * Get the quality of the movie.
+     * @return quality or null if not set
+     */
     public String getQuality() {
         return quality;
     }
@@ -54,6 +64,10 @@ public class Movie implements MediaDisplayInfo {
         this.quality = quality;
     }
 
+    /**
+     * Get the source of the movie
+     * @return Source or null if not set
+     */
     public String getSource() {
         return source;
     }
@@ -62,6 +76,10 @@ public class Movie implements MediaDisplayInfo {
         this.source = source;
     }
 
+    /**
+     * Get the year of the movie.
+     * @return year or UNKNOWN_YEAR if not set
+     */
     public int getYear() {
         return year;
     }
@@ -75,6 +93,9 @@ public class Movie implements MediaDisplayInfo {
     }
 
     public String getMediaFirstText() {
+        if(year == UNKNOWN_YEAR) {
+            return "";
+        }
         return String.valueOf(year);
     }
 
