@@ -17,10 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Status;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,8 +27,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.MediaDisplayInfo;
+import org.peterbaldwin.vlcremote.model.Movie;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.parser.EpisodeParser;
+import org.peterbaldwin.vlcremote.parser.MovieParser;
 
 public class InfoFragment extends Fragment {
 
@@ -40,6 +43,13 @@ public class InfoFragment extends Fragment {
     private TextView mArtist;
     private TextView mAlbum;
     private TextView mTrack;
+    private EpisodeParser mEpisodeParser;
+    private MovieParser mMovieParser;
+
+    public InfoFragment() {
+        mEpisodeParser = new EpisodeParser();
+        mMovieParser = new MovieParser();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
@@ -69,13 +79,28 @@ public class InfoFragment extends Fragment {
     }
 
     public void onStatusChanged(Context context, Status status) {
-        setText(mArtist, status.getTrack().getArtist());
-        setText(mAlbum, status.getTrack().getAlbum());
-        boolean fileNamesOnly = Preferences.get(context).isFileNamesOnlySet();
-        if(fileNamesOnly) {
-            setText(mTrack, File.baseName(status.getTrack().getName()));
+        if(status.getTrack().isVideo()) {
+            Episode e = mEpisodeParser.parse(status.getTrack().getName());
+            if(e != null) {
+                setMediaDisplayInfo(e, status.getTrack().getName());
+                return;
+            }
+            Movie m = mMovieParser.parse(status.getTrack().getName());
+            if(m != null) {
+                setMediaDisplayInfo(m, status.getTrack().getName());
+                return;
+            }
+        }
+        setMediaDisplayInfo(status.getTrack(), status.getTrack().getName());
+    }
+    
+    private void setMediaDisplayInfo(MediaDisplayInfo i, String fileName) {
+        setText(mArtist, i.getMediaHeading());
+        setText(mAlbum, i.getMediaFirstText());
+        if(i.getMediaSecondText() == null || i.getMediaSecondText().isEmpty()) {
+            setText(mTrack, File.baseName(fileName));
         } else {
-            setText(mTrack, status.getTrack().getTitle());
+            setText(mTrack, i.getMediaSecondText());
         }
     }
 
