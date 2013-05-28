@@ -45,6 +45,7 @@ public class InfoFragment extends Fragment {
     private TextView mTrack;
     private EpisodeParser mEpisodeParser;
     private MovieParser mMovieParser;
+    private String mCurrentFileName;
 
     public InfoFragment() {
         mEpisodeParser = new EpisodeParser();
@@ -79,6 +80,18 @@ public class InfoFragment extends Fragment {
     }
 
     public void onStatusChanged(Context context, Status status) {
+        if(status.getTrack().getName() == null) {
+            if(mCurrentFileName == null) {
+                return;
+            }
+            clearMediaDisplayInfo();
+            mCurrentFileName = null;
+        } else {
+            if(status.getTrack().getName().equals(mCurrentFileName)) {
+                return;
+            }
+        }
+        mCurrentFileName = status.getTrack().getName();
         if(status.getTrack().isVideo()) {
             Episode e = mEpisodeParser.parse(status.getTrack().getName());
             if(e != null) {
@@ -92,6 +105,12 @@ public class InfoFragment extends Fragment {
             }
         }
         setMediaDisplayInfo(status.getTrack(), status.getTrack().getName());
+    }
+    
+    private void clearMediaDisplayInfo() {
+        setText(mArtist, "");
+        setText(mAlbum, "");
+        setText(mTrack, "");
     }
     
     private void setMediaDisplayInfo(MediaDisplayInfo i, String fileName) {
