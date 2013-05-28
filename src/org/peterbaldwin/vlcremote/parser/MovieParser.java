@@ -31,12 +31,17 @@ public class MovieParser {
     
     private static final String quality = "(?:480|720|1080)[ip]";
     private static final String sources = "a?hdtv|pdtv|web[- ]*dl|bluray|dvdr(?:ip)?|bdrip|brrip|hddvd|ts|tc|(?:dvd)?scr|cam|rc|r5|hdrip";
-    private static final String repacks = "proper|repack|real|rerip|dubbed|subbed|internal|int|oar|ppv|convert|native";
-    private static final String versions = "ws|uncut|extended|theatrical|limited|dc|se|(?:un)?rated|stv|dl";
+    private static final String repacks = "proper|repack|real|rerip|dubbed|subbed|internal|int|oar|ppv|convert|native|readnfo";
+    private static final String versions = "ws|uncut|extended|theatrical|limited|retail|dc|se|(?:un)?rated|stv|dl|pal|ntsc";
     private static final String fixes = "(?:nfo|dir|sample|sync|proof|rar)[ -._]*fix";
     
     private final String[] regexList = new String[] {
-        "(.*)[ -._]+([0-9]{4})[^ip][ -._]*(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")*.*?$"
+        // strictest regex. scene variants. matches year (4 groups)
+        "(.*)[ -._]+([0-9]{4})[^ip][ -._]*(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")*.*?$",
+        // scene variants but without year (3 groups)
+        "(.*?)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")[ -._]+.*?$",
+        // scene variants but without year and source (2 groups)
+        "(.*)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)+.*?$"
     };
     
     private Pattern[] patternList;
@@ -56,9 +61,16 @@ public class MovieParser {
             if (m.find()) {
                 movie = new Movie();
                 movie.setMovieName(StringUtil.formatMatch(m.group(1)));
-                movie.setYear(Integer.valueOf(m.group(2)));
-                movie.setQuality(m.group(3));
-                movie.setSource(VideoSources.getFormattedSource(m.group(4)));
+                if(m.groupCount() == 4) {
+                    movie.setYear(Integer.valueOf(m.group(2)));
+                    movie.setQuality(m.group(3));
+                    movie.setSource(VideoSources.getFormattedSource(m.group(4)));
+                } else if(m.groupCount() == 3) {
+                    movie.setQuality(m.group(2));
+                    movie.setSource(VideoSources.getFormattedSource(m.group(3)));
+                } else {
+                    movie.setQuality(m.group(2));
+                }
                 return movie;
             }
         }
