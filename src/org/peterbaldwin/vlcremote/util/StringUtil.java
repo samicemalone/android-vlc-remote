@@ -42,4 +42,14 @@ public class StringUtil {
         return titleCase.toString();
     }
     
+    /**
+     * Formats a string by replacing delimeter characters (._) with spaces
+     * and converts into title case. e.g. this.string_here => This String Here
+     * @param matchedString
+     * @return 
+     */
+    public static String formatMatch(String matchedString) {
+        return StringUtil.toTitleCase(matchedString.replaceAll("\\.|_", " "));
+    }
+    
 }
