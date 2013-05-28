@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
  *
  * @author Sam Malone
  */
-public class Episode {
+public class Episode implements MediaDisplayInfo {
     
     public final static int NO_EPISODE = -1;
     
@@ -131,6 +131,18 @@ public class Episode {
     @Override
     public String toString() {
         return String.format("%s S%02dE%02d", show, seasonNo, episodeNo);
+    }
+
+    public String getMediaHeading() {
+        return show;
+    }
+
+    public String getMediaFirstText() {
+        return getFormattedEpisode();
+    }
+
+    public String getMediaSecondText() {
+        return getEpisodeName();
     }
     
 }

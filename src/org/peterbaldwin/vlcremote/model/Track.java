@@ -18,10 +18,9 @@
 package org.peterbaldwin.vlcremote.model;
 
 import android.text.TextUtils;
-
 import java.io.Serializable;
 
-public final class Track implements PlaylistItem, Serializable {
+public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo {
 
     private static final long serialVersionUID = 1L;
 
@@ -283,5 +282,17 @@ public final class Track implements PlaylistItem, Serializable {
 
     private static boolean isNotEmpty(CharSequence text) {
         return !TextUtils.isEmpty(text);
+    }
+
+    public String getMediaHeading() {
+        return isNotEmpty(mArtist) ? mArtist : "";
+    }
+
+    public String getMediaFirstText() {
+        return isNotEmpty(mAlbum) ? mAlbum : "";
+    }
+
+    public String getMediaSecondText() {
+        return isNotEmpty(mTitle) ? mTitle : isNotEmpty(mName) ? mName : "";
     }
 }
