@@ -88,26 +88,35 @@ public class Movie implements MediaDisplayInfo {
         this.year = year;
     }
 
+    /** {@inheritDoc} */
     public String getMediaHeading() {
         return movieName;
     }
 
+    /**
+     * Get the first text media display item.
+     * Get the year, quality and source of the movie.
+     * An example Movie media display text is: "2013 - 1080p Bluray"
+     * @return year if set, quality if set, and source if set. Empty string
+     * if none are set.
+     */
     public String getMediaFirstText() {
-        if(year == UNKNOWN_YEAR) {
-            return "";
+        StringBuilder sb = new StringBuilder();
+        if(year != UNKNOWN_YEAR) {
+            sb.append(year).append(" - ");
         }
-        return String.valueOf(year);
-    }
-
-    public String getMediaSecondText() {
-        String text = "";
         if(quality != null) {
-            text = quality + " ";
+            sb.append(quality).append(' ');
         }
         if(source != null) {
-            return text.concat(source);
+            sb.append(source);
         }
-        return text;
+        return sb.toString();
+    }
+
+    /** {@inheritDoc} */
+    public String getMediaSecondText() {
+        return "";
     }
     
 }
