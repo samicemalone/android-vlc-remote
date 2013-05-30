@@ -21,6 +21,12 @@ import android.text.TextUtils;
 import java.io.Serializable;
 
 public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo {
+    
+    private static final byte UNKNOWN_STREAM = 0;
+    
+    private static final byte AUDIO_STREAM_FLAG = 1;
+    private static final byte VIDEO_STREAM_FLAG = 2;
+    private static final byte SUBTITLE_STREAM_FLAG = 4;    
 
     private static final long serialVersionUID = 1L;
 
@@ -66,7 +72,10 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
 
     private String mTrackId;
     
-    private boolean mIsVideo;
+    /**
+     * Bit Mask of the stream types the track holds.
+     */
+    private byte streamTypesMask;
 
     public int getId() {
         return mId;
@@ -249,28 +258,55 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
     
     /**
      * Add a stream type for the Track.
-     * @param streamType "Video" for a video track, anything else implies audio
+     * @param streamType "Video" for a video track, "Audio" for an audio track
+     * and "Subtitle" for a subtitle track.
      */
     public void addStreamType(String streamType) {
         if("Video".equals(streamType)) {
-            mIsVideo = true;
+            streamTypesMask |= VIDEO_STREAM_FLAG;
+            return;
+        }
+        if("Audio".equals(streamType)) {
+            streamTypesMask |= AUDIO_STREAM_FLAG;
+            return;
+        }
+        if("Subtitle".equals(streamType)) {
+            streamTypesMask |= SUBTITLE_STREAM_FLAG;
         }
     }
     
     /**
-     * Checks if the Track is video.
-     * @return true if video, false if audio
+     * Checks if the Track has a video stream.
+     * @return true if track has a video stream, false otherwise
      */
-    public boolean isVideo() {
-        return mIsVideo;
+    public boolean hasVideoStream() {
+        return (streamTypesMask & VIDEO_STREAM_FLAG) == VIDEO_STREAM_FLAG;
     }
     
     /**
-     * Checks if the Track is audio.
-     * @return true if audio, false if video
+     * Checks if the Track has an audio stream.
+     * @return true if track has an audio stream, false otherwise
      */
-    public boolean isAudio() {
-        return !mIsVideo;
+    public boolean hasAudioStream() {
+        return (streamTypesMask & AUDIO_STREAM_FLAG) == AUDIO_STREAM_FLAG;
+    }
+    
+    /**
+     * Checks if the Track has a subtitle stream.
+     * @return true if track has a subtitle stream, false otherwise
+     */
+    public boolean hasSubtitleStream() {
+        return (streamTypesMask & SUBTITLE_STREAM_FLAG) == SUBTITLE_STREAM_FLAG;
+    }
+    
+    /**
+     * Checks if the Track contains a stream of any type (audio, video or 
+     * subtitle).
+     * @return true if track contains an audio, video or subtitle stream, false
+     * otherwise
+     */
+    public boolean containsStream() {
+        return streamTypesMask != UNKNOWN_STREAM;
     }
 
     @Override

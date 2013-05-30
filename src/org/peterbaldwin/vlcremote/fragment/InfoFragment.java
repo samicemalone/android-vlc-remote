@@ -81,18 +81,19 @@ public class InfoFragment extends Fragment {
 
     public void onStatusChanged(Context context, Status status) {
         if(status.getTrack().getName() == null) {
-            if(mCurrentFileName == null) {
-                return;
+            if(mCurrentFileName != null) {
+                clearMediaDisplayInfo();
+                mCurrentFileName = null;
             }
-            clearMediaDisplayInfo();
-            mCurrentFileName = null;
-        } else {
-            if(status.getTrack().getName().equals(mCurrentFileName)) {
-                return;
-            }
+            return;
+        }
+        if(status.getTrack().getName().equals(mCurrentFileName)) {
+            return;
         }
         mCurrentFileName = status.getTrack().getName();
-        if(status.getTrack().isVideo()) {
+        // it is possible for a status change to be sent before vlc has fully read
+        // the file metadata and not output any stream information.
+        if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
             Episode e = mEpisodeParser.parse(status.getTrack().getName());
             if(e != null) {
                 setMediaDisplayInfo(e, status.getTrack().getName());
