@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/label_user"
             android:singleLine="true"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <EditText
             android:id="@+id/edit_password"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/label_password"
             android:singleLine="true"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </LinearLayout>
 
 </ScrollView>
