@@ -274,7 +274,7 @@ public final class PortSweeper {
                         return true;
                     case HANDLE_UNREACHABLE:
                         IOException e = (IOException) msg.obj;
-                        Log.d(TAG, "unreachable", e);
+                        Log.d(TAG, e.getMessage());
                         mProgress++;
                         return true;
                     case HANDLE_COMPLETE:
