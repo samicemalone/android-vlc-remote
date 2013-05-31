@@ -81,31 +81,38 @@ public class InfoFragment extends Fragment {
 
     public void onStatusChanged(Context context, Status status) {
         if(status.getTrack().getName() == null) {
-            if(mCurrentFileName != null) {
-                clearMediaDisplayInfo();
-                mCurrentFileName = null;
+            if(status.getTrack().getTitle() == null) {
+                if(mCurrentFileName != null) {
+                    clearMediaDisplayInfo();
+                    mCurrentFileName = null;
+                }
+                return;
             }
-            return;
+            if(status.getTrack().getTitle().equals(mCurrentFileName)) {
+                return;
+            }
+            mCurrentFileName = status.getTrack().getTitle();
+        } else {
+            if(status.getTrack().getName().equals(mCurrentFileName)) {
+                return;
+            }
+            mCurrentFileName = status.getTrack().getName();
         }
-        if(status.getTrack().getName().equals(mCurrentFileName)) {
-            return;
-        }
-        mCurrentFileName = status.getTrack().getName();
         // it is possible for a status change to be sent before vlc has fully read
         // the file metadata and not output any stream information.
         if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
-            Episode e = mEpisodeParser.parse(status.getTrack().getName());
+            Episode e = mEpisodeParser.parse(mCurrentFileName);
             if(e != null) {
-                setMediaDisplayInfo(e, status.getTrack().getName());
+                setMediaDisplayInfo(e, mCurrentFileName);
                 return;
             }
-            Movie m = mMovieParser.parse(status.getTrack().getName());
+            Movie m = mMovieParser.parse(mCurrentFileName);
             if(m != null) {
-                setMediaDisplayInfo(m, status.getTrack().getName());
+                setMediaDisplayInfo(m, mCurrentFileName);
                 return;
             }
         }
-        setMediaDisplayInfo(status.getTrack(), status.getTrack().getName());
+        setMediaDisplayInfo(status.getTrack(), mCurrentFileName);
     }
     
     private void clearMediaDisplayInfo() {
