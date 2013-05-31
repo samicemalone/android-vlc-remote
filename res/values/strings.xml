@@ -36,6 +36,7 @@
         <b>.hosts</b>
         file on your PC
     </string>
+    <string name="summary_unauthorized">Requires Authentication</string>
     <string name="context_forget">Forget</string>
     <string name="progress_scanning">Scanning</string>
     <string name="vlc_servers">VLC Servers</string>

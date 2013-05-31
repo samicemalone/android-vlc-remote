@@ -229,6 +229,9 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         preference.setTitle(server);
         preference.setPersistent(false);
         switch (responseCode) {
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
+                preference.setSummary(R.string.summary_unauthorized);
+                break;
             case HttpURLConnection.HTTP_FORBIDDEN:
                 preference.setSummary(getText(R.string.summary_forbidden));
                 break;
@@ -306,10 +309,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     /** {@inheritDoc} */
     public void onHostFound(String hostname, int responseCode) {
         String server = hostname + ":" + mPort;
-
         switch (responseCode) {
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_FORBIDDEN:
+            case HttpURLConnection.HTTP_UNAUTHORIZED:
                 if (!mRemembered.contains(server)) {
                     Preference preference = createServerPreference(server, responseCode);
                     mProgressCategory.addPreference(preference);
@@ -354,9 +357,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                     String password = getPassword();
 
                     StringBuilder server = new StringBuilder();
-                    if (!TextUtils.isEmpty(user)) {
-                        server.append(user).append(':').append(password).append('@');
-                    }
+                    server.append(user).append(':').append(password).append('@');
                     server.append(hostname).append(':').append(port);
 
                     pick(server.toString());
