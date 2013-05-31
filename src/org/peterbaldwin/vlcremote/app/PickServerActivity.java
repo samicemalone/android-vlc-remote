@@ -257,7 +257,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         unregisterReceiver(mReceiver);
         mReceiver = null;
         if (mPortSweeper != null) {
-            mPortSweeper.destory();
+            mPortSweeper.destroy();
         }
         super.onDestroy();
     }

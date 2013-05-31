@@ -158,7 +158,7 @@ public final class PortSweeper {
         mAddressQueue.clear();
     }
 
-    public void destory() {
+    public void destroy() {
         abort();
         Looper looper = mScanThread.getLooper();
         looper.quit();
