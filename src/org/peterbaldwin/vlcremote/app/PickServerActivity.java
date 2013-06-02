@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -61,6 +60,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Server;
 
 public final class PickServerActivity extends PreferenceActivity implements PortSweeper.Callback,
         DialogInterface.OnClickListener, OnPreferenceChangeListener {
@@ -210,30 +210,28 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         int n = mProgressCategory.getPreferenceCount();
-        ArrayList<String> hosts = new ArrayList<String>(n * 2);
+        ArrayList<String> hosts = new ArrayList<String>(n);
         for (int i = 0; i < n; i++) {
             Preference preference = mProgressCategory.getPreference(i);
-            String hostname = preference.getTitle().toString();
-            String responseCode = preference.getKey();
-            if (!mRemembered.contains(hostname)) {
-                hosts.add(hostname);
-                hosts.add(responseCode);
+            String authority = Server.fromKey(preference.getKey()).getUri().getAuthority();
+            if (!mRemembered.contains(authority)) {
+                hosts.add(preference.getKey());
             }
         }
         outState.putStringArrayList(STATE_HOSTS, hosts);
     }
 
-    private Preference createServerPreference(String server, int responseCode) {
+    private Preference createServerPreference(Server server) {
         Preference preference = new Preference(this);
-        preference.setKey(Integer.toString(responseCode));
-        preference.setTitle(server);
+        preference.setKey(server.toKey());
+        preference.setTitle(server.getHostAndPort());
         preference.setPersistent(false);
-        switch (responseCode) {
+        switch (server.getResponseCode()) {
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 preference.setSummary(R.string.summary_unauthorized);
                 break;
             case HttpURLConnection.HTTP_FORBIDDEN:
-                preference.setSummary(getText(R.string.summary_forbidden));
+                preference.setSummary(R.string.summary_forbidden);
                 break;
         }
         return preference;
@@ -243,11 +241,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
         List<String> hosts = state.getStringArrayList(STATE_HOSTS);
-        for (int i = 0; i < hosts.size(); i += 2) {
-            String hostname = hosts.get(i);
-            String key = hosts.get(i + 1);
-            int responseCode = (key != null) ? Integer.parseInt(key) : HttpURLConnection.HTTP_OK;
-            Preference preference = createServerPreference(hostname, responseCode);
+        for (int i = 0; i < hosts.size(); i++) {
+            Preference preference = createServerPreference(Server.fromKey(hosts.get(i)));
             mProgressCategory.addPreference(preference);
         }
     }
@@ -296,25 +291,15 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
     /** {@inheritDoc} */
     public void onHostFound(String hostname, int responseCode) {
-        String server = hostname + ":" + mPort;
+        Server server = new Server(hostname + ":" + mPort, responseCode);
         switch (responseCode) {
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_FORBIDDEN:
             case HttpURLConnection.HTTP_UNAUTHORIZED:
-                if (!mRemembered.contains(server)) {
-                    Preference preference = createServerPreference(server, responseCode);
+                if (!mRemembered.contains(server.getUri().getAuthority())) {
+                    Preference preference = createServerPreference(server);
                     mProgressCategory.addPreference(preference);
                 }
                 break;
@@ -356,11 +341,11 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                     String user = getUser();
                     String password = getPassword();
 
-                    StringBuilder server = new StringBuilder();
-                    server.append(user).append(':').append(password).append('@');
-                    server.append(hostname).append(':').append(port);
+                    StringBuilder authority = new StringBuilder();
+                    authority.append(user).append(':').append(password).append('@');
+                    authority.append(hostname).append(':').append(port);
 
-                    pick(server.toString());
+                    pick(new Server(authority.toString()));
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     dialog.dismiss();
@@ -369,24 +354,23 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         }
     }
 
-    private void pick(String server) {
+    private void pick(Server server) {
         Intent data = new Intent();
-        Uri uri = Uri.parse("http://" + server);
-        data.setData(uri);
-        if (!mRemembered.contains(server)) {
-            mRemembered.add(server);
+        data.setData(server.getUri());
+        if (!mRemembered.contains(server.getUri().getAuthority())) {
+            mRemembered.add(server.getUri().getAuthority());
         }
         data.putStringArrayListExtra(EXTRA_REMEMBERED, mRemembered);
         setResult(RESULT_OK, data);
         finish();
     }
 
-    private void forget(String server) {
-        mRemembered.remove(server);
+    private void forget(Server server) {
+        mRemembered.remove(server.getUri().getAuthority());
         int count = mProgressCategory.getPreferenceCount();
         for (int i = 0; i < count; i++) {
             Preference preference = mProgressCategory.getPreference(i);
-            if (server.equals(preference.getTitle().toString())) {
+            if (server.toKey().equals(preference.getKey())) {
                 mProgressCategory.removePreference(preference);
                 break;
             }
@@ -421,9 +405,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             Preferences preferences = Preferences.get(this);
             preferences.setHideDVDTab(mPreferenceHideDVDTab.isChecked());
             return true;
-        } else {
-            String server = preference.getTitle().toString();
-            pick(server);
+        } else {            
+            pick(Server.fromKey(preference.getKey()));
             return true;
         }
     }
@@ -456,8 +439,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         super.onCreateContextMenu(menu, v, menuInfo);
         Preference preference = getPreferenceFromMenuInfo(menuInfo);
         if (preference != null) {
-            String server = preference.getTitle().toString();
-            if (mRemembered.contains(server)) {
+            String authority = Server.fromKey(preference.getKey()).getUri().getAuthority();
+            if (mRemembered.contains(authority)) {
                 menu.add(Menu.NONE, CONTEXT_FORGET, Menu.NONE, R.string.context_forget);
             }
         }
@@ -470,8 +453,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                 ContextMenuInfo menuInfo = item.getMenuInfo();
                 Preference preference = getPreferenceFromMenuInfo(menuInfo);
                 if (preference != null) {
-                    String server = preference.getTitle().toString();
-                    forget(server);
+                    forget(Server.fromKey(preference.getKey()));
                 }
                 return true;
             default:
@@ -483,8 +465,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     public void onProgress(int progress, int max) {
         if (progress == 0) {
             mProgressCategory.removeAll();
-            for (String server : mRemembered) {
-                Preference preference = createServerPreference(server, HttpURLConnection.HTTP_OK);
+            for (String authority : mRemembered) {
+                Preference preference = createServerPreference(new Server(authority));
                 preference.setSummary(R.string.summary_remembered);
                 mProgressCategory.addPreference(preference);
             }
