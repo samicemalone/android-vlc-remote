@@ -233,10 +233,18 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         switch (server.getResponseCode()) {
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 preference.setSummary(R.string.summary_unauthorized);
+                preference.setIcon(R.drawable.ic_vlc_server_auth);
                 break;
             case HttpURLConnection.HTTP_FORBIDDEN:
                 preference.setSummary(R.string.summary_forbidden);
+                preference.setIcon(R.drawable.ic_vlc_server_forbidden);
                 break;
+            default:
+                if(server.hasUserInfo()) {
+                    preference.setIcon(R.drawable.ic_vlc_server_auth);
+                } else {
+                    preference.setIcon(R.drawable.ic_vlc_server);
+                }
         }
         return preference;
     }
