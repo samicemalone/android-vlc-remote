@@ -226,6 +226,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         preference.setKey(server.toKey());
         preference.setTitle(server.getHostAndPort());
         preference.setPersistent(false);
+        String authority = server.getUri().getAuthority();
+        if(mRemembered.contains(authority) && authority.equals(Preferences.get(this).getAuthority())) {
+            preference.setWidgetLayoutResource(R.layout.tick_image);
+        }
         switch (server.getResponseCode()) {
             case HttpURLConnection.HTTP_UNAUTHORIZED:
                 preference.setSummary(R.string.summary_unauthorized);
