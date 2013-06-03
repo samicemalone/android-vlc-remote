@@ -17,17 +17,9 @@
 
 package org.peterbaldwin.vlcremote.app;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.preference.ProgressCategory;
-import org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver;
-import org.peterbaldwin.vlcremote.sweep.PortSweeper;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -43,27 +35,28 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.EditText;
 import android.widget.ListAdapter;
-
 import java.net.HttpURLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.fragment.ServerInfoDialog;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Server;
+import org.peterbaldwin.vlcremote.preference.ProgressCategory;
+import org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver;
+import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 
 public final class PickServerActivity extends PreferenceActivity implements PortSweeper.Callback,
-        DialogInterface.OnClickListener, OnPreferenceChangeListener {
+        ServerInfoDialog.ServerInfoDialogListener, OnPreferenceChangeListener {
 
     
     private static final String TAG = "PickServer";
@@ -89,11 +82,13 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     public static final int DEFAULT_WORKERS = 16;
 
-    private static final int DIALOG_ADD_SERVER = 1;
+    private static final String DIALOG_ADD_SERVER = "add_server";
+    private static final String DIALOG_EDIT_SERVER = "edit_server";
 
     private static final int MENU_SCAN = Menu.FIRST;
 
     private static final int CONTEXT_FORGET = Menu.FIRST;
+    private static final int CONTEXT_EDIT_SERVER = 2;
 
     private static byte[] toByteArray(int i) {
         int i4 = (i >> 24) & 0xFF;
@@ -108,12 +103,6 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private PortSweeper mPortSweeper;
 
     private BroadcastReceiver mReceiver;
-    
-    private AlertDialog mDialogAddServer;
-    private EditText mEditHostname;
-    private EditText mEditPort;
-    private EditText mEditUser;
-    private EditText mEditPassword;
 
     private String mFile;
     private int mPort;
@@ -320,53 +309,9 @@ public final class PickServerActivity extends PreferenceActivity implements Port
                 break;
         }
     }
-
+    
     @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DIALOG_ADD_SERVER:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.add_server);
-                LayoutInflater inflater = getLayoutInflater();
-                View view = inflater.inflate(R.layout.add_server, null);
-                mEditHostname = (EditText) view.findViewById(R.id.edit_hostname);
-                mEditPort = (EditText) view.findViewById(R.id.edit_port);
-                mEditUser = (EditText) view.findViewById(R.id.edit_user);
-                mEditPassword = (EditText) view.findViewById(R.id.edit_password);
-                builder.setView(view);
-                builder.setPositiveButton(R.string.ok, this);
-                builder.setNegativeButton(R.string.cancel, this);
-                mDialogAddServer = builder.create();
-                return mDialogAddServer;
-            default:
-                return super.onCreateDialog(id);
-        }
-    }
-
-    /** {@inheritDoc} */
-    public void onClick(DialogInterface dialog, int which) {
-        if (dialog == mDialogAddServer) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    String hostname = getHostname();
-                    int port = getPort();
-                    String user = getUser();
-                    String password = getPassword();
-
-                    StringBuilder authority = new StringBuilder();
-                    authority.append(user).append(':').append(password).append('@');
-                    authority.append(hostname).append(':').append(port);
-
-                    pick(new Server(authority.toString()));
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    dialog.dismiss();
-                    break;
-            }
-        }
-    }
-
-    private void pick(Server server) {
+    public void onAddServer(Server server) {
         Intent data = new Intent();
         data.setData(server.getUri());
         if (!mRemembered.contains(server.getUri().getAuthority())) {
@@ -376,7 +321,20 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         setResult(RESULT_OK, data);
         finish();
     }
-
+    
+    @Override
+    public void onEditServer(Server newServer, String oldServerKey) {
+        String oldAuthority = Server.fromKey(oldServerKey).getUri().getAuthority();
+        for(int i = 0; i < mRemembered.size(); i++) {
+            if(mRemembered.get(i).equals(oldAuthority)) {
+                mRemembered.set(i, newServer.getUri().getAuthority());
+                break;
+            }
+        }
+        Preferences.get(this).setRemeberedServers(mRemembered);
+        startSweep();
+    }
+    
     private void forget(Server server) {
         mRemembered.remove(server.getUri().getAuthority());
         int count = mProgressCategory.getPreferenceCount();
@@ -398,7 +356,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference == mPreferenceAddServer) {
-            showDialog(DIALOG_ADD_SERVER);
+            ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);
             return true;
         } else if (preference == mPreferenceWiFi) {
             Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
@@ -418,7 +376,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             preferences.setHideDVDTab(mPreferenceHideDVDTab.isChecked());
             return true;
         } else {            
-            pick(Server.fromKey(preference.getKey()));
+            onAddServer(Server.fromKey(preference.getKey()));
             return true;
         }
     }
@@ -453,6 +411,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         if (preference != null) {
             String authority = Server.fromKey(preference.getKey()).getUri().getAuthority();
             if (mRemembered.contains(authority)) {
+                menu.add(Menu.NONE, CONTEXT_EDIT_SERVER, Menu.NONE, R.string.edit_server);
                 menu.add(Menu.NONE, CONTEXT_FORGET, Menu.NONE, R.string.context_forget);
             }
         }
@@ -460,12 +419,19 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        Preference preference;
         switch (item.getItemId()) {
             case CONTEXT_FORGET:
-                ContextMenuInfo menuInfo = item.getMenuInfo();
-                Preference preference = getPreferenceFromMenuInfo(menuInfo);
+                preference = getPreferenceFromMenuInfo(item.getMenuInfo());
                 if (preference != null) {
                     forget(Server.fromKey(preference.getKey()));
+                }
+                return true;
+            case CONTEXT_EDIT_SERVER:
+                preference = getPreferenceFromMenuInfo(item.getMenuInfo());
+                if(preference != null) {
+                    ServerInfoDialog d = ServerInfoDialog.editServerInstance(preference.getKey());
+                    d.show(getFragmentManager(), DIALOG_EDIT_SERVER);
                 }
                 return true;
             default:
@@ -484,30 +450,6 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             }
         }
         mProgressCategory.setProgress(progress != max);
-    }
-
-    private String getHostname() {
-        return mEditHostname.getText().toString();
-    }
-
-    private String getUser() {
-        return mEditUser.getText().toString();
-    }
-
-    private String getPassword() {
-        return mEditPassword.getText().toString();
-    }
-
-    private int getPort() {
-        String value = String.valueOf(mEditPort.getText());
-        if (!TextUtils.isEmpty(value)) {
-            try {
-                return Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                Log.w(TAG, "Invalid port number: " + value);
-            }
-        }
-        return mPort;
     }
 
     @Override

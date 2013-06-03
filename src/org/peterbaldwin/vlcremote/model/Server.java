@@ -1,6 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/*-
+ *  Copyright (C) 2013 Sam Malone
+ *  
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.peterbaldwin.vlcremote.model;
 
@@ -19,12 +31,32 @@ public class Server {
     private String user;
     private String password;
     private Uri uri;
-    private int reponseCode;
+    private int responseCode;
+    
+    public Server (String host, int port, String user, String password, int responseCode) {
+        StringBuilder authority = new StringBuilder();
+        if(user == null) {
+            user = "";
+        }
+        if(password == null) {
+            password = "";
+        }
+        authority.append(user).append(':').append(password).append('@');
+        authority.append(host).append(':').append(port);
+        uri = Uri.parse("http://" + authority.toString());
+        this.user = user;
+        this.password = password;
+        this.responseCode = responseCode;
+    }
+    
+    public Server (String host, int port, String user, String password) {
+        this(host, port, user, password, DEFAULT_RESPONSE_CODE);
+    }
     
     public Server(String authority, int responseCode) {
         uri = Uri.parse("http://" + authority);
         setUserInfo(uri.getUserInfo());
-        this.reponseCode = responseCode;
+        this.responseCode = responseCode;
     }
     
     public Server(String authority) {
@@ -83,11 +115,11 @@ public class Server {
      * @return response code
      */
     public int getResponseCode() {
-        return reponseCode;
+        return responseCode;
     }
 
-    public void setReponseCode(int reponseCode) {
-        this.reponseCode = reponseCode;
+    public void setResponseCode(int reponseCode) {
+        this.responseCode = reponseCode;
     }
     
     /**
@@ -108,7 +140,7 @@ public class Server {
      * @return key to represent server information
      */
     public String toKey() {
-        return String.format("%s#%d", uri.getAuthority(), reponseCode);
+        return String.format("%s#%d", uri.getAuthority(), responseCode);
     }
     
     /**

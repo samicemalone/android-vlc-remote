@@ -15,7 +15,8 @@
     <string name="error_does_not_exist">The selected folder does not exist.</string>
     <string name="title">VLC Remote [{0}]</string>
     <string name="title_pick_server">Pick Server</string>
-    <string name="add_server">Add VLC server</string>
+    <string name="add_server">Add VLC Server</string>
+    <string name="edit_server">Edit VLC Server</string>
     <string name="label_hostname">Hostname or IP address</string>
     <string name="label_port">Port (default: 8080)</string>
     <string name="label_user">User (default: none)</string>
@@ -37,7 +38,7 @@
         file on your PC
     </string>
     <string name="summary_unauthorized">Requires Authentication</string>
-    <string name="context_forget">Forget</string>
+    <string name="context_forget">Forget Server</string>
     <string name="progress_scanning">Scanning</string>
     <string name="vlc_servers">VLC Servers</string>
     <string name="search_label">Input</string>
