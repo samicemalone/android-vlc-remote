@@ -34,23 +34,25 @@ public class Server {
     private Uri uri;
     private int responseCode;
     
-    public Server (String host, int port, String user, String password, int responseCode) {
+    public Server(String host, int port, String user, String password, int responseCode) {
+        this.user = user != null ? user : "";
+        this.password = password != null ? password : "";
         StringBuilder authority = new StringBuilder();
-        if(user == null) {
-            user = "";
+        if(!this.user.isEmpty()) {
+            authority.append(user);
         }
-        if(password == null) {
-            password = "";
+        if(!this.password.isEmpty()) {
+            authority.append(':').append(password);
         }
-        authority.append(user).append(':').append(password).append('@');
+        if(hasUserInfo()) {
+            authority.append('@');
+        }
         authority.append(host).append(':').append(port);
         uri = Uri.parse("http://" + authority.toString());
-        this.user = user;
-        this.password = password;
         this.responseCode = responseCode;
     }
     
-    public Server (String host, int port, String user, String password) {
+    public Server(String host, int port, String user, String password) {
         this(host, port, user, password, DEFAULT_RESPONSE_CODE);
     }
     
@@ -128,7 +130,7 @@ public class Server {
      * @return true if the username or password is set (and non empty), false 
      * otherwise
      */
-    public boolean hasUserInfo() {
+    public final boolean hasUserInfo() {
         return !TextUtils.isEmpty(user) || !TextUtils.isEmpty(password);
     }
     
