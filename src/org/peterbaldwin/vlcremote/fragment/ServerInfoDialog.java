@@ -42,23 +42,62 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
     
     private ServerInfoDialogListener mListener;
     
+    private final static int ADD_TYPE = 0;
+    private final static int EDIT_TYPE = 1;
+    
+    private boolean requiresAuthentication;
+    private int dialogType;
+    
     private EditText mEditHostname;
     private EditText mEditPort;
     private EditText mEditUser;
     private EditText mEditPassword;
     
+    /**
+     * Creates a new ServerInfoDialog instance for adding a new server.
+     * Username and password fields are optional
+     * @return 
+     */
     public static ServerInfoDialog addServerInstance() {
-        return newInstance(R.string.add_server, null);
+        return newInstance(ADD_TYPE, R.string.add_server, null, false);
     }
     
+    /**
+     * Creates a new ServerInfoDialog instance for adding a new server that
+     * requires authorization.
+     * @param currentServerKey The Server key for the existing server
+     * @return 
+     */
+    public static ServerInfoDialog addAuthServerInstance(String currentServerKey) {
+        return newInstance(ADD_TYPE, R.string.add_server, currentServerKey, true);
+    }
+    
+    /**
+     * Creates a new ServerInfoDialog instance for editing an existing server.
+     * Username and password fields are optional
+     * @param currentServerKey The Server key for the existing server.
+     * @return 
+     */
     public static ServerInfoDialog editServerInstance(String currentServerKey) {
-        return newInstance(R.string.edit_server, currentServerKey);
+        return newInstance(EDIT_TYPE, R.string.edit_server, currentServerKey, false);
     }
     
-    public static ServerInfoDialog newInstance(int titleRes, String currentServerKey) {
+    /**
+     * Creates a new instance of ServerInfoDialog.
+     * @param dialogType ADD_TYPE or EDIT_TYPE
+     * @param titleRes The title String resource id
+     * @param currentServerKey The Server key for the existing server. This is
+     * used to populate the fields with existing values.
+     * @param requiresAuth if true, the username or password will be required.
+     * If false, the username and password will be optional
+     * @return 
+     */
+    public static ServerInfoDialog newInstance(int dialogType, int titleRes, String currentServerKey, boolean requiresAuth) {
         ServerInfoDialog dialog = new ServerInfoDialog();
         Bundle args = new Bundle();
         args.putInt("titleRes", titleRes);
+        args.putBoolean("auth", requiresAuth);
+        args.putInt("dialogType", dialogType);
         if(currentServerKey != null) {
             args.putString("currentKey", currentServerKey);
         }
@@ -68,6 +107,8 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        requiresAuthentication = getArguments().getBoolean("auth", false);
+        dialogType = getArguments().getInt("dialogType", ADD_TYPE);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getInt("titleRes"));
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -124,14 +165,16 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
         if(!validateInput()) {
             return;
         }
-        if(getArguments().getString("currentKey") == null) {
-            mListener.onAddServer(createServerFromInput());
-            dismiss();
-            return;
-        }
-        Server server = createServerFromInput();
-        if(!getArguments().getString("currentKey").equals(server.toKey())) {
-            mListener.onEditServer(server, getArguments().getString("currentKey"));
+        switch(dialogType) {
+            case ADD_TYPE:
+                mListener.onAddServer(createServerFromInput());
+                break;
+            case EDIT_TYPE:
+                Server server = createServerFromInput();
+                if(!getArguments().getString("currentKey").equals(server.toKey())) {
+                    mListener.onEditServer(server, getArguments().getString("currentKey"));
+                }
+                break;
         }
         dismiss();
     }
@@ -164,6 +207,12 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
         if(mEditHostname.getText().toString().isEmpty()) {
             Toast.makeText(getActivity(), "The host cannot be empty", Toast.LENGTH_SHORT).show();
             return false;
+        }
+        if(requiresAuthentication) {
+            if(mEditUser.getText().toString().isEmpty() && mEditPassword.getText().toString().isEmpty()) {
+                Toast.makeText(getActivity(), "A username or password is required", Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         return true;
     }

@@ -375,8 +375,13 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             Preferences preferences = Preferences.get(this);
             preferences.setHideDVDTab(mPreferenceHideDVDTab.isChecked());
             return true;
-        } else {            
-            onAddServer(Server.fromKey(preference.getKey()));
+        } else {
+            Server server = Server.fromKey(preference.getKey());
+            if(server.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                ServerInfoDialog.addAuthServerInstance(server.toKey()).show(getFragmentManager(), DIALOG_ADD_SERVER);
+            } else {
+                onAddServer(server);
+            }
             return true;
         }
     }
