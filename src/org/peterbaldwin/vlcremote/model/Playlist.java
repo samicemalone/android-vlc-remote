@@ -19,7 +19,7 @@ package org.peterbaldwin.vlcremote.model;
 
 import java.util.ArrayList;
 
-public final class Playlist extends ArrayList<PlaylistItem> implements PlaylistItem {
+public final class Playlist extends ArrayList<PlaylistItem> {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,18 +40,4 @@ public final class Playlist extends ArrayList<PlaylistItem> implements PlaylistI
         return mName;
     }
 
-    /** {@inheritDoc} */
-    public boolean isCurrent() {
-        return false;
-    }
-
-    /** {@inheritDoc} */
-    public CharSequence getText1() {
-        return mName;
-    }
-
-    /** {@inheritDoc} */
-    public CharSequence getText2() {
-        return "";
-    }
 }

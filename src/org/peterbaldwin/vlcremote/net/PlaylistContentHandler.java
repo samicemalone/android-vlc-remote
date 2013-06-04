@@ -17,18 +17,16 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import android.text.Html;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.util.Stack;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Track;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-
-import android.text.Html;
-
-import java.io.IOException;
-import java.net.URLConnection;
-import java.util.Stack;
 
 final class PlaylistContentHandler extends XmlContentHandler<Playlist> implements ContentHandler {
 
@@ -50,8 +48,6 @@ final class PlaylistContentHandler extends XmlContentHandler<Playlist> implement
 
     private Track mTrack;
 
-    private boolean mFlatten = true;
-
     public PlaylistContentHandler() {
         mNodeStack = new Stack<Playlist>();
         mBuilder = new StringBuilder();
@@ -65,18 +61,12 @@ final class PlaylistContentHandler extends XmlContentHandler<Playlist> implement
             if ("vlc://nop".equals(attributes.getValue("uri"))) {
                 // Don't include nop tracks in the output
             } else {
-                if (mFlatten) {
-                    mRoot.add(mTrack);
-                } else {
-                    mNodeStack.peek().add(mTrack);
-                }
+                mRoot.add(mTrack);
             }
         } else if ("node".equals(localName)) {
             Playlist playlist = createPlaylist(attributes);
             if (mNodeStack.isEmpty()) {
                 mRoot = playlist;
-            } else if (!mFlatten) {
-                mNodeStack.peek().add(playlist);
             }
             mNodeStack.push(playlist);
         } else if (mTrack != null && isTextElement(localName)) {

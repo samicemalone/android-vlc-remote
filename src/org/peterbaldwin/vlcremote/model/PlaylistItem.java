@@ -27,7 +27,7 @@ public interface PlaylistItem {
 
     boolean isCurrent();
 
-    CharSequence getText1();
+    CharSequence getPlaylistHeading();
 
-    CharSequence getText2();
+    CharSequence getPlaylistText();
 }
