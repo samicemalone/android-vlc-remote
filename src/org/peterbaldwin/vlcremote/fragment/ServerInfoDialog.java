@@ -26,10 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import java.net.HttpURLConnection;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.net.ServerConnectionTest;
@@ -222,17 +218,17 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
             try {
                 Integer.valueOf(mEditPort.getText().toString());
             } catch(NumberFormatException ex) {
-                Toast.makeText(getActivity(), "The port number must be numberic", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.validate_port, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
         if(mEditHostname.getText().toString().isEmpty()) {
-            Toast.makeText(getActivity(), "The host cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.validate_host, Toast.LENGTH_SHORT).show();
             return false;
         }
         if(requiresAuthentication) {
             if(mEditUser.getText().toString().isEmpty() && mEditPassword.getText().toString().isEmpty()) {
-                Toast.makeText(getActivity(), "A username or password is required", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.validate_auth, Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
