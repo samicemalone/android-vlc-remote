@@ -26,8 +26,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import java.net.HttpURLConnection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.Server;
+import org.peterbaldwin.vlcremote.net.ServerConnectionTest;
 
 /**
  *
@@ -116,6 +121,7 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
         setupViews(view);
         builder.setView(view);
         builder.setPositiveButton(R.string.ok, null);
+        builder.setNeutralButton(R.string.test_server_button, null);
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -125,7 +131,10 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
         final AlertDialog dialog = builder.create();
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             public void onShow(DialogInterface d) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTag(AlertDialog.BUTTON_POSITIVE);
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(ServerInfoDialog.this);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTag(AlertDialog.BUTTON_NEUTRAL);
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(ServerInfoDialog.this);
             }
         });
         return dialog;
@@ -159,10 +168,23 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
             throw new ClassCastException(activity.toString() + " must implement ServerInfoDialogListener");
         }
     }
+      
+    public void onTestServer(Server server) {
+        new ServerConnectionTest(getActivity()).execute(server);
+    }
 
+    /**
+     * This is the onShowListener for when the positive or neutral button is 
+     * clicked.
+     * @param view Positive/Neutral button
+     */
     @Override
     public void onClick(View view) {
         if(!validateInput()) {
+            return;
+        }
+        if(view.getTag().equals(AlertDialog.BUTTON_NEUTRAL)) {
+            onTestServer(createServerFromInput());
             return;
         }
         switch(dialogType) {

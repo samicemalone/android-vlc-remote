@@ -17,6 +17,11 @@
     <string name="title_pick_server">Pick Server</string>
     <string name="add_server">Add VLC Server</string>
     <string name="edit_server">Edit VLC Server</string>
+    <string name="test_server_button">Test</string>
+    <string name="server_error">Failed to connect to server</string>
+    <string name="server_unauthorized">Invalid username or password</string>
+    <string name="server_forbidden">Forbidden. Please check VLC\'s .hosts file</string>
+    <string name="server_ok">Connection successful</string>
     <string name="label_hostname">Hostname or IP address</string>
     <string name="label_port">Port (default: 8080)</string>
     <string name="label_user">User (default: none)</string>
