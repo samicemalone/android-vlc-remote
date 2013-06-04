@@ -17,6 +17,7 @@
 package org.peterbaldwin.vlcremote.model;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import java.net.HttpURLConnection;
 
 /**
@@ -124,10 +125,11 @@ public class Server {
     
     /**
      * Checks if the server has user information set
-     * @return true if the username or password is set, false otherwise
+     * @return true if the username or password is set (and non empty), false 
+     * otherwise
      */
     public boolean hasUserInfo() {
-        return user != null || password != null;
+        return !TextUtils.isEmpty(user) || !TextUtils.isEmpty(password);
     }
     
     public Uri getUri() {
