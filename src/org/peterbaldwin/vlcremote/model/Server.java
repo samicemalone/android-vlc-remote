@@ -127,7 +127,7 @@ public class Server {
      * @return true if the username or password is set, false otherwise
      */
     public boolean hasUserInfo() {
-        return user != null && password != null;
+        return user != null || password != null;
     }
     
     public Uri getUri() {
