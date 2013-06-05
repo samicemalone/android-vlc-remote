@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
  *
  * @author Sam Malone
  */
-public class Movie implements MediaDisplayInfo {
+public class Movie extends Media implements MediaDisplayInfo {
     
     public final static int UNKNOWN_YEAR = 0;
     
@@ -117,6 +117,14 @@ public class Movie implements MediaDisplayInfo {
     /** {@inheritDoc} */
     public String getMediaSecondText() {
         return "";
+    }
+
+    public String getPlaylistHeading() {
+        return getMediaHeading();
+    }
+
+    public String getPlaylistText() {
+        return getMediaFirstText();
     }
     
 }

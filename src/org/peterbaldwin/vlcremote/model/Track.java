@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
 import android.text.TextUtils;
 import java.io.Serializable;
 
-public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo {
+public final class Track extends Media implements Serializable, MediaDisplayInfo {
     
     private static final byte UNKNOWN_STREAM = 0;
     
@@ -29,14 +29,6 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
     private static final byte SUBTITLE_STREAM_FLAG = 4;    
 
     private static final long serialVersionUID = 1L;
-
-    private int mId;
-
-    private boolean mCurrent;
-
-    private String mUri;
-
-    private String mName;
 
     private long mDuration;
 
@@ -77,19 +69,6 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
      */
     private byte streamTypesMask;
 
-    public int getId() {
-        return mId;
-    }
-
-    public void setId(int id) {
-        mId = id;
-    }
-
-    /** {@inheritDoc} */
-    public boolean isCurrent() {
-        return mCurrent;
-    }
-
     /** {@inheritDoc} */
     public String getPlaylistHeading() {
         return isNotEmpty(mTitle) ? mTitle : isNotEmpty(mName) ? mName : "";
@@ -98,26 +77,6 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
     /** {@inheritDoc} */
     public String getPlaylistText() {
         return isNotEmpty(mArtist) ? mArtist : isNotEmpty(mTitle) ? mName : "";
-    }
-
-    public void setCurrent(boolean current) {
-        mCurrent = current;
-    }
-
-    public String getUri() {
-        return mUri;
-    }
-
-    public void setUri(String uri) {
-        mUri = uri;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
     }
 
     public long getDuration() {
