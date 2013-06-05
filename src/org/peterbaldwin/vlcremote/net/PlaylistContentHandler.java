@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import android.net.Uri;
 import android.text.Html;
 import java.io.IOException;
 import java.net.URLConnection;
@@ -202,7 +203,7 @@ final class PlaylistContentHandler extends XmlContentHandler<Playlist> implement
         track.setCurrent(current);
 
         String uri = attributes.getValue("", "uri");
-        track.setUri(uri);
+        track.setUri(Uri.decode(uri));
 
         String name = attributes.getValue("", "name");
         track.setName(name);
