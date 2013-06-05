@@ -64,6 +64,8 @@ public final class Track extends Media implements Serializable, MediaDisplayInfo
 
     private String mTrackId;
     
+    private boolean mParsed;
+    
     /**
      * Bit Mask of the stream types the track holds.
      */
@@ -213,6 +215,14 @@ public final class Track extends Media implements Serializable, MediaDisplayInfo
 
     public void setTrackId(String trackId) {
         this.mTrackId = trackId;
+    }
+    
+    public boolean isParsed() {
+        return mParsed;
+    }
+    
+    public void setParsed(boolean parsed) {
+        mParsed = parsed;
     }
     
     /**

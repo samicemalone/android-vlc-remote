@@ -2,7 +2,6 @@
 package org.peterbaldwin.vlcremote.widget;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Movie;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
-import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Track;
+import org.peterbaldwin.vlcremote.parser.EpisodeParser;
+import org.peterbaldwin.vlcremote.parser.MovieParser;
 
 public final class PlaylistAdapter extends BaseAdapter {
     
@@ -23,6 +25,14 @@ public final class PlaylistAdapter extends BaseAdapter {
         public TextView playlistHeading;
         public TextView playlistText;
         public View icon;
+    }
+    
+    private final EpisodeParser mEpisodeParser;
+    private final MovieParser mMovieParser;
+    
+    public PlaylistAdapter() {
+        this.mEpisodeParser = new EpisodeParser();
+        this.mMovieParser = new MovieParser();
     }
 
     private List<PlaylistItem> mItems;
@@ -41,37 +51,42 @@ public final class PlaylistAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        boolean fileNamesOnly = Preferences.get(convertView.getContext()).isFileNamesOnlySet();
         PlaylistItem item = getItem(position);
         if (item instanceof Track) {
             Track track = (Track) item;
-            if (!TextUtils.isEmpty(track.getTitle())) {
-                if(fileNamesOnly) {
-                    Log.d("PLAYLIIST", item.getName());
-                    holder.playlistHeading.setText(File.baseName(item.getName()));
-                } else {
-                    holder.playlistHeading.setText(track.getTitle());
+            if(!track.isParsed()) {
+                String trackName = item.getUri();
+                // no need to check for video streams beacuse vlc does not give 
+                // stream information for playlist items (only now playing item)
+                Episode e = mEpisodeParser.parse(trackName);
+                if(e != null) {
+                    e.copyPlaylistItemFrom(item);
+                    mItems.set(position, e);
+                    setPlaylistDisplayInfo(holder, e);
+                    return convertView;
                 }
-                holder.playlistText.setText(track.getArtist());
-            } else {
-                if(fileNamesOnly) {
-                    holder.playlistHeading.setText(File.baseName(item.getName()));
-                } else {
-                    holder.playlistHeading.setText(item.getName());
+                Movie m = mMovieParser.parse(trackName);
+                if(m != null) {
+                    m.copyPlaylistItemFrom(item);
+                    mItems.set(position, m);
+                    setPlaylistDisplayInfo(holder, m);
+                    return convertView;
                 }
-                holder.playlistText.setText("");
             }
-            holder.icon.setVisibility(track.isCurrent() ? View.VISIBLE : View.GONE);
-        } else {
-            if(fileNamesOnly) {
-                holder.playlistHeading.setText(File.baseName(item.getName()));
-            } else {
-                holder.playlistHeading.setText(item.getName());
-            }
-            holder.playlistText.setText("");
-            holder.icon.setVisibility(View.GONE);
+            track.setParsed(true);
         }
+        setPlaylistDisplayInfo(holder, item);
         return convertView;
+    }
+    
+    private void setPlaylistDisplayInfo(ViewHolder holder, PlaylistItem item) {
+        holder.playlistHeading.setText(item.getPlaylistHeading());
+        if(TextUtils.isEmpty(item.getPlaylistText())) {
+            holder.playlistText.setText(File.baseName(item.getUri()));
+        } else {
+            holder.playlistText.setText(item.getPlaylistText());
+        }
+        holder.icon.setVisibility(item.isCurrent() ? View.VISIBLE : View.GONE);
     }
 
     /** {@inheritDoc} */
