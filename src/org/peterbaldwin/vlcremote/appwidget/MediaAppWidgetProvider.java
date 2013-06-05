@@ -25,7 +25,6 @@ import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 import android.app.AlarmManager;
@@ -40,46 +39,51 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
+import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Movie;
+import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.parser.EpisodeParser;
+import org.peterbaldwin.vlcremote.parser.MovieParser;
 
 /**
  * Simple widget to show currently playing album art along with play/pause and
  * next track buttons.
  */
 public class MediaAppWidgetProvider extends AppWidgetProvider {
-    static final String LOG_TAG = "VlcRemoteAppWidgetProvider";
+    
+    private static class TextHolder {
+        public TextHolder(String headingText, String infoText) {
+            this.headingText = headingText;
+            this.infoText = infoText;
+        }
+        private String headingText;
+        private String infoText;
+    }
+    
+    public static final String LOG_TAG = "VlcRemoteAppWidgetProvider";
+    
+    private EpisodeParser mEpisodeParser;
+    private MovieParser mMovieParser;
+    
+    private String mCurrentFileName;
+    
+    public MediaAppWidgetProvider() {
+        mEpisodeParser = new EpisodeParser();
+        mMovieParser = new MovieParser();
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (Intents.ACTION_STATUS.equals(action)) {
             Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
-            String noMedia = context.getString(R.string.no_media);
-
-            String text1;
-            String text2;
-            if (status.isStopped()) {
-                text1 = noMedia;
-                text2 = "";
-            } else {
-                Track track = status.getTrack();
-                boolean fileNamesOnly = Preferences.get(context).isFileNamesOnlySet();
-                if(fileNamesOnly) {
-                    text1 = File.baseName(track.getTitle());
-                } else {
-                    text1 = track.getTitle();
-                }
-                text2 = track.getArtist();
-                if (TextUtils.isEmpty(text1) && TextUtils.isEmpty(text2)) {
-                    if(fileNamesOnly) {
-                        text1 = File.baseName(track.getName());
-                    } else {
-                        text1 = track.getName();
-                    }
-                }
+            TextHolder text = updateText(context, status);
+            if(text == null) {
+                return;
             }
             int[] appWidgetIds = null;
-            performUpdate(context, text1, text2, status.isPlaying(), appWidgetIds);
+            performUpdate(context, text.headingText, text.infoText, status.isPlaying(), appWidgetIds);
 
             long time = status.getTime();
             long length = status.getLength();
@@ -107,6 +111,54 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
         } else {
             super.onReceive(context, intent);
         }
+    }
+    
+    /**
+     * Gets the new heading and text to be updated for the given status.
+     * @param ctx Context
+     * @param status Status
+     * @return TextHolder with new text to display. null if no change needed
+     */
+    private TextHolder updateText(Context ctx, Status status) {
+        if (status.isStopped()) {
+            return new TextHolder(ctx.getString(R.string.no_media), "");
+        }
+        if(status.getTrack().getName() == null) {
+            if(status.getTrack().getTitle() == null) {
+                if(mCurrentFileName != null) {
+                    mCurrentFileName = null;
+                    return new TextHolder("", "");
+                }
+                return null;
+            }
+            if(status.getTrack().getTitle().equals(mCurrentFileName)) {
+                return null;
+            }
+            mCurrentFileName = status.getTrack().getTitle();
+        } else {
+            if(status.getTrack().getName().equals(mCurrentFileName)) {
+                return null;
+            }
+            mCurrentFileName = status.getTrack().getName();
+        }
+        if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
+            Episode e = mEpisodeParser.parse(mCurrentFileName);
+            if(e != null) {
+                return setPlaylistText(e);
+            }
+            Movie m = mMovieParser.parse(mCurrentFileName);
+            if(m != null) {
+                return setPlaylistText(m);
+            }
+        }
+        return setPlaylistText(status.getTrack());
+    }
+    
+    private TextHolder setPlaylistText(PlaylistItem item) {
+        if(TextUtils.isEmpty(item.getPlaylistText())) {
+            return new TextHolder(item.getPlaylistHeading(), File.baseName(mCurrentFileName));
+        }
+        return new TextHolder(item.getPlaylistHeading(), item.getPlaylistText());
     }
 
     private static PendingIntent createManualAppWidgetUpdateIntent(Context context) {
