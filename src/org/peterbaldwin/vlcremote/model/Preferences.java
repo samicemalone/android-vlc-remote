@@ -44,7 +44,7 @@ public final class Preferences {
 
     private static final String PREFERENCE_RESUME_ON_IDLE = "resume_on_idle";
     
-    private static final String PREFERENCE_FILE_NAMES_ONLY = "file_names_only";
+    private static final String PREFERENCE_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
     
     private static final String PREFERENCE_HIDE_DVD_TAB = "hide_dvd_tab";
 
@@ -80,13 +80,13 @@ public final class Preferences {
         return editor.commit();
     }
     
-    public boolean isFileNamesOnlySet() {
-        return mPreferences.getBoolean(PREFERENCE_FILE_NAMES_ONLY, false);
+    public boolean isParsePlaylistItems() {
+        return mPreferences.getBoolean(PREFERENCE_PARSE_PLAYLIST_ITEMS, false);
     }
 	
-    public boolean setFileNamesOnly(boolean hidePaths) {
+    public boolean setParsePlaylistItems(boolean parsePlaylist) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putBoolean(PREFERENCE_FILE_NAMES_ONLY, hidePaths);
+        editor.putBoolean(PREFERENCE_PARSE_PLAYLIST_ITEMS, parsePlaylist);
         return editor.commit();
     }
     

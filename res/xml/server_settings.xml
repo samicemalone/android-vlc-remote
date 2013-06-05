@@ -14,9 +14,9 @@
         android:summary="@string/summary_wifi_disconnected"
         android:title="@string/wifi" />
     <CheckBoxPreference
-        android:key="file_names_only"
-        android:title="@string/file_names_only"
-        android:summary="@string/summary_file_names_only"
+        android:key="parse_playlist_items"
+        android:title="@string/parse_playlist_items"
+        android:summary="@string/summary_parse_playlist_items"
         android:persistent="true" />
     <CheckBoxPreference
         android:key="hide_dvd_tab"

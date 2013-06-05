@@ -72,7 +72,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     public static final String EXTRA_REMEMBERED = "org.peterbaldwin.portsweep.intent.extra.REMEMBERED";
 
     private static final String KEY_WIFI = "wifi";
-    private static final String KEY_FILE_NAMES_ONLY = "file_names_only";
+    private static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
     private static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
@@ -112,7 +112,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     private CheckBoxPreference mPreferenceWiFi;
     private CheckBoxPreference mPreferencePauseForCall;
-    private CheckBoxPreference mPreferenceFileNamesOnly;
+    private CheckBoxPreference mPreferenceParsePlaylistItems;
     private CheckBoxPreference mPreferenceHideDVDTab;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
@@ -128,7 +128,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
         mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
-        mPreferenceFileNamesOnly = (CheckBoxPreference) preferenceScreen.findPreference(KEY_FILE_NAMES_ONLY);
+        mPreferenceParsePlaylistItems = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PARSE_PLAYLIST_ITEMS);
         mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
@@ -367,9 +367,9 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             return true;
         } else if (preference == mPreferencePauseForCall) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (preference == mPreferenceFileNamesOnly) {
+        } else if (preference == mPreferenceParsePlaylistItems) {
             Preferences preferences = Preferences.get(this);
-            preferences.setFileNamesOnly(mPreferenceFileNamesOnly.isChecked());
+            preferences.setParsePlaylistItems(mPreferenceParsePlaylistItems.isChecked());
             return true;
         } else if (preference == mPreferenceHideDVDTab) {
             Preferences preferences = Preferences.get(this);

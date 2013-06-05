@@ -15,6 +15,7 @@ import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Movie;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.parser.EpisodeParser;
 import org.peterbaldwin.vlcremote.parser.MovieParser;
@@ -51,10 +52,11 @@ public final class PlaylistAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+        boolean parsePlaylist = Preferences.get(convertView.getContext()).isParsePlaylistItems();
         PlaylistItem item = getItem(position);
         if (item instanceof Track) {
             Track track = (Track) item;
-            if(!track.isParsed()) {
+            if(parsePlaylist && !track.isParsed()) {
                 String trackName = item.getUri();
                 // no need to check for video streams beacuse vlc does not give 
                 // stream information for playlist items (only now playing item)
