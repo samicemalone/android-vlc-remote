@@ -1,11 +1,6 @@
 
 package org.peterbaldwin.vlcremote.widget;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.model.PlaylistItem;
-import org.peterbaldwin.vlcremote.model.Track;
-
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,58 +9,69 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.PlaylistItem;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Track;
 
 public final class PlaylistAdapter extends BaseAdapter {
+    
+    public static class ViewHolder {
+        public TextView playlistHeading;
+        public TextView playlistText;
+        public View icon;
+    }
 
     private List<PlaylistItem> mItems;
 
     /** {@inheritDoc} */
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            Context context = parent.getContext();
-            LayoutInflater inflater = LayoutInflater.from(context);
-            view = inflater.inflate(R.layout.playlist_list_item, parent, false);
+        ViewHolder holder;
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            convertView = inflater.inflate(R.layout.playlist_list_item, parent, false);
+            holder = new ViewHolder();
+            holder.playlistHeading = (TextView) convertView.findViewById(android.R.id.text1);
+            holder.playlistText = (TextView) convertView.findViewById(android.R.id.text2);
+            holder.icon = convertView.findViewById(android.R.id.icon);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        boolean fileNamesOnly = Preferences.get(view.getContext()).isFileNamesOnlySet();
-        TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-        TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-        View icon = view.findViewById(android.R.id.icon);
+        boolean fileNamesOnly = Preferences.get(convertView.getContext()).isFileNamesOnlySet();
         PlaylistItem item = getItem(position);
         if (item instanceof Track) {
             Track track = (Track) item;
             if (!TextUtils.isEmpty(track.getTitle())) {
                 if(fileNamesOnly) {
                     Log.d("PLAYLIIST", item.getName());
-                    text1.setText(File.baseName(item.getName()));
+                    holder.playlistHeading.setText(File.baseName(item.getName()));
                 } else {
-                    text1.setText(track.getTitle());
+                    holder.playlistHeading.setText(track.getTitle());
                 }
-                text2.setText(track.getArtist());
+                holder.playlistText.setText(track.getArtist());
             } else {
                 if(fileNamesOnly) {
-                    text1.setText(File.baseName(item.getName()));
+                    holder.playlistHeading.setText(File.baseName(item.getName()));
                 } else {
-                    text1.setText(item.getName());
+                    holder.playlistHeading.setText(item.getName());
                 }
-                text2.setText("");
+                holder.playlistText.setText("");
             }
-            icon.setVisibility(track.isCurrent() ? View.VISIBLE : View.GONE);
+            holder.icon.setVisibility(track.isCurrent() ? View.VISIBLE : View.GONE);
         } else {
             if(fileNamesOnly) {
-                text1.setText(File.baseName(item.getName()));
+                holder.playlistHeading.setText(File.baseName(item.getName()));
             } else {
-                text1.setText(item.getName());
+                holder.playlistHeading.setText(item.getName());
             }
-            text2.setText("");
-            icon.setVisibility(View.GONE);
+            holder.playlistText.setText("");
+            holder.icon.setVisibility(View.GONE);
         }
-        return view;
+        return convertView;
     }
 
     /** {@inheritDoc} */
