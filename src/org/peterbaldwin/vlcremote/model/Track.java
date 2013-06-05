@@ -91,13 +91,13 @@ public final class Track implements PlaylistItem, Serializable, MediaDisplayInfo
     }
 
     /** {@inheritDoc} */
-    public CharSequence getPlaylistHeading() {
+    public String getPlaylistHeading() {
         return isNotEmpty(mTitle) ? mTitle : isNotEmpty(mName) ? mName : "";
     }
 
     /** {@inheritDoc} */
-    public CharSequence getPlaylistText() {
-        return isNotEmpty(mArtist) ? mArtist : "";
+    public String getPlaylistText() {
+        return isNotEmpty(mArtist) ? mArtist : isNotEmpty(mTitle) ? mName : "";
     }
 
     public void setCurrent(boolean current) {

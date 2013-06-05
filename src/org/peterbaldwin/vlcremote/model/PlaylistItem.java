@@ -20,14 +20,16 @@ package org.peterbaldwin.vlcremote.model;
 /**
  * Abstraction for any item that can appear in a playlist.
  */
-public interface PlaylistItem {
-    int getId();
+public interface PlaylistItem extends PlaylistDisplayItem {
+    public int getId();
 
-    String getName();
+    public String getName();
 
-    boolean isCurrent();
+    public boolean isCurrent();
+    
+    @Override
+    public String getPlaylistHeading();
 
-    CharSequence getPlaylistHeading();
-
-    CharSequence getPlaylistText();
+    @Override
+    public String getPlaylistText();
 }
