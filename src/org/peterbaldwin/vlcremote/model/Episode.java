@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
  *
  * @author Sam Malone
  */
-public class Episode extends Media implements MediaDisplayInfo {
+public class Episode extends Media {
     
     public final static int NO_EPISODE = -1;
     

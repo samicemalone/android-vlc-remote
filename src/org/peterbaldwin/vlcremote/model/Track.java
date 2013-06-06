@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
 import android.text.TextUtils;
 import java.io.Serializable;
 
-public final class Track extends Media implements Serializable, MediaDisplayInfo {
+public final class Track extends Media implements Serializable {
     
     private static final byte UNKNOWN_STREAM = 0;
     

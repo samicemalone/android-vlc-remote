@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.model;
  *
  * @author Sam Malone
  */
-public class Movie extends Media implements MediaDisplayInfo {
+public class Movie extends Media {
     
     public final static int UNKNOWN_YEAR = 0;
     

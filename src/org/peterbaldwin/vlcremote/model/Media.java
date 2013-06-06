@@ -22,7 +22,7 @@ import java.io.Serializable;
  *
  * @author Sam Malone
  */
-public abstract class Media implements Serializable, PlaylistItem {
+public abstract class Media implements Serializable, PlaylistItem, MediaDisplayInfo {
     
     private static final long serialVersionUID = 1L;
     
@@ -74,11 +74,5 @@ public abstract class Media implements Serializable, PlaylistItem {
         setName(media.getName());
         setUri(media.getUri());
     }
-
-    /** {@inheritDoc} */
-    public abstract String getPlaylistHeading();
-
-    /** {@inheritDoc} */
-    public abstract String getPlaylistText();
     
 }
