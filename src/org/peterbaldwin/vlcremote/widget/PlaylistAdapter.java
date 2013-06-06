@@ -88,6 +88,9 @@ public final class PlaylistAdapter extends BaseAdapter {
         } else {
             holder.playlistText.setText(item.getPlaylistText());
         }
+        if(holder.playlistHeading.getText().equals(holder.playlistText.getText())) {
+            holder.playlistText.setText("");
+        }
         holder.icon.setVisibility(item.isCurrent() ? View.VISIBLE : View.GONE);
     }
 
