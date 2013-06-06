@@ -38,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import org.peterbaldwin.vlcremote.loader.ArtLoader;
 
 public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
 
@@ -88,6 +89,9 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
         Uri uri = mArtUrl != null ? Uri.parse(mArtUrl) : null;
         if (uri != null) {
             uri = resizeImage(uri);
+            if("file".equals(uri.getScheme())) {
+                return new ArtLoader(context, mMediaServer);
+            }
         }
         return new ImageLoader(context, mMediaServer, uri);
     }
