@@ -29,13 +29,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.MediaDisplayInfo;
-import org.peterbaldwin.vlcremote.model.Movie;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.parser.EpisodeParser;
-import org.peterbaldwin.vlcremote.parser.MovieParser;
 
 public class InfoFragment extends Fragment {
 
@@ -43,13 +41,11 @@ public class InfoFragment extends Fragment {
     private TextView mArtist;
     private TextView mAlbum;
     private TextView mTrack;
-    private EpisodeParser mEpisodeParser;
-    private MovieParser mMovieParser;
+    private EpisodeParser mMediaParser;
     private String mCurrentFileName;
 
     public InfoFragment() {
-        mEpisodeParser = new EpisodeParser();
-        mMovieParser = new MovieParser();
+        mMediaParser = new EpisodeParser();
     }
 
     @Override
@@ -101,14 +97,9 @@ public class InfoFragment extends Fragment {
         // it is possible for a status change to be sent before vlc has fully read
         // the file metadata and not output any stream information.
         if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
-            Episode e = mEpisodeParser.parse(mCurrentFileName);
-            if(e != null) {
-                setMediaDisplayInfo(e, mCurrentFileName);
-                return;
-            }
-            Movie m = mMovieParser.parse(mCurrentFileName);
-            if(m != null) {
-                setMediaDisplayInfo(m, mCurrentFileName);
+            Media media = mMediaParser.parse(mCurrentFileName);
+            if(media != null) {
+                setMediaDisplayInfo(media, mCurrentFileName);
                 return;
             }
         }

@@ -11,14 +11,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.model.Episode;
 import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Movie;
+import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Track;
-import org.peterbaldwin.vlcremote.parser.EpisodeParser;
-import org.peterbaldwin.vlcremote.parser.MovieParser;
+import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public final class PlaylistAdapter extends BaseAdapter {
     
@@ -28,12 +26,10 @@ public final class PlaylistAdapter extends BaseAdapter {
         public View icon;
     }
     
-    private final EpisodeParser mEpisodeParser;
-    private final MovieParser mMovieParser;
+    private final MediaParser mMediaParser;
     
     public PlaylistAdapter() {
-        this.mEpisodeParser = new EpisodeParser();
-        this.mMovieParser = new MovieParser();
+        this.mMediaParser = new MediaParser();
     }
 
     private List<PlaylistItem> mItems;
@@ -60,18 +56,11 @@ public final class PlaylistAdapter extends BaseAdapter {
                 String trackName = item.getUri();
                 // no need to check for video streams beacuse vlc does not give 
                 // stream information for playlist items (only now playing item)
-                Episode e = mEpisodeParser.parse(trackName);
-                if(e != null) {
-                    e.copyPlaylistItemFrom(item);
-                    mItems.set(position, e);
-                    setPlaylistDisplayInfo(holder, e);
-                    return convertView;
-                }
-                Movie m = mMovieParser.parse(trackName);
-                if(m != null) {
-                    m.copyPlaylistItemFrom(item);
-                    mItems.set(position, m);
-                    setPlaylistDisplayInfo(holder, m);
+                Media media = mMediaParser.parse(trackName);
+                if(media != null) {
+                    media.copyPlaylistItemFrom(item);
+                    mItems.set(position, media);
+                    setPlaylistDisplayInfo(holder, media);
                     return convertView;
                 }
             }

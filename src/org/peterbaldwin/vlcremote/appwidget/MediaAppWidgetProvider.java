@@ -21,12 +21,6 @@
 
 package org.peterbaldwin.vlcremote.appwidget;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Preferences;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -39,12 +33,15 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
-import org.peterbaldwin.vlcremote.model.Episode;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Movie;
+import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.parser.EpisodeParser;
-import org.peterbaldwin.vlcremote.parser.MovieParser;
 
 /**
  * Simple widget to show currently playing album art along with play/pause and
@@ -63,14 +60,12 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
     
     public static final String LOG_TAG = "VlcRemoteAppWidgetProvider";
     
-    private EpisodeParser mEpisodeParser;
-    private MovieParser mMovieParser;
+    private EpisodeParser mMediaParser;
     
     private String mCurrentFileName;
     
     public MediaAppWidgetProvider() {
-        mEpisodeParser = new EpisodeParser();
-        mMovieParser = new MovieParser();
+        mMediaParser = new EpisodeParser();
     }
 
     @Override
@@ -142,13 +137,9 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
             mCurrentFileName = status.getTrack().getName();
         }
         if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
-            Episode e = mEpisodeParser.parse(mCurrentFileName);
-            if(e != null) {
-                return setPlaylistText(e);
-            }
-            Movie m = mMovieParser.parse(mCurrentFileName);
-            if(m != null) {
-                return setPlaylistText(m);
+            Media media = mMediaParser.parse(mCurrentFileName);
+            if(media != null) {
+                return setPlaylistText(media);
             }
         }
         return setPlaylistText(status.getTrack());
