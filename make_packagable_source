@@ -1,0 +1,24 @@
+#!/bin/bash
+
+## This script changes the package name from org.peterbaldwin to uk.co.samicemalone
+## The source can then be built, signed, zipaligned and released in the play store
+
+CLONEPATH="../buildclone"
+
+[[ -e $CLONEPATH ]] && echo "Exiting. $CLONEPATH exists." && exit 1
+
+git clone https://github.com/samicemalone/android-vlc-remote.git "$CLONEPATH"
+[[ $? -ne 0 ]] && echo "Exiting. Git clone failed" && exit 1
+cd "$CLONEPATH"
+
+echo "Moving directories"
+mkdir -p src/uk/co/
+mv src/org/peterbaldwin src/uk/co/
+mv src/uk/co/peterbaldwin src/uk/co/samicemalone
+rmdir src/org
+
+echo "Replacing package name"
+find . -type f ! -wholename './.git*' -print0 | xargs -0 perl -pi -e "s|org.peterbaldwin|uk.co.samicemalone|g;"
+find . -name '*.bak' -delete
+
+echo done
