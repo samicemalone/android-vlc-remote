@@ -33,7 +33,7 @@ import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.MediaDisplayInfo;
 import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.parser.EpisodeParser;
+import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public class InfoFragment extends Fragment {
 
@@ -41,11 +41,11 @@ public class InfoFragment extends Fragment {
     private TextView mArtist;
     private TextView mAlbum;
     private TextView mTrack;
-    private EpisodeParser mMediaParser;
+    private MediaParser mMediaParser;
     private String mCurrentFileName;
 
     public InfoFragment() {
-        mMediaParser = new EpisodeParser();
+        mMediaParser = new MediaParser();
     }
 
     @Override
