@@ -62,8 +62,6 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
     
     private EpisodeParser mMediaParser;
     
-    private String mCurrentFileName;
-    
     public MediaAppWidgetProvider() {
         mMediaParser = new EpisodeParser();
     }
@@ -118,36 +116,27 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
         if (status.isStopped()) {
             return new TextHolder(ctx.getString(R.string.no_media), "");
         }
+        String fileName;
         if(status.getTrack().getName() == null) {
             if(status.getTrack().getTitle() == null) {
-                if(mCurrentFileName != null) {
-                    mCurrentFileName = null;
-                    return new TextHolder("", "");
-                }
-                return null;
+                return new TextHolder("", "");
             }
-            if(status.getTrack().getTitle().equals(mCurrentFileName)) {
-                return null;
-            }
-            mCurrentFileName = status.getTrack().getTitle();
+            fileName = status.getTrack().getTitle();
         } else {
-            if(status.getTrack().getName().equals(mCurrentFileName)) {
-                return null;
-            }
-            mCurrentFileName = status.getTrack().getName();
+            fileName = status.getTrack().getName();
         }
         if(!status.getTrack().containsStream() || status.getTrack().hasVideoStream()) {
-            Media media = mMediaParser.parse(mCurrentFileName);
+            Media media = mMediaParser.parse(fileName);
             if(media != null) {
-                return setPlaylistText(media);
+                return setPlaylistText(media, fileName);
             }
         }
-        return setPlaylistText(status.getTrack());
+        return setPlaylistText(status.getTrack(), fileName);
     }
     
-    private TextHolder setPlaylistText(PlaylistItem item) {
+    private TextHolder setPlaylistText(PlaylistItem item, String fileName) {
         if(TextUtils.isEmpty(item.getPlaylistText())) {
-            return new TextHolder(item.getPlaylistHeading(), File.baseName(mCurrentFileName));
+            return new TextHolder(item.getPlaylistHeading(), File.baseName(fileName));
         }
         return new TextHolder(item.getPlaylistHeading(), item.getPlaylistText());
     }
