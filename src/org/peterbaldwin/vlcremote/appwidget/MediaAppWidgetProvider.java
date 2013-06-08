@@ -41,7 +41,7 @@ import org.peterbaldwin.vlcremote.model.PlaylistItem;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.parser.EpisodeParser;
+import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 /**
  * Simple widget to show currently playing album art along with play/pause and
@@ -60,10 +60,10 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
     
     public static final String LOG_TAG = "VlcRemoteAppWidgetProvider";
     
-    private EpisodeParser mMediaParser;
+    private MediaParser mMediaParser;
     
     public MediaAppWidgetProvider() {
-        mMediaParser = new EpisodeParser();
+        mMediaParser = new MediaParser();
     }
 
     @Override
