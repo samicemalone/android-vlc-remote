@@ -16,6 +16,8 @@
  */
 package org.peterbaldwin.vlcremote.model;
 
+import android.text.TextUtils;
+
 /**
  *
  * @author Sam Malone
@@ -103,7 +105,10 @@ public class Movie extends Media {
     public String getMediaFirstText() {
         StringBuilder sb = new StringBuilder();
         if(year != UNKNOWN_YEAR) {
-            sb.append(year).append(" - ");
+            sb.append(year).append(' ');
+            if(!TextUtils.isEmpty(quality) || !TextUtils.isEmpty(source)) {
+                sb.append("- ");
+            }
         }
         if(quality != null) {
             sb.append(quality).append(' ');
