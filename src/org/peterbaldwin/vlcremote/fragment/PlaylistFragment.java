@@ -17,17 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
-import org.peterbaldwin.vlcremote.model.Playlist;
-import org.peterbaldwin.vlcremote.model.PlaylistItem;
-import org.peterbaldwin.vlcremote.model.Remote;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.model.Track;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
-
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -48,14 +37,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.EnqueueObserver;
+import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
+import org.peterbaldwin.vlcremote.loader.ProgressListener;
+import org.peterbaldwin.vlcremote.model.Playlist;
+import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.model.Remote;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.model.Track;
+import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
 
 public class PlaylistFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver {
+        LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver, ProgressListener {
     
     private static final int LOADER_PLAYLIST = 1;
 
@@ -276,12 +277,22 @@ public class PlaylistFragment extends ListFragment implements
         mEmptyView.setText(text);
     }
 
+    @Override
+    public void onProgress(final int progress) {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                getActivity().getWindow().setFeatureInt(Window.FEATURE_PROGRESS, progress);
+            }
+        });
+        
+    }
+
     /** {@inheritDoc} */
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
         mIsReloading = true;
-        return new PlaylistLoader(mContext, mMediaServer, search);
+        return new PlaylistLoader(mContext, mMediaServer, search, this);
     }
 
     /** {@inheritDoc} */

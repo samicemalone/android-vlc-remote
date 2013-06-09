@@ -17,14 +17,13 @@
 
 package org.peterbaldwin.vlcremote.loader;
 
-import org.peterbaldwin.vlcremote.model.Playlist;
-import org.peterbaldwin.vlcremote.model.Remote;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.content.Context;
 import org.peterbaldwin.vlcremote.model.Media;
+import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Track;
+import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
@@ -35,18 +34,24 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
 
     private MediaParser mMediaParser;
     
-    public PlaylistLoader(Context context, MediaServer mediaServer, String search) {
+    private ProgressListener mListener;
+    
+    public PlaylistLoader(Context context, MediaServer mediaServer, String search, ProgressListener listen) {
         super(context);
         mMediaServer = mediaServer;
         mSearch = search;
         mMediaParser = new MediaParser();
+        mListener = listen;
     }
 
     @Override
     public Remote<Playlist> loadInBackground() {
+        mListener.onProgress(0);
         Remote<Playlist> p = mMediaServer.playlist(mSearch).load();
+        mListener.onProgress(1000);
         boolean parsePlaylist = Preferences.get(getContext()).isParsePlaylistItems();
         if(!parsePlaylist) {
+            mListener.onProgress(10000);
             return p;
         }
         for(int i = 0; i < p.data.size(); i++) {
@@ -59,7 +64,9 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
                     p.data.set(i, media);
                 }
             }
+            mListener.onProgress(1000 + (9000 / p.data.size()) * i);
         }
+        mListener.onProgress(10000);
         return p;
     }
     
