@@ -71,6 +71,8 @@ public class PlaylistFragment extends ListFragment implements
 
     private String mCurrent;
     
+    private boolean mIsReloading = false;
+    
     private boolean mNeedsReload = false;
     
     public void onEnqueue() {
@@ -278,6 +280,7 @@ public class PlaylistFragment extends ListFragment implements
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
+        mIsReloading = true;
         return new PlaylistLoader(mContext, mMediaServer, search);
     }
 
@@ -298,6 +301,7 @@ public class PlaylistFragment extends ListFragment implements
         if (wasEmpty) {
             selectCurrentTrack();
         }
+        mIsReloading = false;
     }
 
     /** {@inheritDoc} */
@@ -309,8 +313,10 @@ public class PlaylistFragment extends ListFragment implements
         String title = status.getTrack().getTitle();
         if (!TextUtils.equals(title, mCurrent)) {
             // Reload the playlist and scroll to the new current track
-            mCurrent = title;
-            reload();
+            if(!mIsReloading) {
+                mCurrent = title;
+                reload();
+            }
         }
     }
 

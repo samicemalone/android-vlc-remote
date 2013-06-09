@@ -12,11 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
-import org.peterbaldwin.vlcremote.model.Preferences;
-import org.peterbaldwin.vlcremote.model.Track;
-import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public final class PlaylistAdapter extends BaseAdapter {
     
@@ -24,12 +20,6 @@ public final class PlaylistAdapter extends BaseAdapter {
         public TextView playlistHeading;
         public TextView playlistText;
         public View icon;
-    }
-    
-    private final MediaParser mMediaParser;
-    
-    public PlaylistAdapter() {
-        this.mMediaParser = new MediaParser();
     }
 
     private List<PlaylistItem> mItems;
@@ -48,25 +38,7 @@ public final class PlaylistAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        boolean parsePlaylist = Preferences.get(convertView.getContext()).isParsePlaylistItems();
-        PlaylistItem item = getItem(position);
-        if (item instanceof Track) {
-            Track track = (Track) item;
-            if(parsePlaylist && !track.isParsed()) {
-                String trackName = item.getUri();
-                // no need to check for video streams beacuse vlc does not give 
-                // stream information for playlist items (only now playing item)
-                Media media = mMediaParser.parse(trackName);
-                if(media != null) {
-                    media.copyPlaylistItemFrom(item);
-                    mItems.set(position, media);
-                    setPlaylistDisplayInfo(holder, media);
-                    return convertView;
-                }
-            }
-            track.setParsed(true);
-        }
-        setPlaylistDisplayInfo(holder, item);
+        setPlaylistDisplayInfo(holder, getItem(position));
         return convertView;
     }
     

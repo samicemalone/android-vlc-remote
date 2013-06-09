@@ -22,6 +22,10 @@ import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 import android.content.Context;
+import org.peterbaldwin.vlcremote.model.Media;
+import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Track;
+import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
 
@@ -29,15 +33,36 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
 
     private final String mSearch;
 
+    private MediaParser mMediaParser;
+    
     public PlaylistLoader(Context context, MediaServer mediaServer, String search) {
         super(context);
         mMediaServer = mediaServer;
         mSearch = search;
+        mMediaParser = new MediaParser();
     }
 
     @Override
     public Remote<Playlist> loadInBackground() {
-        return mMediaServer.playlist(mSearch).load();
+        Remote<Playlist> p = mMediaServer.playlist(mSearch).load();
+        boolean parsePlaylist = Preferences.get(getContext()).isParsePlaylistItems();
+        if(!parsePlaylist) {
+            return p;
+        }
+        for(int i = 0; i < p.data.size(); i++) {
+            if(p.data.get(i) instanceof Track) {
+                Track track = (Track) p.data.get(i);
+                Media media = mMediaParser.parse(track.getUri());
+                track.setParsed(true);
+                if(media != null) {
+                    media.copyPlaylistItemFrom(track);
+                    p.data.set(i, media);
+                }
+            }
+        }
+        return p;
     }
+    
+    
 
 }
