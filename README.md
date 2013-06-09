@@ -11,6 +11,7 @@ This has been tested with VLC 1.1, VLC 2.0.6, and VLC 2.1.0-pre1 nightlies.
 
 * UI
     * Display bottom action bar to smaller screens for cropping, subtitle track, fullscreen, audio track and aspect ratio.
+    * Playlist loading progress
     * Layout changes
     * Preference to hide the DVD tab for smaller screens
     * Updated some icons
@@ -32,6 +33,10 @@ Filenames are matched against various regular expressions to detect the media in
 The TV show name, season number and episode number will try to be detected, as will the episode name if it is present. If the episode name is not present, the filename will be displayed instead.
 ###Movies
 The movie name, year, source and quality of the movie will try to be determined.
+
+##Screenshots
+![Playback Controls](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/HTC%20Desire%20(ICS).png)
+![Settings](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/Settings%20(HTC%20Desire%20-%20ICS).png)
 
 ##VLC Changes
 The HTTP interface has a few different API versions which can lead to different behavior on different VLC versions.
