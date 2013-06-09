@@ -42,11 +42,11 @@ public class EpisodeParser {
      */
     private final static String[] regexList = new String[] {
         // scene regex (and web-dl). tries to match episode name. matches s01e02, 1x02
-        "(.*?)[ -._]+s?([0-9]+)[ -._]*[xe]([0-9]+)[ -._]+(.*?)[ -._]*(?:"+repacks+"[ -._]*)*(?:"+fixes+"[ -._]*)*(?:"+quality+"[ -._]*)*(?:"+sources+")+.*?",
+        "^(.*?)[ -._]+s?([0-9]+)[ -._]*[xe]([0-9]+)[ -._]+(.*?)[ -._]*(?:"+repacks+"[ -._]*)*(?:"+fixes+"[ -._]*)*(?:"+quality+"[ -._]*)*(?:"+sources+")+",
         // scene tv special - show.name.s01.special.name.etc.. (no episode set) group(3) = name
-        "(.*?)[ -._]+s([0-9]+)[ -._]+(.*?)[ -._]*(?:"+repacks+"[ -._]*)*(?:"+fixes+"[ -._]*)*(?:"+quality+"[ -._]*)*(?:"+sources+")+.*?",
+        "^(.*?)[ -._]+s([0-9]+)[ -._]+(.*?)[ -._]*(?:"+repacks+"[ -._]*)*(?:"+fixes+"[ -._]*)*(?:"+quality+"[ -._]*)*(?:"+sources+")+",
         // scene variant with no source, quality etc.. - show.name.1x01.name.ext
-        "(.*?)[ -._]+s?([0-9]+)[ -._]*[xe]([0-9]+)[ -._]*(.*?)\\.[A-Za-z0-9]+$"
+        "^(.*?)[ -._]+s?([0-9]+)[ -._]*[xe]([0-9]+)[ -._]*(.*?)\\.[A-Za-z0-9]+$"
     };
     
     private Pattern[] patternList;
