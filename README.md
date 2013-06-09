@@ -35,6 +35,7 @@ The TV show name, season number and episode number will try to be detected, as w
 The movie name, year, source and quality of the movie will try to be determined.
 
 ##Screenshots
+Tablet and landscape screenshots are located in the screenshots/ directory.
 ![Playback Controls](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/HTC.Desire.ICS.png)
 ![Settings](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/Settings.HTC.Desire.ICS.png)
 
