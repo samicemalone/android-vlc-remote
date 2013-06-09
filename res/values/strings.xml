@@ -31,7 +31,7 @@
     <string name="label_password">Password (default: none)</string>
     <string name="wifi">Wi-Fi</string>
     <string name="parse_playlist_items">Detect media information in playlist</string>
-    <string name="summary_parse_playlist_items">Detect the media information from the filename in the playlist. (This could possibly affect scrolling smoothness)</string>
+    <string name="summary_parse_playlist_items">Detect the media information from the filename in the playlist. (May take longer to load playlist)</string>
     <string name="hide_dvd_tab">Hide DVD tab</string>
     <string name="summary_hide_dvd_tab">Hides the experimental DVD tab (requires app restart)</string>
     <string name="summary_wifi_connected">Connected to {0}</string>
