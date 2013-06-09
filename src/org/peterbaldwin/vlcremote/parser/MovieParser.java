@@ -37,11 +37,11 @@ public class MovieParser {
     
     private final String[] regexList = new String[] {
         // strictest regex. scene variants. matches year (4 groups)
-        "(.*)[ -._]+([0-9]{4})[^ip][ -._]*(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")*.*?$",
+        "^(.*)[ -._]+([0-9]{4})[^ip][ -._]*(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")*.*?$",
         // scene variants but without year (3 groups)
-        "(.*?)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")[ -._]+.*?$",
+        "^(.*?)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)*("+sources+")[ -._]+.*?$",
         // scene variants but without year and source (2 groups)
-        "(.*)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)+.*?$"
+        "^(.*)[ -._]+(?:(?:"+repacks+"|"+versions+"|"+fixes+")[ -._]*)*(?:("+quality+")[ -._]*)+.*?$"
     };
     
     private Pattern[] patternList;
