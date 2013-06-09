@@ -58,7 +58,6 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
             if(p.data.get(i) instanceof Track) {
                 Track track = (Track) p.data.get(i);
                 Media media = mMediaParser.parse(track.getUri());
-                track.setParsed(true);
                 if(media != null) {
                     media.copyPlaylistItemFrom(track);
                     p.data.set(i, media);
