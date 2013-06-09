@@ -35,8 +35,8 @@ The TV show name, season number and episode number will try to be detected, as w
 The movie name, year, source and quality of the movie will try to be determined.
 
 ##Screenshots
-![Playback Controls](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/HTC.Desire.(ICS).png)
-![Settings](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/Settings.(HTC.Desire.ICS).png)
+![Playback Controls](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/HTC.Desire.ICS.png)
+![Settings](https://raw.github.com/samicemalone/android-vlc-remote/master/screenshots/Settings.HTC.Desire.ICS.png)
 
 ##VLC Changes
 The HTTP interface has a few different API versions which can lead to different behavior on different VLC versions.
