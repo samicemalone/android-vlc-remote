@@ -50,7 +50,7 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
         Remote<Playlist> p = mMediaServer.playlist(mSearch).load();
         if(p == null || p.data == null) {
             mListener.onProgress(10000);
-            return null;
+            return p;
         }
         mListener.onProgress(1000);
         boolean parsePlaylist = Preferences.get(getContext()).isParsePlaylistItems();
