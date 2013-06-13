@@ -302,7 +302,7 @@ public class BrowseFragment extends ListFragment implements
 
     private void handleEmptyDirectory() {
         showEmptyDirectoryError();
-        openDirectory("~");
+        openDirectory(File.getNormalizedPath(mDirectory.concat("/..")));
     }
 
     private void showEmptyDirectoryError() {

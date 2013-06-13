@@ -51,7 +51,7 @@
     <string name="vlc_servers">VLC Servers</string>
     <string name="search_label">Input</string>
     <string name="search_hint">Enter MRL</string>
-    <string name="browse_empty">No files found</string>
+    <string name="browse_empty">No files were found. This may be because you do not have permission to access the directory</string>
     <string name="browse_home">Home</string>
     <string name="browse_close">Close</string>
     <string name="connection_error">No connection</string>
