@@ -297,6 +297,11 @@ public class PlaylistFragment extends ListFragment implements
 
     /** {@inheritDoc} */
     public void onLoadFinished(Loader<Remote<Playlist>> loader, Remote<Playlist> remote) {
+        if(remote == null) {
+            mIsReloading = false;
+            return;
+        }
+        
         boolean wasEmpty = mAdapter.isEmpty();
         boolean hasError = (remote.error != null);
 
