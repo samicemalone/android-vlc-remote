@@ -17,16 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.EnqueueObserver;
-import org.peterbaldwin.vlcremote.loader.DirectoryLoader;
-import org.peterbaldwin.vlcremote.model.Directory;
-import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Preferences;
-import org.peterbaldwin.vlcremote.model.Remote;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +39,16 @@ import android.widget.Toast;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.EnqueueObservable;
+import org.peterbaldwin.vlcremote.app.EnqueueObserver;
+import org.peterbaldwin.vlcremote.loader.DirectoryLoader;
+import org.peterbaldwin.vlcremote.model.Directory;
+import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Remote;
+import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Remote<Directory>>, EnqueueObservable {
@@ -158,7 +157,7 @@ public class BrowseFragment extends ListFragment implements
     }
 
     private void openDirectory(File file) {
-        openDirectory(file.getPath());
+        openDirectory(file.getNormalizedPath());
     }
 
     public void openDirectory(String path) {
@@ -209,14 +208,14 @@ public class BrowseFragment extends ListFragment implements
     private void openParentDirectory() {
         for (int position = 0, n = mAdapter.getCount(); position < n; position++) {
             File file = mAdapter.getItem(position);
-            if (file.isDirectory() && "..".equals(file.getName())) {
+            if (file.isParent()) {
                 openDirectory(file);
                 return;
             }
         }
-        
-        // Open the list of drives if there is no parent directory entry
-        openDirectory("");
+        if(!mAdapter.isEmpty()) { // Open the root directory if no parent.
+            openDirectory(Directory.ROOT_DIRECTORY);
+        }
     }
 
     private void showSetHomeToast() {

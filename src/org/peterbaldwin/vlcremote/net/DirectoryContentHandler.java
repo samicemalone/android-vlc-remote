@@ -17,18 +17,18 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import android.sax.Element;
+import android.sax.RootElement;
+import android.sax.StartElementListener;
+import java.io.IOException;
+import java.net.URLConnection;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.xml.sax.Attributes;
 
-import android.sax.Element;
-import android.sax.RootElement;
-import android.sax.StartElementListener;
-
-import java.io.IOException;
-import java.net.URLConnection;
-
 final class DirectoryContentHandler extends XmlContentHandler<Directory> {
+    
+    private static Directory DIRECTORY;
 
     private File createFile(Attributes attributes) {
         String type = attributes.getValue("", "type");
@@ -45,7 +45,7 @@ final class DirectoryContentHandler extends XmlContentHandler<Directory> {
         String path = attributes.getValue("", "path");
         String name = attributes.getValue("", "name");
         String extension = attributes.getValue("", "extension");
-        if (path != null && !path.startsWith("/")) { // Windows path
+        if (File.PATH_TYPE == File.PATH_WINDOWS) {
             // Work-around: Replace front-slash
             // appended by server with back-slash.
             path = path.replace('/', '\\');
@@ -55,17 +55,57 @@ final class DirectoryContentHandler extends XmlContentHandler<Directory> {
 
     @Override
     public Object getContent(URLConnection connection) throws IOException {
-        final Directory directory = new Directory();
+        DIRECTORY = new Directory();
         RootElement root = new RootElement("", "root");
         Element element = root.getChild("", "element");
         element.setStartElementListener(new StartElementListener() {
             /** {@inheritDoc} */
             public void start(Attributes attributes) {
+                final String path = attributes.getValue("", "path");
+                if (path != null && !path.startsWith("/")) {
+                    File.PATH_TYPE = File.PATH_WINDOWS;
+                } else {
+                    File.PATH_TYPE = File.PATH_UNIX;
+                }
                 File file = createFile(attributes);
-                directory.add(file);
+                DIRECTORY.add(file);
             }
         });
         parse(connection, root.getContentHandler());
-        return directory;
+        Directory.ROOT_DIRECTORY = (File.PATH_TYPE == File.PATH_WINDOWS) ? Directory.WINDOWS_ROOT_DIRECTORY : Directory.UNIX_DIRECTORY;
+        if(Directory.ROOT_DIRECTORY.equals(DIRECTORY.getPath())) {
+            hideParent();
+        } else {
+            setParentTop();
+        }
+        return DIRECTORY;
+    }
+    
+    /**
+     * Hide the parent directory item if one exists
+     */
+    private void hideParent() {
+        for(int i = 0; i < DIRECTORY.size(); i++) {
+            if(DIRECTORY.get(i).isParent()) {
+                DIRECTORY.remove(i);
+                return;
+            }
+        }
+    }
+    
+    /**
+     * Set the parent directory item at the top of the list. If no parent entry
+     * exists, one will be added with the default path being the root directory
+     */
+    private void setParentTop() {
+        for(int i = 0; i < DIRECTORY.size(); i++) {
+            if(DIRECTORY.get(i).isParent()) {
+                if(i != 0) {
+                    DIRECTORY.add(0, DIRECTORY.remove(i));
+                }
+                return;
+            }
+        }
+        DIRECTORY.add(0, new File("dir", 0L, null, Directory.ROOT_DIRECTORY, "..", null));
     }
 }

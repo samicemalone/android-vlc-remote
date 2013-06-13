@@ -21,6 +21,10 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public final class Directory extends ArrayList<File> {
+    
+    public static final String UNIX_DIRECTORY = "/";
+    public static final String WINDOWS_ROOT_DIRECTORY = "";
+    public static String ROOT_DIRECTORY = UNIX_DIRECTORY;
 
     public Directory() {
     }
@@ -29,17 +33,32 @@ public final class Directory extends ArrayList<File> {
         super(capacity);
     }
 
+    /**
+     * Get the path to the current directory.
+     * The path is determined from existing files in the directory or the parent
+     * entry if it exists. If there are no items in the directory and there is
+     * no parent entry, then the ROOT_DIRECTORY will be returned.
+     * @return current directory path or ROOT_DIRECTORY
+     */
     public String getPath() {
-        // Compute the path from the .. entry
+        String tmpRoot = null;
         for (File file : this) {
-            String name = file.getName();
             String path = file.getPath();
-            if (name != null && path != null && name.equals("..") && path.endsWith("..")) {
-                int length = path.length();
-                length -= "..".length();
-                return path.substring(0, length);
+            if (file.isParent()) {
+                if(path != null && path.endsWith("..")) {
+                    final int length = path.length() - "..".length();
+                    return File.getNormalizedPath(path.substring(0, length));
+                }
+            } else {
+                path = File.getNormalizedPath(file.getPath().concat("/.."));
+                if(tmpRoot == null) {
+                    tmpRoot = path; // ensure two directory entries are checked
+                    continue;       // for same root. if not then root is drive
+                }
+                return tmpRoot.equals(path) ? path : ROOT_DIRECTORY;
             }
         }
-        return null;
+        return ROOT_DIRECTORY;
     }
+    
 }

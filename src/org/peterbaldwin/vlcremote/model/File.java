@@ -20,12 +20,16 @@ package org.peterbaldwin.vlcremote.model;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
-
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public final class File {
+    
+    public static final int PATH_UNIX = 0;
+    public static final int PATH_WINDOWS = 1;
+    public static int PATH_TYPE = PATH_UNIX;
 
     private static final MimeTypeMap sMimeTypeMap = MimeTypeMap.getSingleton();
 
@@ -83,6 +87,14 @@ public final class File {
         // Type is "directory" in VLC 1.0 and "dir" in VLC 1.1
         return "directory".equals(mType) || "dir".equals(mType);
     }
+    
+    /**
+     * Checks if this File is a parent entry (name is ..)
+     * @return true if this File is a parent entry, false otherwise. 
+     */
+    public boolean isParent() {
+        return "..".equals(mName);
+    }
 
     public boolean isImage() {
         String mimeType = getMimeType();
@@ -107,6 +119,39 @@ public final class File {
 
     public String getPath() {
         return mPath;
+    }
+    
+    public String getNormalizedPath() {
+        return getNormalizedPath(mPath);
+    }
+    
+    /**
+     * Get the normalized path for the given file path.
+     * Any parent directories (..) will be resolved.
+     * @param file file path
+     * @return 
+     */
+    public static String getNormalizedPath(String file) {
+        String[] st = file.split("(\\\\|/)+");
+        ArrayDeque<String> segmentList = new ArrayDeque<String>();
+        for(String segment : st) {
+            if("..".equals(segment)) {
+                segmentList.pollFirst();
+                continue;
+            }
+            segmentList.offerFirst(segment);
+        }
+        if(segmentList.isEmpty()) {
+            return Directory.ROOT_DIRECTORY;
+        }
+        StringBuilder sb = new StringBuilder();
+        while(!segmentList.isEmpty()) {
+            sb.append(segmentList.pollLast());
+            if(segmentList.peekLast() != null) {
+                sb.append('/');
+            }
+        }
+        return sb.length() == 0 ? Directory.ROOT_DIRECTORY : sb.toString();
     }
 
     public String getMrl() {
