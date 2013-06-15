@@ -326,6 +326,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     changeServer(authority);
                     preferences.setAuthority(authority);
                     mBrowse.openDirectory("~");
+                } else {
+                    mBrowse.reload();
                 }
 
                 if (data != null) {

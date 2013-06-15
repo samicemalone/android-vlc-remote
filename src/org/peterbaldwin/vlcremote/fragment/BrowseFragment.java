@@ -156,6 +156,10 @@ public class BrowseFragment extends ListFragment implements
         }
     }
 
+    public void reload() {
+        openDirectory(mDirectory);
+    }
+    
     private void openDirectory(File file) {
         openDirectory(file.getNormalizedPath());
     }
