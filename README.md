@@ -26,6 +26,10 @@ This has been tested with VLC 1.1, VLC 2.0.6, and VLC 2.1.0-pre1 nightlies.
     * Added ability to test server connection before adding
     * Added support for VLC 2.1 http interface which uses HTTP basic authentication instead of an access control list (.hosts).
     * Prompt for password if server requires authentication.
+* Browse Library
+    * Fix for VLC 2.x not showing the parent (..) entry in the list on Windows.
+    * Normalise file paths to avoid displaying any parent entries e.g. /path/../to/another/../path
+    * If a directory is accessed without the correct permissions (or other error), send the user back to the previous directory instead of back home.
 
 ##Media Filename Detection
 Filenames are matched against various regular expressions to detect the media information. The regular expressions are far from perfect and any improvements are welcome.
