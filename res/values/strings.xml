@@ -30,6 +30,8 @@
     <string name="label_user">User (default: none)</string>
     <string name="label_password">Password (default: none)</string>
     <string name="wifi">Wi-Fi</string>
+    <string name="sort_directories_first">Sort Directories First</string>
+    <string name="summary_sort_directories_first">When browsing your library, ensure directories are sorted before files. Default is VLC\'s default (alphabetical)</string>
     <string name="parse_playlist_items">Detect media information in playlist</string>
     <string name="summary_parse_playlist_items">Detect the media information from the filename in the playlist. (May take longer to load playlist)</string>
     <string name="hide_dvd_tab">Hide DVD tab</string>

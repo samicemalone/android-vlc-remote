@@ -73,6 +73,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
 
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
+    private static final String KEY_SORT_DIRECTORIES_FIRST = "sort_directories_first";
     private static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
@@ -113,6 +114,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private CheckBoxPreference mPreferenceWiFi;
     private CheckBoxPreference mPreferencePauseForCall;
     private CheckBoxPreference mPreferenceParsePlaylistItems;
+    private CheckBoxPreference mPreferenceSortDirectoriesFirst;
     private CheckBoxPreference mPreferenceHideDVDTab;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
@@ -129,6 +131,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
         mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
         mPreferenceParsePlaylistItems = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PARSE_PLAYLIST_ITEMS);
+        mPreferenceSortDirectoriesFirst = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SORT_DIRECTORIES_FIRST);
         mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
@@ -374,6 +377,10 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         } else if (preference == mPreferenceHideDVDTab) {
             Preferences preferences = Preferences.get(this);
             preferences.setHideDVDTab(mPreferenceHideDVDTab.isChecked());
+            return true;
+        } else if (preference == mPreferenceSortDirectoriesFirst) {
+            Preferences preferences = Preferences.get(this);
+            preferences.setSortDirectoriesFirst(mPreferenceSortDirectoriesFirst.isChecked());
             return true;
         } else {
             Server server = Server.fromKey(preference.getKey());

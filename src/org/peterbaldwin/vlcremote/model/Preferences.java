@@ -17,15 +17,13 @@
 
 package org.peterbaldwin.vlcremote.model;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.DateUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Convenience class for reading and writing application preferences.
@@ -47,6 +45,8 @@ public final class Preferences {
     private static final String PREFERENCE_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
     
     private static final String PREFERENCE_HIDE_DVD_TAB = "hide_dvd_tab";
+    
+    private static final String PREFERENCE_SORT_DIRECTORIES_FIRST = "sort_directories_first";
 
     private SharedPreferences mPreferences;
 
@@ -77,6 +77,16 @@ public final class Preferences {
     public boolean clearResumeOnIdle() {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.remove(PREFERENCE_RESUME_ON_IDLE);
+        return editor.commit();
+    }
+    
+    public boolean isSortDirectoriesFirst() {
+        return mPreferences.getBoolean(PREFERENCE_SORT_DIRECTORIES_FIRST, false);
+    }
+	
+    public boolean setSortDirectoriesFirst(boolean sortDirectoriesFirst) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(PREFERENCE_SORT_DIRECTORIES_FIRST, sortDirectoriesFirst);
         return editor.commit();
     }
     

@@ -17,11 +17,12 @@
 
 package org.peterbaldwin.vlcremote.loader;
 
+import android.content.Context;
+import java.util.Collections;
 import org.peterbaldwin.vlcremote.model.Directory;
+import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.net.MediaServer;
-
-import android.content.Context;
 
 public class DirectoryLoader extends ModelLoader<Remote<Directory>> {
 
@@ -37,6 +38,13 @@ public class DirectoryLoader extends ModelLoader<Remote<Directory>> {
 
     @Override
     public Remote<Directory> loadInBackground() {
-        return mMediaServer.browse(mDir).load();
+        Remote<Directory> remote = mMediaServer.browse(mDir).load();
+        if(remote.data != null) {
+            boolean dirSort = Preferences.get(getContext()).isSortDirectoriesFirst();
+            if(dirSort) {
+                Collections.sort(remote.data, remote.data);
+            }
+        }
+        return remote;
     }
 }

@@ -18,9 +18,10 @@
 package org.peterbaldwin.vlcremote.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @SuppressWarnings("serial")
-public final class Directory extends ArrayList<File> {
+public final class Directory extends ArrayList<File> implements Comparator<File> {
     
     public static final String UNIX_DIRECTORY = "/";
     public static final String WINDOWS_ROOT_DIRECTORY = "";
@@ -59,6 +60,37 @@ public final class Directory extends ArrayList<File> {
             }
         }
         return ROOT_DIRECTORY;
+    }
+
+    /**
+     * Compares two Files that are to be sorted with directories being displayed
+     * before files. The parent entry will be first if present, then the
+     * directories and then files.
+     * @param firstFile
+     * @param secondFile
+     * @return a negative integer, zero, or a positive integer as the first 
+     * argument is less than, equal to, or greater than the second.
+     */
+    public int compare(File firstFile, File secondFile) {
+        // parent always first
+        if(firstFile.isDirectory() && firstFile.isParent() && secondFile.isDirectory() && secondFile.isParent()) {
+            return 0;
+        }
+        if(firstFile.isDirectory() && firstFile.isParent()) {
+            return -1;
+        }
+        if(secondFile.isDirectory() && secondFile.isParent()) {
+            return 1;
+        }
+        // then directories next
+        if(firstFile.isDirectory() && !secondFile.isDirectory()) {
+            return -1;
+        }
+        if(secondFile.isDirectory() && !firstFile.isDirectory()) {
+            return 1;
+        }
+        // then files
+        return firstFile.getName().compareTo(secondFile.getName());
     }
     
 }

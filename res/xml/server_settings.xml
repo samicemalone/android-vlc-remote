@@ -23,6 +23,11 @@
         android:title="@string/hide_dvd_tab"
         android:summary="@string/summary_hide_dvd_tab"
         android:persistent="true" />
+    <CheckBoxPreference
+        android:key="sort_directories_first"
+        android:title="@string/sort_directories_first"
+        android:summary="@string/summary_sort_directories_first"
+        android:persistent="true" />
     
     <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"
