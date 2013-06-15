@@ -278,7 +278,8 @@ public class BrowseFragment extends ListFragment implements
         mAdapter.setDirectory(result.data);
         setEmptyText(getText(R.string.connection_error));
         setTitle(result.data != null ? result.data.getPath() : null);
-        if (isEmptyDirectory(result.data)) {
+        boolean isXMLError = result.error != null && "Invalid XML".equals(result.error.getMessage());
+        if (isEmptyDirectory(result.data) || isXMLError) {
             handleEmptyDirectory();
         }
     }
