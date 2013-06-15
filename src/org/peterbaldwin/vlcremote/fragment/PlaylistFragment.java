@@ -279,11 +279,15 @@ public class PlaylistFragment extends ListFragment implements
 
     @Override
     public void onProgress(final int progress) {
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                getActivity().getWindow().setFeatureInt(Window.FEATURE_PROGRESS, progress);
-            }
-        });
+        if(getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    if(getActivity() != null) {
+                        getActivity().getWindow().setFeatureInt(Window.FEATURE_PROGRESS, progress);
+                    }
+                }
+            });
+        }
         
     }
 
