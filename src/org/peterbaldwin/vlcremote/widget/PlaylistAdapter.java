@@ -8,13 +8,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
 
-public final class PlaylistAdapter extends BaseAdapter {
+public final class PlaylistAdapter extends BaseAdapter implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
     
     public static class ViewHolder {
         public TextView playlistHeading;

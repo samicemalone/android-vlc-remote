@@ -105,6 +105,9 @@ public class PlaylistFragment extends ListFragment implements
         View view = inflater.inflate(R.layout.playlist, container, false);
 
         mAdapter = new PlaylistAdapter();
+        if(savedInstanceState != null && savedInstanceState.containsKey("adapter")) {
+            mAdapter = (PlaylistAdapter) savedInstanceState.getSerializable("adapter");
+        } 
         setListAdapter(mAdapter);
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
@@ -118,7 +121,7 @@ public class PlaylistFragment extends ListFragment implements
 
         registerForContextMenu(getListView());
 
-        if (mMediaServer != null) {
+        if (mMediaServer != null && savedInstanceState == null) {
             getLoaderManager().initLoader(LOADER_PLAYLIST, null, this);
         }
     }
@@ -206,6 +209,12 @@ public class PlaylistFragment extends ListFragment implements
             }
         }
         return super.onContextItemSelected(menuItem);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("adapter", mAdapter);
     }
 
     public void setMediaServer(MediaServer mediaServer) {
