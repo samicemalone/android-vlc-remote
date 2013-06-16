@@ -124,6 +124,14 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
         }
     }
     
+    /**
+     * Get the set of item positions of current tracks
+     * @return item positions of current tracks
+     */
+    public HashSet<Integer> getCurrentItems() {
+        return mCurrentPositions;
+    }
+    
     public PlaylistItem remove(int position) {
         PlaylistItem item =  mItems.remove(position);
         notifyDataSetChanged();

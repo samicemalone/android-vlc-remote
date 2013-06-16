@@ -270,18 +270,9 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     public void selectCurrentTrack() {
-        final int count = mAdapter.getCount();
-        for (int position = 0; position < count; position++) {
-            PlaylistItem item = mAdapter.getItem(position);
-            if (item instanceof Track) {
-                Track track = (Track) item;
-                if (track.isCurrent()) {
-                    // Scroll to current track
-                    ListView listView = getListView();
-                    listView.setSelection(position);
-                    break;
-                }
-            }
+        if(mAdapter.getCurrentItems() != null && !mAdapter.getCurrentItems().isEmpty()) {
+            int pos = mAdapter.getCurrentItems().iterator().next();
+            getListView().setSelection(pos);
         }
     }
 
