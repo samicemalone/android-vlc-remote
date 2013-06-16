@@ -328,6 +328,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     mBrowse.openDirectory("~");
                 } else {
                     mBrowse.reload();
+                    mPlaylist.reload();
                 }
 
                 if (data != null) {
@@ -343,7 +344,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 if (mMediaServer == null) {
                     finish();
                 }
-                mPlaylist.reload();
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
