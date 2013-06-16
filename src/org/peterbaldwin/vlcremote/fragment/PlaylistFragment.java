@@ -263,6 +263,7 @@ public class PlaylistFragment extends ListFragment implements
         super.onListItemClick(l, v, position, id);
         PlaylistItem item = (PlaylistItem) l.getItemAtPosition(position);
         selectItem(item);
+        mAdapter.setCurrentItem(position);
     }
 
     public void selectCurrentTrack() {

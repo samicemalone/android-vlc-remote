@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
 
 public final class PlaylistAdapter extends BaseAdapter implements Serializable {
@@ -26,6 +27,7 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
     }
 
     private List<PlaylistItem> mItems;
+    private int mCurrentPosition;
 
     /** {@inheritDoc} */
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -42,6 +44,9 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
             holder = (ViewHolder) convertView.getTag();
         }
         setPlaylistDisplayInfo(holder, getItem(position));
+        if(getItem(position).isCurrent()) {
+            mCurrentPosition = position;
+        }
         return convertView;
     }
     
@@ -89,6 +94,17 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
             notifyDataSetChanged();
         } else {
             notifyDataSetInvalidated();
+        }
+    }
+    
+    public void setCurrentItem(int position) {
+        if(position >= 0 && position < mItems.size()) {
+            if(mItems.get(position) instanceof Media) {
+                ((Media) mItems.get(mCurrentPosition)).setCurrent(false);
+                ((Media) mItems.get(position)).setCurrent(true);
+                mCurrentPosition = position;
+                notifyDataSetChanged();
+            }
         }
     }
     
