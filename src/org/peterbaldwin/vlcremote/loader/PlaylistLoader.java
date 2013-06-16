@@ -36,6 +36,8 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
     
     private ProgressListener mListener;
     
+    private boolean mIsCancelled = false;
+    
     public PlaylistLoader(Context context, MediaServer mediaServer, String search, ProgressListener listen) {
         super(context);
         mMediaServer = mediaServer;
@@ -59,6 +61,9 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
             return p;
         }
         for(int i = 0; i < p.data.size(); i++) {
+            if(mIsCancelled) {
+                return null;
+            }
             if(p.data.get(i) instanceof Track) {
                 Track track = (Track) p.data.get(i);
                 Media media = mMediaParser.parse(track.getUri());
@@ -73,6 +78,8 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
         return p;
     }
     
-    
+    public void cancelBackgroundLoad() {
+        mIsCancelled = true;
+    }
 
 }

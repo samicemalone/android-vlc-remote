@@ -42,6 +42,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.LinkedList;
+import java.util.Queue;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.intent.Intents;
@@ -72,7 +74,7 @@ public class PlaylistFragment extends ListFragment implements
 
     private String mCurrent;
     
-    private boolean mIsReloading = false;
+    private Queue<PlaylistLoader> mActiveLoaders;
     
     private boolean mNeedsReload = false;
     
@@ -96,6 +98,7 @@ public class PlaylistFragment extends ListFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActiveLoaders = new LinkedList<PlaylistLoader>();
         setHasOptionsMenu(true);
     }
 
@@ -305,14 +308,13 @@ public class PlaylistFragment extends ListFragment implements
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
-        mIsReloading = true;
-        return new PlaylistLoader(mContext, mMediaServer, search, this);
+        mActiveLoaders.offer(new PlaylistLoader(mContext, mMediaServer, search, this));
+        return mActiveLoaders.peek();
     }
 
     /** {@inheritDoc} */
     public void onLoadFinished(Loader<Remote<Playlist>> loader, Remote<Playlist> remote) {
         if(remote == null) {
-            mIsReloading = false;
             return;
         }
         
@@ -331,7 +333,6 @@ public class PlaylistFragment extends ListFragment implements
         if (wasEmpty) {
             selectCurrentTrack();
         }
-        mIsReloading = false;
     }
 
     /** {@inheritDoc} */
@@ -343,15 +344,17 @@ public class PlaylistFragment extends ListFragment implements
         String filePath = status.getTrack().getName() == null ? status.getTrack().getTitle() : status.getTrack().getName();
         if (!TextUtils.equals(filePath, mCurrent)) {
             // Reload the playlist and scroll to the new current track
-            if(!mIsReloading) {
-                mCurrent = filePath;
-                reload();
-            }
+            mCurrent = filePath;
+            reload();
         }
     }
 
     public void reload() {
         if (mMediaServer != null) {
+            PlaylistLoader loader;
+            while((loader = mActiveLoaders.poll()) != null) {
+                loader.cancelBackgroundLoad();
+            }
             getLoaderManager().restartLoader(LOADER_PLAYLIST, null, this);
         }
     }
