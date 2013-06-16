@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.File;
@@ -27,7 +29,18 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
     }
 
     private List<PlaylistItem> mItems;
-    private int mCurrentPosition;
+    
+    /**
+     * The position of the items marked as current in the playlist. Ideally
+     * there should only be one current item but VLC has a bug which compares
+     * tracks names instead of track id's so files with the same names are all
+     * marked as current.
+     */
+    private HashSet<Integer> mCurrentPositions;
+    
+    public PlaylistAdapter() {
+        mCurrentPositions = new HashSet<Integer>(4);
+    }
 
     /** {@inheritDoc} */
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -45,7 +58,7 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
         }
         setPlaylistDisplayInfo(holder, getItem(position));
         if(getItem(position).isCurrent()) {
-            mCurrentPosition = position;
+            mCurrentPositions.add(position);
         }
         return convertView;
     }
@@ -100,9 +113,12 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
     public void setCurrentItem(int position) {
         if(position >= 0 && position < mItems.size()) {
             if(mItems.get(position) instanceof Media) {
-                ((Media) mItems.get(mCurrentPosition)).setCurrent(false);
+                for (Iterator<Integer> it = mCurrentPositions.iterator(); it.hasNext();) {
+                    ((Media) mItems.get(it.next())).setCurrent(false);
+                }
                 ((Media) mItems.get(position)).setCurrent(true);
-                mCurrentPosition = position;
+                mCurrentPositions.clear();
+                mCurrentPositions.add(position);
                 notifyDataSetChanged();
             }
         }
