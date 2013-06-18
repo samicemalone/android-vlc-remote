@@ -98,6 +98,11 @@ public final class MediaServer {
          */
         protected static final int DELAY = 500;
 
+        /**
+         * Time to wait (ms) for a request to complete before timing out.
+         */
+        protected static final int TIMEOUT = 8000;
+
         private final Context mContext;
 
         private final Uri mUri;
@@ -165,6 +170,7 @@ public final class MediaServer {
             String spec = mUri.toString();
             URL url = new URL(spec);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setConnectTimeout(TIMEOUT);
             try {
                 String usernamePassword = mUri.getUserInfo();
                 if (usernamePassword != null) {
