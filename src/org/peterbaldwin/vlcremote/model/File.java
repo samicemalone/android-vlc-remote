@@ -19,11 +19,11 @@ package org.peterbaldwin.vlcremote.model;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.webkit.MimeTypeMap;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.peterbaldwin.vlcremote.util.MimeTypeMap;
 
 public final class File {
     
