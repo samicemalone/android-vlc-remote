@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.peterbaldwin.client.android.vlcremote"
-    android:versionCode="57"
-    android:versionName="0.6.1" >
+    android:versionCode="58"
+    android:versionName="0.6.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <supports-screens
         android:anyDensity="true"
