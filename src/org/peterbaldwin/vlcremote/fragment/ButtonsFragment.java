@@ -42,6 +42,8 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
     private BroadcastReceiver mStatusReceiver;
 
+    private CommonPlaybackButtonsListenener listener;
+    
     private ImageButton mButtonShuffle;
     private ImageButton mButtonRepeat;
     private ImageButton mButtonPlaylistSeekBackward;
@@ -55,6 +57,9 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
+        if(listener != null) {
+            listener.setMediaServer(mediaServer);
+        }
     }
 
     @Override
@@ -68,7 +73,8 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         View view = getView();
 
-        new CommonPlaybackButtonsListenener(getActivity(), mMediaServer).setUp(view);
+        listener = new CommonPlaybackButtonsListenener(getActivity(), mMediaServer);
+        listener.setUp(view);
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);

@@ -37,6 +37,10 @@ public class CommonPlaybackButtonsListenener implements View.OnClickListener, Vi
         mMediaServer = server;
     }
     
+    public void setMediaServer(MediaServer server) {
+        mMediaServer = server;
+    }
+    
     public void setUp(View view) {
         ImageButton mButtonCrop = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_crop);
         ImageButton mButtonSubtitles = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_subtitles);

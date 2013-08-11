@@ -29,9 +29,13 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
 public final class BottomActionbarFragment extends Fragment {
 
     private MediaServer mMediaServer;
+    private CommonPlaybackButtonsListenener listener;
 
     public void setMediaServer(MediaServer mediaServer) {
         mMediaServer = mediaServer;
+        if(listener != null) {
+            listener.setMediaServer(mediaServer);
+        }
     }
 
     @Override
@@ -44,7 +48,8 @@ public final class BottomActionbarFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         View view = getView();
         // set listeners
-        new CommonPlaybackButtonsListenener(getActivity(), mMediaServer).setUp(view);
+        listener = new CommonPlaybackButtonsListenener(getActivity(), mMediaServer);
+        listener.setUp(view);
     }
 
 }
