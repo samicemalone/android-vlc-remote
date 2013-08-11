@@ -19,6 +19,7 @@ package org.peterbaldwin.vlcremote.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ public final class Preferences {
     private static final String PREFERENCE_HIDE_DVD_TAB = "hide_dvd_tab";
     
     private static final String PREFERENCE_SORT_DIRECTORIES_FIRST = "sort_directories_first";
+    
+    private static final String PREFERENCE_SEEK_TIME = "seek_time";
 
     private SharedPreferences mPreferences;
 
@@ -108,6 +111,16 @@ public final class Preferences {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putBoolean(PREFERENCE_HIDE_DVD_TAB, hideTab);
         return editor.commit();
+    }
+	
+    public boolean setSeekTime(String seekTime) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putString(PREFERENCE_SEEK_TIME, seekTime);
+        return editor.commit();
+    }
+    
+    public String getSeekTime() {
+        return mPreferences.getString(PREFERENCE_SEEK_TIME, "10");
     }
 
     public String getAuthority() {

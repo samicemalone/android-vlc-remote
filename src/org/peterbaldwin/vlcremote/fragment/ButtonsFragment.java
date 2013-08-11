@@ -32,6 +32,7 @@ import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
@@ -125,10 +126,10 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.action_button_seek_backward:
-                mMediaServer.status().command.seek(Uri.encode("-10"));
+                mMediaServer.status().command.seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.action_button_seek_forward:
-                mMediaServer.status().command.seek(Uri.encode("+10"));
+                mMediaServer.status().command.seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.playlist_button_shuffle:
                 mMediaServer.status().command.playback.random();

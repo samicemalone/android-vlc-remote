@@ -28,6 +28,13 @@
         android:title="@string/sort_directories_first"
         android:summary="@string/summary_sort_directories_first"
         android:persistent="true" />
+    <EditTextPreference
+        android:key="seek_time"
+        android:title="@string/preferences_seek_title"
+        android:summary="@string/preferences_seek_summary"
+        android:defaultValue="10"
+        android:inputType="number"
+        android:persistent="true" />
     
     <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"

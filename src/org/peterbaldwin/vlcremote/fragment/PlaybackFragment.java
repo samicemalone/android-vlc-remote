@@ -39,6 +39,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import org.peterbaldwin.vlcremote.model.Preferences;
 
 /**
  * Controls playback and displays progress.
@@ -122,9 +123,9 @@ public class PlaybackFragment extends Fragment implements View.OnClickListener,
         } else if (v == mButtonPlaylistSkipForward) {
             playlist().next();
         } else if (v == mButtonPlaylistSeekBackward) {
-            command().seek(Uri.encode("-10"));
+            command().seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
         } else if (v == mButtonPlaylistSeekForward) {
-            command().seek(Uri.encode("+10"));
+            command().seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
         }
     }
 

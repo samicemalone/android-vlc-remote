@@ -476,7 +476,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             return true;
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
             if (event.isAltPressed()) {
-                mMediaServer.status().command.seek(Uri.encode("-10"));
+                mMediaServer.status().command.seek(Uri.encode("-".concat(Preferences.get(this).getSeekTime())));
                 return true;
             } else if (event.isShiftPressed()) {
                 mMediaServer.status().command.seek(Uri.encode("-3"));
@@ -487,7 +487,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             }
         } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
             if (event.isAltPressed()) {
-                mMediaServer.status().command.seek(Uri.encode("+10"));
+                mMediaServer.status().command.seek(Uri.encode("+".concat(Preferences.get(this).getSeekTime())));
                 return true;
             } else if (event.isShiftPressed()) {
                 mMediaServer.status().command.seek(Uri.encode("+3"));

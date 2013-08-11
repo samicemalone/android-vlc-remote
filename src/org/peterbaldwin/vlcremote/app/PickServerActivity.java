@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
@@ -78,6 +79,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
     private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
+    private static final String KEY_SEEK_TIME = "seek_time";
 
     public static final String STATE_HOSTS = "hosts";
 
@@ -111,6 +113,7 @@ public final class PickServerActivity extends PreferenceActivity implements Port
     private long mCreateTime;
     private ArrayList<String> mRemembered;
 
+    private EditTextPreference mPreferenceSeekTime;
     private CheckBoxPreference mPreferenceWiFi;
     private CheckBoxPreference mPreferencePauseForCall;
     private CheckBoxPreference mPreferenceParsePlaylistItems;
@@ -133,6 +136,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         mPreferenceParsePlaylistItems = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PARSE_PLAYLIST_ITEMS);
         mPreferenceSortDirectoriesFirst = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SORT_DIRECTORIES_FIRST);
         mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
+        mPreferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(KEY_SEEK_TIME);
+        mPreferenceSeekTime.setOnPreferenceChangeListener(this);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
         
@@ -382,6 +387,8 @@ public final class PickServerActivity extends PreferenceActivity implements Port
             Preferences preferences = Preferences.get(this);
             preferences.setSortDirectoriesFirst(mPreferenceSortDirectoriesFirst.isChecked());
             return true;
+        } else if (preference == mPreferenceSeekTime) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else {
             Server server = Server.fromKey(preference.getKey());
             if(server.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
@@ -398,9 +405,11 @@ public final class PickServerActivity extends PreferenceActivity implements Port
         if (preference == mPreferencePauseForCall) {
             setPauseForCall(Boolean.TRUE.equals(newValue));
             return true;
-        } else {
-            return false;
+        } else if(preference == mPreferenceSeekTime) {
+            Preferences.get(this).setSeekTime((String) newValue);
+            return true;
         }
+        return false;
     }
 
     private Preference getPreferenceFromMenuInfo(ContextMenuInfo menuInfo) {
