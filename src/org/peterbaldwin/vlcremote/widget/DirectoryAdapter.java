@@ -17,19 +17,19 @@
 
 package org.peterbaldwin.vlcremote.widget;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.model.Directory;
-import org.peterbaldwin.vlcremote.model.File;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SectionIndexer;
-
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.model.Directory;
+import org.peterbaldwin.vlcremote.model.File;
+import org.peterbaldwin.vlcremote.model.Preferences;
 
 public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndexer {
 
@@ -111,6 +111,15 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
             } else {
                 icon.setImageResource(R.drawable.ic_file);
             }
+        }
+        TextView tv = (TextView) v.findViewById(android.R.id.text1);
+        int size = Preferences.get(getContext()).getTextSize();
+        if(size == Preferences.TEXT_LARGE) {
+            tv.setTextAppearance(getContext(), android.R.style.TextAppearance_Large);
+        } else if(size == Preferences.TEXT_MEDIUM) {
+            tv.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
+        } else {
+            tv.setTextAppearance(getContext(), android.R.style.TextAppearance_Small);
         }
         return v;
     }

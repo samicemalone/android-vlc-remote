@@ -62,7 +62,7 @@
     <string name="context_open">Open</string>
     <string name="context_play">Play</string>
     <!-- Context menu to set the selected directory as the home directory -->
-    <string name="menu_set_home">Set as home</string>
+    <string name="menu_set_home">Set As Home</string>
     <string name="context_stream">Stream</string>
     <string name="context_enqueue">Add to playlist</string>
     <string name="context_dequeue">Remove from playlist</string>
@@ -77,6 +77,10 @@
     <!-- Menu item to navigate to parent directory (condensed) -->
     <string name="menu_parent_condensed">Parent</string>
     <string name="menu_clear_playlist">Clear playlist</string>
+    <string name="menu_browse_text_size">Text Size</string>
+    <string name="size_small">Small Text</string>
+    <string name="size_medium">Medium Text</string>
+    <string name="size_large">Large Text</string>
     <string name="mediasearch">Search for %s using:</string>
     <string name="emptyplaylist">Playlist is empty.</string>
     <string name="noserver">Server not selected.</string>

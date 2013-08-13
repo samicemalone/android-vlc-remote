@@ -17,6 +17,17 @@
         android:icon="@drawable/ic_menu_set_as"
         android:showAsAction="ifRoom|withText" />
     <item
+        android:id="@+id/menu_text_size"
+        android:title="@string/menu_browse_text_size"
+        android:icon="@drawable/ic_menu_font_size"
+        android:showAsAction="ifRoom|withText"> 
+        <menu>
+            <item android:id="@+id/menu_size_small" android:title="@string/size_small"></item>
+            <item android:id="@+id/menu_size_medium" android:title="@string/size_medium"></item>
+            <item android:id="@+id/menu_size_large" android:title="@string/size_large"></item>
+        </menu>
+    </item>
+    <item
         android:id="@+id/menu_refresh"
         android:title="@string/refresh"
         android:icon="@drawable/ic_menu_refresh"

@@ -19,7 +19,6 @@ package org.peterbaldwin.vlcremote.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +49,15 @@ public final class Preferences {
     private static final String PREFERENCE_SORT_DIRECTORIES_FIRST = "sort_directories_first";
     
     private static final String PREFERENCE_SEEK_TIME = "seek_time";
+    
+    private static final String PREFERENCE_TEXT_SIZE = "browse_text_size";
 
     private SharedPreferences mPreferences;
 
+    public final static int TEXT_SMALL = 0;
+    public final static int TEXT_MEDIUM = 1;
+    public final static int TEXT_LARGE = 2;
+    
     public Preferences(SharedPreferences preferences) {
         mPreferences = preferences;
     }
@@ -121,6 +126,14 @@ public final class Preferences {
     
     public String getSeekTime() {
         return mPreferences.getString(PREFERENCE_SEEK_TIME, "10");
+    }
+    
+    public boolean setTextSize(int textSize) {
+        return mPreferences.edit().putInt(PREFERENCE_TEXT_SIZE, textSize).commit();
+    }
+    
+    public int getTextSize() {
+        return mPreferences.getInt(PREFERENCE_TEXT_SIZE, TEXT_LARGE);
     }
 
     public String getAuthority() {

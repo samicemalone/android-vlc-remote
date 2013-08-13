@@ -204,6 +204,18 @@ public class BrowseFragment extends ListFragment implements
                 mPreferences.setHomeDirectory(mDirectory);
                 showSetHomeToast();
                 return true;
+            case R.id.menu_size_large:
+                mPreferences.setTextSize(Preferences.TEXT_LARGE);
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.menu_size_medium:
+                mPreferences.setTextSize(Preferences.TEXT_MEDIUM);
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.menu_size_small:
+                mPreferences.setTextSize(Preferences.TEXT_SMALL);
+                mAdapter.notifyDataSetChanged();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
