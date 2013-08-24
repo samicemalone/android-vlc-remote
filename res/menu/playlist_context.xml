@@ -6,8 +6,7 @@
         android:title="@string/context_play"/>
     <item
         android:id="@+id/playlist_context_dequeue"
-        android:title="@string/context_dequeue"
-        android:visible="false"/>
+        android:title="@string/context_dequeue"/>
     <item
         android:id="@+id/playlist_context_search"
         android:title="@string/context_search"/>
