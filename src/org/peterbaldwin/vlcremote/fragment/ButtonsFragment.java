@@ -143,40 +143,19 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
                 updateButtons();
                 break;
             case R.id.playlist_button_repeat:
-                // Order: Normal -> Repeat -> Loop
-                if (mRepeat) {
-                    // Switch to loop
-                    if (mLoop) {
-                        // Turn-off repeat
-                        mMediaServer.status().command.playback.repeat();
-                        mRepeat = false;
-                    } else {
-                        // Manual transition:
-                        // This needs to be a two step process
-                        // because the commands will conflict
-                        // if they are issued too close together.
-                        // The transition is optimized when
-                        // switching from normal mode to repeat
-                        // to avoid the two step process when possible.
-                        // The UI is not updated until the
-                        // server responds to hide the
-                        // intermediate state.
-
-                        // Turn-on loop then turn-off repeat shortly after.
-                        mMediaServer.status().command.playback.loop().repeat();
-                    }
-                } else if (mLoop) {
-                    // Switch to normal
-
-                    // Turn-off loop
-                    mMediaServer.status().command.playback.loop();
-                    mLoop = false;
-                } else {
-                    // Turn-on repeat and turn-on loop to make the transition
-                    // from repeat to loop one step instead of two steps.
-                    // Loop has no effect when repeat is on.
-                    mMediaServer.status().command.playback.repeat().loop();
+                // Order: Normal -> Loop -> Repeat
+                if (mLoop) {
+                    // Turn-on repeat
+                    mMediaServer.status().command.playback.repeat();
                     mRepeat = true;
+                    mLoop = false;
+                } else if (mRepeat) {
+                    // Turn-off repeat
+                    mMediaServer.status().command.playback.repeat();
+                    mRepeat = false;
+                } else {
+                    // Turn-on loop
+                    mMediaServer.status().command.playback.loop();
                     mLoop = true;
                 }
                 updateButtons();
