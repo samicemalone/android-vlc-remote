@@ -74,9 +74,6 @@
     <!-- Label for playlist tab -->
     <string name="tab_playlist">Liste de lecture</string>
 
-    <!-- Label indicating that a part of the app is still experimental and may not work reliably -->
-    <string name="experimental">Expérimental</string>
-
     <!-- Instructions for using DVD navigation gestures -->
     <string name="dvd_instructions">Glissez dans une direction (haut, bas, gauche, droite) pour naviguer dans les menus du DVD. Tapotez pour sélectionner un élement du menu</string>
 

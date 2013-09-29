@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/experimental"
-        android:gravity="center"
-        android:layout_margin="8dp" />
+    android:layout_height="fill_parent" >
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/dvd_instructions"
+        android:layout_margin="8dp"
         android:gravity="center"
-        android:layout_margin="8dp" />
+        android:text="@string/dvd_instructions"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
     <android.gesture.GestureOverlayView
         android:id="@+id/overlay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+
 </FrameLayout>
