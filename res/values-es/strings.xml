@@ -2,8 +2,7 @@
 <!-- Translated by jogios@users.sourceforge.net -->
 <resources>
     <string name="app_name">Remoto para VLC</string>
-    <string name="description">Control remoto para el reproductor multimedia VideoLAN Client (VLC).
-    </string>
+    <string name="description">Control remoto para el reproductor multimedia VideoLAN Client (VLC).</string>
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="settings">Opciones</string>
@@ -19,11 +18,15 @@
     <string name="title_pick_server">Elije un Servidor</string>
     <string name="add_server">Añade un sevidor VLC</string>
     <string name="label_hostname">Anfitrión o dirección IP</string>
-    <string name="label_port">Puerto</string>
+    <string name="label_port">Puerto (Por defecto 8080)</string>
+    <string name="label_user">Usuario (Por defecto: ninguno)</string>
+    <string name="label_password">Contraseña (Por defecto: ninguno)</string>
     <string name="wifi">Wi-Fi</string>
     <string name="summary_wifi_connected">Conectado a {0}</string>
     <string name="summary_wifi_disconnected">Aviso: La red Wi-Fi está desconectada</string>
     <string name="summary_not_in_range">No está dentro del rango</string>
+    <string name="pause_for_call">Pausa por llamadas telefónicas</string>
+    <string name="summary_pause_for_call">Pausa la reproducción durante las llamadas telefónicas</string>
     <string name="summary_remembered">Recordada</string>
     <string name="summary_forbidden">
         Por favor edita el archivo
@@ -48,6 +51,11 @@
     <string name="context_enqueue">Añadir a la lista de reproducción</string>
     <string name="context_dequeue">Borrar de la lista de reproducción</string>
     <string name="context_search">Buscar</string>
+    <string name="toggle_fullscreen">Cambiar a pantalla completa</string>
+    <string name="audio_track">Pista de Audio</string>
+    <string name="subtitle_track">Pista de Subtítulo</string>
+    <string name="aspect_ratio">Relación de aspecto</string>
+    <string name="crop">Recortar vídeo</string>
     <!-- Menu item to navigate to parent directory -->
     <string name="menu_parent">Directorio Padre</string>
     <!-- Menu item to navigate to parent directory (condensed) -->
@@ -65,13 +73,13 @@
     <string name="service_label">Servicio Remoto de VLC</string>
 
     <!-- Label for tab containing playback controls -->
-    <string name="goto_playback">"Reproducción"</string>
+    <string name="goto_playback">Reproducción</string>
 
     <!-- Label for music library tab -->
-    <string name="goto_start">"Biblioteca"</string>
+    <string name="goto_start">Biblioteca</string>
 
     <!-- Label for tab containing information about the currently playing track -->
-    <string name="nowplaying_title">"Reproduciendo"</string>
+    <string name="nowplaying_title">Reproduciendo</string>
 
     <!-- Label for DVD navigation tab -->
     <string name="tab_dvd">DVD</string>
@@ -80,6 +88,11 @@
     <string name="tab_playlist">Lista de Reproducción</string>
 
     <!-- Instructions for using DVD navigation gestures -->
-    <string name="dvd_instructions">Deslice a la izquierda, derecha, arriba y abajo para navegar por los menús
-        del DVD. Pulse para seleccionar un elemento del menú.</string>
+    <string name="dvd_instructions">Deslice a la izquierda, derecha, arriba y abajo para navegar por los menús del DVD. Pulse para seleccionar un elemento del menú.</string>
+
+    <!-- Label for button to dismiss a dialog -->
+    <string name="close">Cerrar</string>
+
+    <!-- Content description for hotkeys menu -->
+    <string name="hotkeys">Teclas de acceso rápido</string>
 </resources>
