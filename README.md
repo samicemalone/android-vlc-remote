@@ -5,7 +5,7 @@ This is a fork of the project [android-vlc-remote](https://code.google.com/p/and
 ##Requirements
 This fork has increased the minimum API version on which it will run. It now requires Ice Cream Sandwich (API 14). Any pull requests are welcome to increase compatibility.
 
-This has been tested with VLC 1.1, VLC 2.0.6, and VLC 2.1.0-pre1 nightlies.
+This has been tested with VLC 1.1, VLC 2.0.x, VLC 2.1 and VLC 2.2.0 nightlies.
 
 ##Changes
 
@@ -24,7 +24,7 @@ This has been tested with VLC 1.1, VLC 2.0.6, and VLC 2.1.0-pre1 nightlies.
     * Servers can now be edited via the context menu.
     * Servers no longer show username/password in the title. Can still be viewed when editing.
     * Added ability to test server connection before adding
-    * Added support for VLC 2.1 http interface which uses HTTP basic authentication instead of an access control list (.hosts).
+    * Added support for VLC 2.1+ http interface which uses HTTP basic authentication instead of an access control list (.hosts).
     * Prompt for password if server requires authentication.
 * Browse Library
     * Fix for VLC 2.x not showing the parent (..) entry in the list on Windows.
@@ -51,7 +51,7 @@ The HTTP interface has a few different API versions which can lead to different 
 * VLC 2.1 appears to dropping access control lists (.hosts) file in favour of a password.
 
 ##VLC Bugs
-* Files with the same name in the playlist will have the `"current=current"` attribute set in playlist.xml. This is due to the HTTP interface comparing the current track by name instead of by item id. This should be fixed for 2.0.7. [[Source]](http://mailman.videolan.org/pipermail/vlc-commits/2013-April/019895.html)
+* Files with the same name in the playlist will have the `"current=current"` attribute set in playlist.xml. This is due to the HTTP interface comparing the current track by name instead of by item id. This should be fixed for 2.1. [[Source]](http://mailman.videolan.org/pipermail/vlc-commits/2013-April/019895.html)
 * I have been unable to get album art (over http) to work using Windows. Album art worked fine in Linux. It could possibly be related to [this message](http://lists.w3.org/Archives/Public/www-archive/2011Oct/0022.html).
 
 ##License
