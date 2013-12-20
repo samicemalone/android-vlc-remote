@@ -90,7 +90,19 @@ public final class Directory extends ArrayList<File> implements Comparator<File>
             return 1;
         }
         // then files
-        return firstFile.getName().compareTo(secondFile.getName());
+        return firstFile.getName().compareToIgnoreCase(secondFile.getName());
+    }
+    
+    public Comparator<File> getCaseInsensitiveComparator() {
+        return new CaseInsensitiveComparator();
+    }
+    
+    private final static class CaseInsensitiveComparator implements Comparator<File> {
+
+        public int compare(File lhs, File rhs) {
+            return lhs.getName().compareToIgnoreCase(rhs.getName());
+        }
+        
     }
     
 }
