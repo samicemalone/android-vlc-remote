@@ -32,9 +32,9 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
 
     private final String mSearch;
 
-    private MediaParser mMediaParser;
+    private final MediaParser mMediaParser;
     
-    private ProgressListener mListener;
+    private final ProgressListener mListener;
     
     private boolean mIsCancelled = false;
     
@@ -49,7 +49,7 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
     @Override
     public Remote<Playlist> loadInBackground() {
         mListener.onProgress(0);
-        Remote<Playlist> p = mMediaServer.playlist(mSearch).load();
+        Remote<Playlist> p = mMediaServer == null ? null : mMediaServer.playlist(mSearch).load();
         if(p == null || p.data == null) {
             mListener.onProgress(10000);
             return p;

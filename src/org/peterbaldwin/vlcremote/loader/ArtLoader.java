@@ -23,6 +23,9 @@ public class ArtLoader extends ModelLoader<Drawable> {
     @Override
     public Drawable loadInBackground() {
         Resources res = getContext().getResources();
+        if(mMediaServer == null) {
+            return res.getDrawable(R.drawable.albumart_mp_unknown);
+        }
         try {
             return new BitmapDrawable(res, mMediaServer.art().read());
         } catch (IOException e) {

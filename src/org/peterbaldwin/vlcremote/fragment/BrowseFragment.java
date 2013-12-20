@@ -309,12 +309,7 @@ public class BrowseFragment extends ListFragment implements
     }
 
     private boolean isEmptyDirectory(Directory directory) {
-        if (directory != null) {
-            return directory.isEmpty();
-        } else {
-            // The directory could not be retrieved
-            return false;
-        }
+        return directory != null ? directory.isEmpty() : false;
     }
 
     private void handleEmptyDirectory() {
@@ -323,9 +318,7 @@ public class BrowseFragment extends ListFragment implements
     }
 
     private void showEmptyDirectoryError() {
-        Context context = getActivity();
-        Toast toast = Toast.makeText(context, R.string.browse_empty, Toast.LENGTH_LONG);
-        toast.show();
+        Toast.makeText(getActivity(), R.string.browse_empty, Toast.LENGTH_LONG).show();
     }
 
     /** {@inheritDoc} */

@@ -27,14 +27,13 @@ public class ImageLoader extends ModelLoader<Drawable> {
     @Override
     public Drawable loadInBackground() {
         Resources res = getContext().getResources();
-        if (mUri != null && "http".equals(mUri.getScheme())) {
+        if (mUri != null && "http".equals(mUri.getScheme()) && mMediaServer != null) {
             try {
                 return new BitmapDrawable(res, mMediaServer.image(mUri).read());
             } catch (IOException e) {
-                return res.getDrawable(R.drawable.albumart_mp_unknown);
+                
             }
-        } else {
-            return res.getDrawable(R.drawable.albumart_mp_unknown);
         }
+        return res.getDrawable(R.drawable.albumart_mp_unknown);
     }
 }

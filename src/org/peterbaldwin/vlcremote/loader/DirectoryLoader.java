@@ -38,6 +38,9 @@ public class DirectoryLoader extends ModelLoader<Remote<Directory>> {
 
     @Override
     public Remote<Directory> loadInBackground() {
+        if(mMediaServer == null) {
+            return Remote.error(new NullPointerException("Unable to load the media server"));
+        }
         Remote<Directory> remote = mMediaServer.browse(mDir).load();
         if(remote.data != null) {
             boolean dirSort = Preferences.get(getContext()).isSortDirectoriesFirst();
