@@ -23,17 +23,15 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class NavigationFragment extends Fragment implements View.OnTouchListener,
+public class NavigationFragment extends MediaFragment implements View.OnTouchListener,
         GestureDetector.OnGestureListener {
 
-    private MediaServer mMediaServer;
     private GestureDetector mGestureDetector;
 
     @Override
@@ -46,10 +44,6 @@ public class NavigationFragment extends Fragment implements View.OnTouchListener
         return view;
     }
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-    }
-
     /** {@inheritDoc} */
     public boolean onTouch(View v, MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
@@ -57,7 +51,7 @@ public class NavigationFragment extends Fragment implements View.OnTouchListener
 
     /** {@inheritDoc} */
     public boolean onSingleTapUp(MotionEvent e) {
-        mMediaServer.status().command.key("nav-activate");
+        getMediaServer().status().command.key("nav-activate");
         vibrate();
         return true;
     }
@@ -66,21 +60,21 @@ public class NavigationFragment extends Fragment implements View.OnTouchListener
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
-                mMediaServer.status().command.key("nav-right");
+                getMediaServer().status().command.key("nav-right");
                 vibrate();
                 return true;
             } else if (velocityX < 0) {
-                mMediaServer.status().command.key("nav-left");
+                getMediaServer().status().command.key("nav-left");
                 vibrate();
                 return true;
             }
         } else if (Math.abs(velocityY) > Math.abs(velocityX)) {
             if (velocityY > 0) {
-                mMediaServer.status().command.key("nav-down");
+                getMediaServer().status().command.key("nav-down");
                 vibrate();
                 return true;
             } else if (velocityY < 0) {
-                mMediaServer.status().command.key("nav-up");
+                getMediaServer().status().command.key("nav-up");
                 vibrate();
                 return true;
             }

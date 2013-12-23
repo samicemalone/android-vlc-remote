@@ -20,7 +20,6 @@ package org.peterbaldwin.vlcremote.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
@@ -47,10 +46,9 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Remote;
-import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
-public class BrowseFragment extends ListFragment implements
+public class BrowseFragment extends MediaListFragment implements
         LoaderManager.LoaderCallbacks<Remote<Directory>>, EnqueueObservable {
     
     private interface Data {
@@ -64,8 +62,6 @@ public class BrowseFragment extends ListFragment implements
     private List<EnqueueObserver> observers;
 
     private DirectoryAdapter mAdapter;
-
-    private MediaServer mMediaServer;
 
     private String mDirectory = "~";
 
@@ -102,8 +98,7 @@ public class BrowseFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Context context = getActivity();
-        mPreferences = Preferences.get(context);
+        mPreferences = Preferences.get(getActivity());
         if (savedInstanceState == null) {
             mDirectory = mPreferences.getBrowseDirectory();
         } else {
@@ -124,11 +119,7 @@ public class BrowseFragment extends ListFragment implements
         super.onSaveInstanceState(outState);
         outState.putString(State.DIRECTORY, mDirectory);
     }
-
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-    }
-
+    
     @Override
     public void setEmptyText(CharSequence text) {
         mEmpty.setText(text);
@@ -137,11 +128,10 @@ public class BrowseFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Context context = getActivity();
-        mAdapter = new DirectoryAdapter(context);
+        mAdapter = new DirectoryAdapter(getActivity());
         setListAdapter(mAdapter);
         registerForContextMenu(getListView());
-        if (mMediaServer != null) {
+        if (getMediaServer() != null) {
             getLoaderManager().initLoader(Data.DIRECTORY, Bundle.EMPTY, this);
         }
     }
@@ -152,7 +142,7 @@ public class BrowseFragment extends ListFragment implements
         if (file.isDirectory()) {
             openDirectory(file);
         } else {
-            mMediaServer.status().command.input.play(file.getMrl(), file.getOptions());
+            getMediaServer().status().command.input.play(file.getMrl(), file.getOptions());
         }
     }
 
@@ -263,16 +253,16 @@ public class BrowseFragment extends ListFragment implements
                         openDirectory(file);
                         return true;
                     case R.id.browse_context_play:
-                        mMediaServer.status().command.input.play(file.getMrl(), file.getOptions());
+                        getMediaServer().status().command.input.play(file.getMrl(), file.getOptions());
                         return true;
                     case R.id.browse_context_stream:
-                        mMediaServer.status().command.input.play(file.getMrl(),
+                        getMediaServer().status().command.input.play(file.getMrl(),
                                 file.getStreamingOptions());
-                        Intent intent = file.getIntentForStreaming(mMediaServer.getAuthority());
+                        Intent intent = file.getIntentForStreaming(getMediaServer().getAuthority());
                         startActivity(intent);
                         return true;
                     case R.id.browse_context_enqueue:
-                        mMediaServer.status().command.input.enqueue(file.getMrl());
+                        getMediaServer().status().command.input.enqueue(file.getMrl());
                         notifyEnqueue();
                         return true;
                 }
@@ -283,10 +273,9 @@ public class BrowseFragment extends ListFragment implements
 
     /** {@inheritDoc} */
     public Loader<Remote<Directory>> onCreateLoader(int id, Bundle args) {
-        Context context = getActivity();
         mPreferences.setBrowseDirectory(mDirectory);
         setEmptyText(getText(R.string.loading));
-        return new DirectoryLoader(context, mMediaServer, mDirectory);
+        return new DirectoryLoader(getActivity(), getMediaServer(), mDirectory);
     }
 
     /** {@inheritDoc} */

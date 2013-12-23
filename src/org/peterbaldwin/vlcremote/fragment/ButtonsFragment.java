@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,13 @@ import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.MediaServerListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
-public final class ButtonsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
-
-    private MediaServer mMediaServer;
+public final class ButtonsFragment extends MediaFragment implements View.OnClickListener,
+        View.OnLongClickListener, MediaServerListener {
 
     private BroadcastReceiver mStatusReceiver;
 
@@ -55,10 +54,11 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     private boolean mRepeat;
     private boolean mLoop;
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        super.onNewMediaServer(server);
         if(listener != null) {
-            listener.setMediaServer(mediaServer);
+            listener.setMediaServer(server);
         }
     }
 
@@ -73,7 +73,7 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         View view = getView();
 
-        listener = new CommonPlaybackButtonsListenener(getActivity(), mMediaServer);
+        listener = new CommonPlaybackButtonsListenener(getActivity(), getMediaServer());
         listener.setUp(view);
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
@@ -132,13 +132,13 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.action_button_seek_backward:
-                mMediaServer.status().command.seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
+                getMediaServer().status().command.seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.action_button_seek_forward:
-                mMediaServer.status().command.seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
+                getMediaServer().status().command.seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.playlist_button_shuffle:
-                mMediaServer.status().command.playback.random();
+                getMediaServer().status().command.playback.random();
                 mRandom = !mRandom;
                 updateButtons();
                 break;
@@ -146,16 +146,16 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
                 // Order: Normal -> Loop -> Repeat
                 if (mLoop) {
                     // Turn-on repeat
-                    mMediaServer.status().command.playback.repeat();
+                    getMediaServer().status().command.playback.repeat();
                     mRepeat = true;
                     mLoop = false;
                 } else if (mRepeat) {
                     // Turn-off repeat
-                    mMediaServer.status().command.playback.repeat();
+                    getMediaServer().status().command.playback.repeat();
                     mRepeat = false;
                 } else {
                     // Turn-on loop
-                    mMediaServer.status().command.playback.loop();
+                    getMediaServer().status().command.playback.loop();
                     mLoop = true;
                 }
                 updateButtons();

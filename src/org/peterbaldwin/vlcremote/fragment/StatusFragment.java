@@ -17,30 +17,22 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.vlcremote.net.MediaServer;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
 
 /**
  * Polls the server for status updates.
  */
-public class StatusFragment extends Fragment implements Handler.Callback {
+public class StatusFragment extends MediaFragment implements Handler.Callback {
 
     private static final int TIMER = 1;
 
     private static final long INTERVAL = DateUtils.SECOND_IN_MILLIS;
 
     private Handler mHandler;
-
-    private MediaServer mMediaServer;
-
-    public void setMediaServer(MediaServer server) {
-        mMediaServer = server;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,8 +72,8 @@ public class StatusFragment extends Fragment implements Handler.Callback {
     }
 
     private void onTimerEvent() {
-        if (mMediaServer != null) {
-            mMediaServer.status().programmatic().get();
+        if (getMediaServer() != null) {
+            getMediaServer().status().programmatic().get();
         }
 
         // Schedule the next timer event

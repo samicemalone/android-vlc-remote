@@ -42,6 +42,7 @@ import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.ViewFlipper;
 import java.util.ArrayList;
+import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.fragment.ArtFragment;
 import org.peterbaldwin.vlcremote.fragment.BottomActionbarFragment;
@@ -55,6 +56,7 @@ import org.peterbaldwin.vlcremote.fragment.ServicesDiscoveryFragment;
 import org.peterbaldwin.vlcremote.fragment.StatusFragment;
 import org.peterbaldwin.vlcremote.fragment.VolumeFragment;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.MediaServerListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
@@ -125,6 +127,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private SlidingDrawer mDrawer;
 
     private ViewFlipper mFlipper;
+    
+    private List<MediaServerListener> mMediaServerListeners = new ArrayList<MediaServerListener>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +139,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         // Set the control stream to STREAM_MUSIC to suppress system beeps
         // that sound even when the activity handles volume key events.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        String authority = Preferences.get(this).getAuthority();
+        if (authority != null) {
+            changeServer(authority);
+        }
 
         mStatus = findOrAddFragment(FRAGMENT_STATUS, StatusFragment.class);
         mPlayback = findFragmentById(R.id.fragment_playback);
@@ -153,9 +162,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mServicesDiscovery = findFragmentById(R.id.fragment_services_discovery);
         mNavigation = findFragmentById(R.id.fragment_navigation);
 
-        Context context = this;
-        Preferences preferences = Preferences.get(context);
-        mVolumePanel = new VolumePanel(context);
+        Preferences preferences = Preferences.get(this);
+        mVolumePanel = new VolumePanel(this);
 
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         if (mTabHost != null) {
@@ -187,11 +195,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
 
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
-
-        String authority = preferences.getAuthority();
-        if (authority != null) {
-            changeServer(authority);
-        }
 
         if (savedInstanceState == null) {
             onNewIntent(getIntent());
@@ -303,6 +306,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 return super.onOptionsItemSelected(item);
         }
     }
+    
+    
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
@@ -350,26 +355,20 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMediaServerListeners = null;
+    }
+    
+    public void addMediaServerListener(MediaServerListener l) {
+        mMediaServerListeners.add(l);
+    }
+
     private void changeServer(String authority) {
-        Context context = this;
-        mMediaServer = new MediaServer(context, authority);
-        mPlayback.setMediaServer(mMediaServer);
-        mButtons.setMediaServer(mMediaServer);
-        if(mBottomActionBar != null) {
-            mBottomActionBar.setMediaServer(mMediaServer);
-        }
-        mVolume.setMediaServer(mMediaServer);
-        if (mArt != null) {
-            mArt.setMediaServer(mMediaServer);
-        }
-        mPlaylist.setMediaServer(mMediaServer);
-        mBrowse.setMediaServer(mMediaServer);
-        mStatus.setMediaServer(mMediaServer);
-        if (mServicesDiscovery != null) {
-            mServicesDiscovery.setMediaServer(mMediaServer);
-        }
-        if (mNavigation != null) {
-            mNavigation.setMediaServer(mMediaServer);
+        mMediaServer = new MediaServer(this, authority);
+        for(MediaServerListener l : mMediaServerListeners) {
+            l.onNewMediaServer(mMediaServer);
         }
     }
 

@@ -17,7 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
@@ -57,14 +55,10 @@ import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
 
-public class PlaylistFragment extends ListFragment implements
+public class PlaylistFragment extends MediaListFragment implements
         LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver, ProgressListener {
     
     private static final int LOADER_PLAYLIST = 1;
-
-    private Context mContext;
-
-    private MediaServer mMediaServer;
 
     private TextView mEmptyView;
 
@@ -87,12 +81,6 @@ public class PlaylistFragment extends ListFragment implements
             reload();
             mNeedsReload = false;
         }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
     }
 
     @Override
@@ -124,7 +112,7 @@ public class PlaylistFragment extends ListFragment implements
 
         registerForContextMenu(getListView());
 
-        if (mMediaServer != null && savedInstanceState == null) {
+        if (getMediaServer() != null && savedInstanceState == null) {
             getLoaderManager().initLoader(LOADER_PLAYLIST, null, this);
         }
     }
@@ -158,7 +146,7 @@ public class PlaylistFragment extends ListFragment implements
                 reload();
                 return true;
             case R.id.menu_clear_playlist:
-                mMediaServer.status().command.playback.empty();
+                getMediaServer().status().command.playback.empty();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -220,8 +208,9 @@ public class PlaylistFragment extends ListFragment implements
         outState.putSerializable("adapter", mAdapter);
     }
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        super.onNewMediaServer(server);
         reload();
     }
 
@@ -230,7 +219,7 @@ public class PlaylistFragment extends ListFragment implements
         // TODO: Register observer and notify observers when playlist item is
         // deleted
         mAdapter.remove(position);
-        mMediaServer.status().command.playback.delete(id);
+        getMediaServer().status().command.playback.delete(id);
     }
 
     private void searchForItem(PlaylistItem item) {
@@ -258,7 +247,7 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     private void selectItem(PlaylistItem item) {
-        mMediaServer.status().command.playback.play(item.getId());
+        getMediaServer().status().command.playback.play(item.getId());
     }
 
     @Override
@@ -299,7 +288,7 @@ public class PlaylistFragment extends ListFragment implements
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
-        mActiveLoaders.offer(new PlaylistLoader(mContext, mMediaServer, search, this));
+        mActiveLoaders.offer(new PlaylistLoader(getActivity(), getMediaServer(), search, this));
         return mActiveLoaders.peek();
     }
 
@@ -341,7 +330,7 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     public void reload() {
-        if (mMediaServer != null) {
+        if (getMediaServer() != null) {
             PlaylistLoader loader;
             while((loader = mActiveLoaders.poll()) != null) {
                 loader.cancelBackgroundLoad();
