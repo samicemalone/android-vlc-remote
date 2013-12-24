@@ -210,8 +210,12 @@ public class PlaylistFragment extends MediaListFragment implements
 
     @Override
     public void onNewMediaServer(MediaServer server) {
+        // onActivityCreated will not have been called yet on first use
+        boolean isFirstUse = getMediaServer() == null;
         super.onNewMediaServer(server);
-        reload();
+        if(!isFirstUse) {
+            reload();
+        }
     }
 
     private void removeItem(PlaylistItem item, int position) {

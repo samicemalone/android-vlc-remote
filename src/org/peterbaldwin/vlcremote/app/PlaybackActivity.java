@@ -52,7 +52,6 @@ import org.peterbaldwin.vlcremote.fragment.InfoFragment;
 import org.peterbaldwin.vlcremote.fragment.NavigationFragment;
 import org.peterbaldwin.vlcremote.fragment.PlaybackFragment;
 import org.peterbaldwin.vlcremote.fragment.PlaylistFragment;
-import org.peterbaldwin.vlcremote.fragment.ServicesDiscoveryFragment;
 import org.peterbaldwin.vlcremote.fragment.StatusFragment;
 import org.peterbaldwin.vlcremote.fragment.VolumeFragment;
 import org.peterbaldwin.vlcremote.intent.Intents;
@@ -72,8 +71,16 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private static final Uri URI_TROUBLESHOOTING = Uri
             .parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
 
+    private static final String FRAGMENT_PLAYBACK = "vlc:playback";
     private static final String FRAGMENT_STATUS = "vlc:status";
     private static final String FRAGMENT_BOTTOMBAR = "vlc:bottombar";
+    private static final String FRAGMENT_ART = "vlc:art";
+    private static final String FRAGMENT_NAVIGATION = "vlc:navigation";
+    private static final String FRAGMENT_BUTTONS = "vlc:buttons";
+    private static final String FRAGMENT_INFO = "vlc:info";
+    private static final String FRAGMENT_BROWSE = "vlc:browse";
+    private static final String FRAGMENT_PLAYLIST = "vlc:playlist";
+    private static final String FRAGMENT_VOLUME = "vlc:volume";
 
     private static final int VOLUME_LEVEL_UNKNOWN = -1;
 
@@ -91,28 +98,15 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     private TabHost mTabHost;
 
-    private PlaybackFragment mPlayback;
-
-    private ArtFragment mArt;
-
     private ButtonsFragment mButtons;
     
     private BottomActionbarFragment mBottomActionBar;
 
     private VolumeFragment mVolume;
 
-    @SuppressWarnings("unused")
-    private InfoFragment mInfo;
-
     private PlaylistFragment mPlaylist;
 
     private BrowseFragment mBrowse;
-
-    private ServicesDiscoveryFragment mServicesDiscovery;
-
-    private NavigationFragment mNavigation;
-
-    private StatusFragment mStatus;
 
     private VolumePanel mVolumePanel;
 
@@ -135,32 +129,29 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.main);
-
+        
         // Set the control stream to STREAM_MUSIC to suppress system beeps
         // that sound even when the activity handles volume key events.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         String authority = Preferences.get(this).getAuthority();
         if (authority != null) {
-            changeServer(authority);
+            mMediaServer = new MediaServer(this, authority);
         }
+        
+        findOrAddFragment(FRAGMENT_STATUS, StatusFragment.class);
+        findOrReplaceFragment(R.id.fragment_playback, FRAGMENT_PLAYBACK, PlaybackFragment.class);
+        findOrReplaceFragment(R.id.fragment_info, FRAGMENT_INFO, InfoFragment.class);
+        findOrReplaceOptionalFragment(R.id.fragment_art, FRAGMENT_ART, ArtFragment.class);
+        findOrReplaceOptionalFragment(R.id.fragment_navigation, FRAGMENT_NAVIGATION, NavigationFragment.class);
 
-        mStatus = findOrAddFragment(FRAGMENT_STATUS, StatusFragment.class);
-        mPlayback = findFragmentById(R.id.fragment_playback);
-        mArt = findFragmentById(R.id.fragment_art);
-        if(findViewById(R.id.fragment_bottom_actionbar) != null) {
-            mBottomActionBar = findOrReplaceFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
-        } else {
-            mBottomActionBar = null;
-        }
-        mButtons = findFragmentById(R.id.fragment_buttons);
-        mVolume = findFragmentById(R.id.fragment_volume);
-        mInfo = findFragmentById(R.id.fragment_info);
-        mPlaylist = findFragmentById(R.id.fragment_playlist);
-        mBrowse = findFragmentById(R.id.fragment_browse);
+        mPlaylist = findOrReplaceFragment(R.id.fragment_playlist, FRAGMENT_PLAYLIST, PlaylistFragment.class);
+        mBrowse = findOrReplaceFragment(R.id.fragment_browse, FRAGMENT_BROWSE, BrowseFragment.class);
+        mButtons = findOrReplaceFragment(R.id.fragment_buttons, FRAGMENT_BUTTONS, ButtonsFragment.class);
+        mVolume = findOrReplaceFragment(R.id.fragment_volume, FRAGMENT_VOLUME, VolumeFragment.class);
+        mBottomActionBar = findOrReplaceOptionalFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
+
         mBrowse.registerObserver(mPlaylist);
-        mServicesDiscovery = findFragmentById(R.id.fragment_services_discovery);
-        mNavigation = findFragmentById(R.id.fragment_navigation);
 
         Preferences preferences = Preferences.get(this);
         mVolumePanel = new VolumePanel(this);
@@ -196,6 +187,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
 
+        notifyMediaServerListeners();
+        
         if (savedInstanceState == null) {
             onNewIntent(getIntent());
         }
@@ -212,7 +205,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
     }
 
-    /** {@inheritDoc} */
     public void onTabChanged(String tabId) {
         if (TAB_PLAYLIST.equals(tabId)) {
             mPlaylist.selectCurrentTrack();
@@ -220,13 +212,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
         mPlaylist.setHasOptionsMenu(TAB_PLAYLIST.equals(tabId) || mTabHost == null);
         mBrowse.setHasOptionsMenu(TAB_BROWSE.equals(tabId) && mDrawer == null);
-        if (Build.VERSION.SDK_INT > 11) {
-            try {
-                getClass().getMethod("invalidateOptionsMenu").invoke(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        invalidateOptionsMenu();
     }
 
     /** {@inheritDoc} */
@@ -364,12 +350,16 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void addMediaServerListener(MediaServerListener l) {
         mMediaServerListeners.add(l);
     }
-
-    private void changeServer(String authority) {
-        mMediaServer = new MediaServer(this, authority);
+    
+    private void notifyMediaServerListeners() {
         for(MediaServerListener l : mMediaServerListeners) {
             l.onNewMediaServer(mMediaServer);
         }
+    }
+
+    private void changeServer(String authority) {
+        mMediaServer = new MediaServer(this, authority);
+        notifyMediaServerListeners();
     }
 
     @Override
@@ -552,12 +542,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Fragment> T findFragmentById(int id) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        return (T) fragmentManager.findFragmentById(id);
-    }
-
-    @SuppressWarnings("unchecked")
     private <T extends Fragment> T findOrAddFragment(String tag, Class<T> fragmentClass) {
         try {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -575,6 +559,14 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private <T extends Fragment> T findOrReplaceOptionalFragment(int res, String tag, Class<T> fragmentClass) {
+        if(findViewById(res) != null) {
+            return findOrReplaceFragment(res, tag, fragmentClass);
+        }
+        return null;
     }
     
     @SuppressWarnings("unchecked")

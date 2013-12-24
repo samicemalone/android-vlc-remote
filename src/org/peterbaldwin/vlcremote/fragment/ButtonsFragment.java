@@ -64,7 +64,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.frame_layout, parent, false);
+        return inflater.inflate(R.layout.buttons_fragment, parent, false);
     }
 
     @Override
@@ -73,7 +73,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
 
         View view = getView();
 
-        listener = new CommonPlaybackButtonsListenener(getActivity(), getMediaServer());
+        listener = new CommonPlaybackButtonsListenener(getMediaServer());
         listener.setUp(view);
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);

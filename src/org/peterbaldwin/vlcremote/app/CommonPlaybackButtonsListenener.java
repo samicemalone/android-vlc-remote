@@ -16,7 +16,6 @@
  */
 package org.peterbaldwin.vlcremote.app;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -30,10 +29,8 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
 public class CommonPlaybackButtonsListenener implements View.OnClickListener, View.OnLongClickListener {
     
     private MediaServer mMediaServer;
-    private Context context;
     
-    public CommonPlaybackButtonsListenener(Context ctx, MediaServer server) {
-        context = ctx;
+    public CommonPlaybackButtonsListenener(MediaServer server) {
         mMediaServer = server;
     }
     
@@ -82,7 +79,7 @@ public class CommonPlaybackButtonsListenener implements View.OnClickListener, Vi
     }
 
     public boolean onLongClick(View v) {
-        Toast.makeText(context, v.getContentDescription(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(v.getContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
         return true;
     }
     

@@ -45,10 +45,8 @@ public final class BottomActionbarFragment extends MediaFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        View view = getView();
-        // set listeners
-        listener = new CommonPlaybackButtonsListenener(getActivity(), getMediaServer());
-        listener.setUp(view);
+        listener = new CommonPlaybackButtonsListenener(getMediaServer());
+        listener.setUp(getView());
     }
 
 }

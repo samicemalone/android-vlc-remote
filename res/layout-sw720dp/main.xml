@@ -22,35 +22,29 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp" >
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_art"
-                    android:name="org.peterbaldwin.vlcremote.fragment.ArtFragment"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="32dp"
                     android:layout_weight="1.0" />
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_volume"
-                    android:name="org.peterbaldwin.vlcremote.fragment.VolumeFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp" />
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_buttons"
-                    android:name="org.peterbaldwin.vlcremote.fragment.ButtonsFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="32dp" >
-                        <include layout="@layout/audio_player_buttons" />
-                </fragment>
+                    android:layout_marginBottom="32dp" />
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_info"
-                    android:name="org.peterbaldwin.vlcremote.fragment.InfoFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -64,15 +58,13 @@
                 android:outAnimation="@android:anim/fade_out"
                 android:paddingRight="36dp" >
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_playlist"
-                    android:name="org.peterbaldwin.vlcremote.fragment.PlaylistFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_navigation"
-                    android:name="org.peterbaldwin.vlcremote.fragment.NavigationFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </ViewFlipper>
@@ -91,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:padding="8dp"
+                android:contentDescription="@string/goto_start"
                 android:src="@drawable/ic_menu_archive" />
 
             <FrameLayout
@@ -99,18 +92,16 @@
                 android:layout_height="fill_parent"
                 android:background="@drawable/dialog_full_holo_dark" >
 
-                <fragment
+                <FrameLayout
                     android:id="@id/fragment_browse"
-                    android:name="org.peterbaldwin.vlcremote.fragment.BrowseFragment"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </FrameLayout>
         </SlidingDrawer>
     </FrameLayout>
 
-    <fragment
+    <FrameLayout
         android:id="@id/fragment_playback"
-        android:name="org.peterbaldwin.vlcremote.fragment.PlaybackFragment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
