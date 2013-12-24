@@ -85,8 +85,8 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
 
         setupImageButtonListeners(mButtonShuffle, mButtonRepeat, mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         
-        if(getResources().getConfiguration().screenWidthDp >= 480) {
-            // seek buttons are displayed in playback fragment if >= 480dp
+        if(getResources().getConfiguration().screenWidthDp >= 400) {
+            // seek buttons are displayed in playback fragment if >= 400dp
             hideImageButton(mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         }
     }
