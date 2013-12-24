@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
+import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListener;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.MediaServerListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
@@ -41,7 +41,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
 
     private BroadcastReceiver mStatusReceiver;
 
-    private CommonPlaybackButtonsListenener listener;
+    private CommonPlaybackButtonsListener listener;
     
     private ImageButton mButtonShuffle;
     private ImageButton mButtonRepeat;
@@ -73,7 +73,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
 
         View view = getView();
 
-        listener = new CommonPlaybackButtonsListenener(getMediaServer());
+        listener = new CommonPlaybackButtonsListener(getMediaServer());
         listener.setUp(view);
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);

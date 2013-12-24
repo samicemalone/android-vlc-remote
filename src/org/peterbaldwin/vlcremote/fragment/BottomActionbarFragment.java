@@ -22,12 +22,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
+import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListener;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 public final class BottomActionbarFragment extends MediaFragment {
 
-    private CommonPlaybackButtonsListenener listener;
+    private CommonPlaybackButtonsListener listener;
 
     @Override
     public void onNewMediaServer(MediaServer server) {
@@ -45,7 +45,7 @@ public final class BottomActionbarFragment extends MediaFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        listener = new CommonPlaybackButtonsListenener(getMediaServer());
+        listener = new CommonPlaybackButtonsListener(getMediaServer());
         listener.setUp(getView());
     }
 

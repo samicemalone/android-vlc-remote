@@ -26,11 +26,11 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
  *
  * @author Sam Malone
  */
-public class CommonPlaybackButtonsListenener implements View.OnClickListener, View.OnLongClickListener {
+public class CommonPlaybackButtonsListener implements View.OnClickListener, View.OnLongClickListener {
     
     private MediaServer mMediaServer;
     
-    public CommonPlaybackButtonsListenener(MediaServer server) {
+    public CommonPlaybackButtonsListener(MediaServer server) {
         mMediaServer = server;
     }
     
