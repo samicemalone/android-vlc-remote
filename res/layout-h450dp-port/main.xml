@@ -35,6 +35,15 @@
                     android:layout_weight="3.0" />
 
                 <FrameLayout
+                    android:id="@id/fragment_volume"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:layout_weight="1.0" />
+                
+                <FrameLayout
                     android:id="@id/fragment_buttons"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"

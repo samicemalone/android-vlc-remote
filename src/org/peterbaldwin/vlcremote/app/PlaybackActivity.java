@@ -162,7 +162,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mBrowse = findOrReplaceFragment(R.id.fragment_browse, FRAGMENT_BROWSE, BrowseFragment.class);
         mBrowse.registerObserver(mPlaylist);
         mButtons = findOrReplaceFragment(R.id.fragment_buttons, FRAGMENT_BUTTONS, ButtonsFragment.class);
-        mVolume = findOrReplaceFragment(R.id.fragment_volume, FRAGMENT_VOLUME, VolumeFragment.class);
+        mVolume = findOrReplaceOptionalFragment(R.id.fragment_volume, FRAGMENT_VOLUME, VolumeFragment.class);
         mBottomActionBar = findOrReplaceOptionalFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
 
         mVolumePanel = new VolumePanel(this);
@@ -461,17 +461,13 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     }
 
     void onVolumeChanged(int volume) {
-        if (!hasVolumeFragment() && mVolumeLevel != VOLUME_LEVEL_UNKNOWN && mVolumeLevel != volume) {
+        if (mVolume == null && mVolumeLevel != VOLUME_LEVEL_UNKNOWN && mVolumeLevel != volume) {
             mVolumePanel.onVolumeChanged(volume);
         }
         mVolumeLevel = volume;
         if (0 != volume) {
             mLastNonZeroVolume = volume;
         }
-    }
-
-    private boolean hasVolumeFragment() {
-        return mVolume != null && mVolume.isInLayout();
     }
 
     @Override
