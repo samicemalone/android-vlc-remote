@@ -91,9 +91,19 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private static final String TAB_PLAYLIST = "playlist";
     private static final String TAB_BROWSE = "browse";
     private static final String TAB_NAVIGATION = "navigation";
+    
+    private static final int TAB_NAVIGATION_INDEX = 3;
 
     private static final int MAX_VOLUME = 1024;
 
+    private final List<TabHost.TabSpec> mTabSpecList = new ArrayList<TabHost.TabSpec>();
+    
+    /**
+     * This is used to store the value of the users preference before the 
+     * pick server activity is created.
+     */
+    private boolean isHideDVDTab = false;
+    
     private MediaServer mMediaServer;
 
     private TabHost mTabHost;
@@ -145,18 +155,18 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         findOrReplaceOptionalFragment(R.id.fragment_art, FRAGMENT_ART, ArtFragment.class);
         findOrReplaceOptionalFragment(R.id.fragment_navigation, FRAGMENT_NAVIGATION, NavigationFragment.class);
 
+        Preferences preferences = Preferences.get(this);
+        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+
         mPlaylist = findOrReplaceFragment(R.id.fragment_playlist, FRAGMENT_PLAYLIST, PlaylistFragment.class);
         mBrowse = findOrReplaceFragment(R.id.fragment_browse, FRAGMENT_BROWSE, BrowseFragment.class);
+        mBrowse.registerObserver(mPlaylist);
         mButtons = findOrReplaceFragment(R.id.fragment_buttons, FRAGMENT_BUTTONS, ButtonsFragment.class);
         mVolume = findOrReplaceFragment(R.id.fragment_volume, FRAGMENT_VOLUME, VolumeFragment.class);
         mBottomActionBar = findOrReplaceOptionalFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
 
-        mBrowse.registerObserver(mPlaylist);
-
-        Preferences preferences = Preferences.get(this);
         mVolumePanel = new VolumePanel(this);
 
-        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         if (mTabHost != null) {
             mTabHost.setup();
             addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
@@ -165,11 +175,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             addTab(TAB_BROWSE, R.id.tab_browse, R.string.goto_start, R.drawable.ic_tab_playback);
             addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
             if(preferences.isHideDVDTabSet()) {
-                mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(3));
-            }
-            View dvdNav = findViewById(R.id.button_navigation);
-            if(dvdNav != null) {
-                dvdNav.setVisibility(View.GONE);
+                mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
             }
             mTabHost.setOnTabChangedListener(this);
             onTabChanged(mTabHost.getCurrentTabTag());
@@ -200,9 +206,22 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             spec.setContent(content);
             spec.setIndicator(getText(label), getResources().getDrawable(icon));
             mTabHost.addTab(spec);
-        } else {
-            // Tab does not exist in this layout
+            mTabSpecList.add(spec);
         }
+    }
+    
+    public void updateTabs() {
+        int curTab = mTabHost.getCurrentTab();
+        mTabHost.setCurrentTab(0);
+        mTabHost.clearAllTabs();
+        for (int i = 0; i < mTabSpecList.size(); i++) {
+            if(i == TAB_NAVIGATION_INDEX && Preferences.get(this).isHideDVDTabSet()) {
+                continue;
+            }
+            mTabHost.addTab(mTabSpecList.get(i));
+            mTabHost.setCurrentTab(i);
+        }
+        mTabHost.setCurrentTab(curTab);
     }
 
     public void onTabChanged(String tabId) {
@@ -219,8 +238,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_navigation:
-                mFlipper.showNext();
-                updateNavigationButton(v);
+                if(mTabHost == null) {
+                    mFlipper.showNext();
+                    updateNavigationButton(v);
+                } else {
+                    mTabHost.setCurrentTab(TAB_NAVIGATION_INDEX);
+                }
                 break;
         }
     }
@@ -298,6 +321,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
         ArrayList<String> remembered = preferences.getRememberedServers();
+        isHideDVDTab = preferences.isHideDVDTabSet();
         Intent intent = new Intent(this, PickServerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(PickServerActivity.EXTRA_PORT, 8080);
@@ -320,6 +344,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 } else {
                     mBrowse.reload();
                     mPlaylist.reload();
+                }
+                
+                if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
+                    updateTabs();
                 }
 
                 if (data != null) {
@@ -568,7 +596,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
         return null;
     }
-    
+
     @SuppressWarnings("unchecked")
     private <T extends Fragment> T findOrReplaceFragment(int res, String tag, Class<T> fragmentClass) {
         try {

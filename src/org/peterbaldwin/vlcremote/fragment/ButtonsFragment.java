@@ -100,6 +100,16 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
         }
     }
     
+    private void updateDVDButton() {
+        if(getView() == null) {
+            return;
+        }
+        ImageButton dvd = (ImageButton) getView().findViewById(R.id.button_navigation);
+        if(dvd != null && dvd.getTag() == null) {
+            dvd.setVisibility(Preferences.get(getActivity()).isHideDVDTabSet() ? View.GONE : View.VISIBLE);
+        }
+    }
+    
     private void hideImageButton(ImageButton... imageButtons) {
         for(ImageButton b : imageButtons) {
             if(b != null) {
@@ -119,6 +129,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intents.ACTION_STATUS);
         getActivity().registerReceiver(mStatusReceiver, filter);
+        updateDVDButton();
     }
 
     @Override
