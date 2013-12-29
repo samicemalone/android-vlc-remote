@@ -27,10 +27,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -45,42 +42,34 @@ import java.util.ArrayList;
 import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.fragment.ArtFragment;
-import org.peterbaldwin.vlcremote.fragment.BottomActionbarFragment;
 import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
 import org.peterbaldwin.vlcremote.fragment.ButtonsFragment;
 import org.peterbaldwin.vlcremote.fragment.InfoFragment;
 import org.peterbaldwin.vlcremote.fragment.NavigationFragment;
 import org.peterbaldwin.vlcremote.fragment.PlaybackFragment;
+import org.peterbaldwin.vlcremote.fragment.PlayingFragment;
 import org.peterbaldwin.vlcremote.fragment.PlaylistFragment;
 import org.peterbaldwin.vlcremote.fragment.StatusFragment;
 import org.peterbaldwin.vlcremote.fragment.VolumeFragment;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.listener.ButtonVisibilityListener;
+import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.MediaServerListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.util.FragmentUtil;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
-        View.OnClickListener {
+        View.OnClickListener, UIVisibilityListener {
 
     private static final String TAG = "PlaybackActivity";
     
     private static final int REQUEST_PICK_SERVER = 1;
 
-    private static final Uri URI_TROUBLESHOOTING = Uri
-            .parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
-
-    private static final String FRAGMENT_PLAYBACK = "vlc:playback";
-    private static final String FRAGMENT_STATUS = "vlc:status";
-    private static final String FRAGMENT_BOTTOMBAR = "vlc:bottombar";
-    private static final String FRAGMENT_ART = "vlc:art";
-    private static final String FRAGMENT_NAVIGATION = "vlc:navigation";
-    private static final String FRAGMENT_BUTTONS = "vlc:buttons";
-    private static final String FRAGMENT_INFO = "vlc:info";
-    private static final String FRAGMENT_BROWSE = "vlc:browse";
-    private static final String FRAGMENT_PLAYLIST = "vlc:playlist";
-    private static final String FRAGMENT_VOLUME = "vlc:volume";
+    private static final Uri URI_TROUBLESHOOTING = Uri.parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
 
     private static final int VOLUME_LEVEL_UNKNOWN = -1;
 
@@ -104,15 +93,15 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
      */
     private boolean isHideDVDTab = false;
     
+    private boolean isBottomActionbarVisible = false;
+    
+    private boolean isVolumeFragmentVisible = false;
+    
+    private ButtonVisibilityListener mButtonsVisibleListener;
+    
     private MediaServer mMediaServer;
 
     private TabHost mTabHost;
-
-    private ButtonsFragment mButtons;
-    
-    private BottomActionbarFragment mBottomActionBar;
-
-    private VolumeFragment mVolume;
 
     private PlaylistFragment mPlaylist;
 
@@ -149,38 +138,31 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             mMediaServer = new MediaServer(this, authority);
         }
         
-        findOrAddFragment(FRAGMENT_STATUS, StatusFragment.class);
-        findOrReplaceFragment(R.id.fragment_playback, FRAGMENT_PLAYBACK, PlaybackFragment.class);
-        findOrReplaceFragment(R.id.fragment_info, FRAGMENT_INFO, InfoFragment.class);
-        findOrReplaceOptionalFragment(R.id.fragment_art, FRAGMENT_ART, ArtFragment.class);
-        findOrReplaceOptionalFragment(R.id.fragment_navigation, FRAGMENT_NAVIGATION, NavigationFragment.class);
-
-        Preferences preferences = Preferences.get(this);
+        mFlipper = (ViewFlipper) findViewById(R.id.flipper);
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-
-        mPlaylist = findOrReplaceFragment(R.id.fragment_playlist, FRAGMENT_PLAYLIST, PlaylistFragment.class);
-        mBrowse = findOrReplaceFragment(R.id.fragment_browse, FRAGMENT_BROWSE, BrowseFragment.class);
+        
+        FragmentUtil fu = new FragmentUtil(getSupportFragmentManager());
+        fu.findOrAddFragment(Tags.FRAGMENT_STATUS, StatusFragment.class);        
+        fu.findOrReplaceOptionalFragment(this, R.id.fragment_navigation, Tags.FRAGMENT_NAVIGATION, NavigationFragment.class);
+        mPlaylist = fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
+        mBrowse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
         mBrowse.registerObserver(mPlaylist);
-        mButtons = findOrReplaceFragment(R.id.fragment_buttons, FRAGMENT_BUTTONS, ButtonsFragment.class);
-        mVolume = findOrReplaceOptionalFragment(R.id.fragment_volume, FRAGMENT_VOLUME, VolumeFragment.class);
-        mBottomActionBar = findOrReplaceOptionalFragment(R.id.fragment_bottom_actionbar, FRAGMENT_BOTTOMBAR, BottomActionbarFragment.class);
-
         mVolumePanel = new VolumePanel(this);
 
-        if (mTabHost != null) {
-            mTabHost.setup();
-            addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
-            addTab(TAB_PLAYLIST, R.id.tab_playlist, R.string.tab_playlist,
-                    R.drawable.ic_tab_playlists);
-            addTab(TAB_BROWSE, R.id.tab_browse, R.string.goto_start, R.drawable.ic_tab_playback);
-            addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
-            if(preferences.isHideDVDTabSet()) {
-                mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
-            }
-            mTabHost.setOnTabChangedListener(this);
-            onTabChanged(mTabHost.getCurrentTabTag());
-        } else {
+        if(mTabHost == null) {
+            fu.findOrReplaceFragment(R.id.fragment_playback, Tags.FRAGMENT_PLAYBACK, PlaybackFragment.class);
+            fu.findOrReplaceFragment(R.id.fragment_info, Tags.FRAGMENT_INFO, InfoFragment.class);
+            fu.findOrReplaceOptionalFragment(this, R.id.fragment_art, Tags.FRAGMENT_ART, ArtFragment.class);
+            fu.findOrReplaceFragment(R.id.fragment_buttons, Tags.FRAGMENT_BUTTONS, ButtonsFragment.class);
+            VolumeFragment mVolume = fu.findOrReplaceFragment(R.id.fragment_volume, Tags.FRAGMENT_VOLUME, VolumeFragment.class);
+            setVolumeFragmentVisible(mVolume != null);
             onTabChanged(null);
+        } else {
+            if(savedInstanceState != null) {
+                fu.removeFragmentsByTag(Tags.FRAGMENT_PLAYBACK, Tags.FRAGMENT_INFO, Tags.FRAGMENT_BUTTONS, Tags.FRAGMENT_VOLUME, Tags.FRAGMENT_BOTTOMBAR);
+            }
+            fu.findOrReplaceFragment(R.id.fragment_playing, Tags.FRAGMENT_PLAYING, PlayingFragment.class);
+            setupTabHost();
         }
 
         mDrawer = (SlidingDrawer) findViewById(R.id.drawer);
@@ -191,13 +173,25 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             mDrawer.setOnDrawerCloseListener(listener);
         }
 
-        mFlipper = (ViewFlipper) findViewById(R.id.flipper);
-
-        notifyMediaServerListeners();
-        
         if (savedInstanceState == null) {
             onNewIntent(getIntent());
+        } else {
+            notifyMediaServerListeners();
         }
+    }
+    
+    private void setupTabHost() {
+        mTabHost.setup();
+        addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
+        addTab(TAB_PLAYLIST, R.id.tab_playlist, R.string.tab_playlist,
+                R.drawable.ic_tab_playlists);
+        addTab(TAB_BROWSE, R.id.tab_browse, R.string.goto_start, R.drawable.ic_tab_playback);
+        addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
+        if(Preferences.get(this).isHideDVDTabSet()) {
+            mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
+        }
+        mTabHost.setOnTabChangedListener(this);
+        onTabChanged(mTabHost.getCurrentTabTag());
     }
 
     private void addTab(String tag, int content, int label, int icon) {
@@ -279,7 +273,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.findItem(R.id.menu_preferences).setVisible(visible);
         menu.findItem(R.id.menu_help).setVisible(visible);
         menu.setGroupVisible(R.id.group_vlc_actions, visible);
-        if((mBottomActionBar != null) || (mButtons != null && mButtons.isAllButtonsVisible())) {
+        if(isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible())) {
             menu.setGroupVisible(R.id.group_vlc_actions, false);
         }
         return menu.hasVisibleItems();
@@ -316,7 +310,20 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
     }
     
+    @Override
+    public void setButtonVisibilityListener(ButtonVisibilityListener l) {
+        mButtonsVisibleListener = l;
+    }
     
+    @Override
+    public void setBottomActionbarFragmentVisible(boolean isVisible) {
+        isBottomActionbarVisible = isVisible;
+    }
+    
+    @Override
+    public void setVolumeFragmentVisible(boolean isVisible) {
+        isVolumeFragmentVisible = isVisible;
+    }
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
@@ -375,8 +382,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mMediaServerListeners = null;
     }
     
-    public void addMediaServerListener(MediaServerListener l) {
+    public MediaServer addMediaServerListener(MediaServerListener l) {
         mMediaServerListeners.add(l);
+        return mMediaServer;
     }
     
     private void notifyMediaServerListeners() {
@@ -461,7 +469,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     }
 
     void onVolumeChanged(int volume) {
-        if (mVolume == null && mVolumeLevel != VOLUME_LEVEL_UNKNOWN && mVolumeLevel != volume) {
+        if (!isVolumeFragmentVisible && mVolumeLevel != VOLUME_LEVEL_UNKNOWN && mVolumeLevel != volume) {
             mVolumePanel.onVolumeChanged(volume);
         }
         mVolumeLevel = volume;
@@ -562,52 +570,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         } else if (mLastNonZeroVolume != VOLUME_LEVEL_UNKNOWN) {
             // Restore the volume to the last known value
             mMediaServer.status().command.volume(mLastNonZeroVolume);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends Fragment> T findOrAddFragment(String tag, Class<T> fragmentClass) {
-        try {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            T fragment = (T) fragmentManager.findFragmentByTag(tag);
-            if (fragment == null) {
-                fragment = fragmentClass.newInstance();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(fragment, tag);
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
-            }
-            return fragment;
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    private <T extends Fragment> T findOrReplaceOptionalFragment(int res, String tag, Class<T> fragmentClass) {
-        if(findViewById(res) != null) {
-            return findOrReplaceFragment(res, tag, fragmentClass);
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends Fragment> T findOrReplaceFragment(int res, String tag, Class<T> fragmentClass) {
-        try {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            T fragment = (T) fragmentManager.findFragmentByTag(tag);
-            if (fragment == null) {
-                fragment = fragmentClass.newInstance();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(res, fragment, tag);
-                fragmentTransaction.commit();
-                fragmentManager.executePendingTransactions();
-            }
-            return fragment;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e);
         }
     }
 

@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,23 +31,23 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListener;
+import org.peterbaldwin.vlcremote.listener.ButtonVisibilityListener;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.MediaServerListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 public final class ButtonsFragment extends MediaFragment implements View.OnClickListener,
-        View.OnLongClickListener, MediaServerListener {
-
+        View.OnLongClickListener, MediaServerListener, ButtonVisibilityListener {
+    
     private BroadcastReceiver mStatusReceiver;
 
     private CommonPlaybackButtonsListener listener;
     
     private ImageButton mButtonShuffle;
     private ImageButton mButtonRepeat;
-    private ImageButton mButtonPlaylistSeekBackward;
-    private ImageButton mButtonPlaylistSeekForward;
 
     private boolean isAllButtonsVisible;
     
@@ -60,6 +61,12 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
         if(listener != null) {
             listener.setMediaServer(server);
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((UIVisibilityListener) activity).setButtonVisibilityListener(this);
     }
 
     @Override
@@ -78,8 +85,8 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);
-        mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
-        mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
+        ImageButton mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
+        ImageButton mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
         isAllButtonsVisible = view.findViewById(R.id.audio_player_buttons_second_row) != null;
         getActivity().invalidateOptionsMenu();
 
@@ -118,6 +125,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
         }
     }
 
+    @Override
     public boolean isAllButtonsVisible() {
         return isAllButtonsVisible;
     }

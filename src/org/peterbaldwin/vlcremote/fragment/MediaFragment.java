@@ -25,7 +25,7 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
 
 /**
  *
- * @author Ice
+ * @author Sam Malone
  */
 public class MediaFragment extends Fragment implements MediaServerListener {
 
@@ -35,10 +35,14 @@ public class MediaFragment extends Fragment implements MediaServerListener {
         mMediaServer = server;
     }
 
+    public MediaServer addMediaServerListener(PlaybackActivity activity) {
+        return (activity == null) ? null : activity.addMediaServerListener(this);
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        ((PlaybackActivity) activity).addMediaServerListener(this);
+        mMediaServer = addMediaServerListener((PlaybackActivity) activity);
     }
 
     @Override
