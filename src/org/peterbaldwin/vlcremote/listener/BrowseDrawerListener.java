@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.app;
+package org.peterbaldwin.vlcremote.listener;
 
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
@@ -27,7 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SlidingDrawer;
 
-final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
+public final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
         SlidingDrawer.OnDrawerCloseListener {
 
     private final Activity mActivity;

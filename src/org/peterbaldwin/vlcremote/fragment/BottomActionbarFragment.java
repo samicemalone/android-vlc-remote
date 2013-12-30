@@ -22,7 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListener;
+import org.peterbaldwin.vlcremote.listener.CommonPlaybackButtonsListener;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 public final class BottomActionbarFragment extends MediaFragment {

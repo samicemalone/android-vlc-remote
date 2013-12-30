@@ -20,7 +20,7 @@ package org.peterbaldwin.vlcremote.fragment;
 import android.app.Activity;
 import android.support.v4.app.ListFragment;
 import org.peterbaldwin.vlcremote.app.PlaybackActivity;
-import org.peterbaldwin.vlcremote.model.MediaServerListener;
+import org.peterbaldwin.vlcremote.listener.MediaServerListener;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 /**

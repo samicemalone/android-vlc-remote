@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.model;
+package org.peterbaldwin.vlcremote.listener;
 
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
