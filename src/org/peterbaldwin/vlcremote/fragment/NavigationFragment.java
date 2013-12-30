@@ -17,9 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -28,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import org.peterbaldwin.client.android.vlcremote.R;
 
 public class NavigationFragment extends MediaFragment implements View.OnTouchListener,
         GestureDetector.OnGestureListener {
@@ -37,26 +35,24 @@ public class NavigationFragment extends MediaFragment implements View.OnTouchLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.navigation_fragment, root, false);
-        Context context = view.getContext();
-        GestureDetector.OnGestureListener listener = this;
-        mGestureDetector = new GestureDetector(context, listener);
+        mGestureDetector = new GestureDetector(view.getContext(), this);
         view.findViewById(R.id.overlay).setOnTouchListener(this);
         return view;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onSingleTapUp(MotionEvent e) {
         getMediaServer().status().command.key("nav-activate");
         vibrate();
         return true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
@@ -82,34 +78,26 @@ public class NavigationFragment extends MediaFragment implements View.OnTouchLis
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T getSystemService(String name) {
-        Context context = getActivity();
-        return (T) context.getSystemService(Context.VIBRATOR_SERVICE);
-    }
-
     private void vibrate() {
-        Vibrator v = getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         if (v != null) {
             v.vibrate(100);
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onDown(MotionEvent e) {
         return false;
     }
 
-    /** {@inheritDoc} */
-    public void onShowPress(MotionEvent e) {
-    }
+    @Override
+    public void onShowPress(MotionEvent e) {}
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
 
-    /** {@inheritDoc} */
-    public void onLongPress(MotionEvent e) {
-    }
+    @Override
+    public void onLongPress(MotionEvent e) {}
 }
