@@ -28,7 +28,7 @@
         </menu>
     </item>
     <item
-        android:id="@+id/menu_refresh"
+        android:id="@+id/menu_refresh_directory"
         android:title="@string/refresh"
         android:icon="@drawable/ic_menu_refresh"
         android:visible="false" />
