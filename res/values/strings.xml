@@ -84,6 +84,7 @@
     <string name="mediasearch">Search for %s using:</string>
     <string name="emptyplaylist">Playlist is empty.</string>
     <string name="noserver">Server not selected.</string>
+    <string name="lock_pager">Lock Pager</string>
     <string name="section_parent">⇧</string>
     <string name="loading">Loading&#8230;</string>
     <string name="sethome">Home set to %s</string>

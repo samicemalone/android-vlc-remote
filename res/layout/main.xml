@@ -11,58 +11,22 @@
 
         <TabWidget
             android:id="@android:id/tabs"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0" />
+
+        <org.peterbaldwin.vlcremote.widget.LockableViewPager
+            android:id="@+id/pager"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <FrameLayout
-                android:id="@id/tab_media"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <FrameLayout
-                    android:id="@id/fragment_playing"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@id/tab_playlist"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <FrameLayout
-                    android:id="@id/fragment_playlist"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@id/tab_browse"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <FrameLayout
-                    android:id="@id/fragment_browse"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@id/tab_navigation"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-
-                <FrameLayout
-                    android:id="@id/fragment_navigation"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
-            </FrameLayout>
-        </FrameLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </TabHost>

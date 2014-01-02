@@ -27,16 +27,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Browser;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.TabHost;
+import android.widget.TabHost.TabContentFactory;
 import android.widget.ViewFlipper;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +67,7 @@ import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
+import org.peterbaldwin.vlcremote.widget.LockableViewPager;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
@@ -122,6 +129,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     private ViewFlipper mFlipper;
     
+    private LockableViewPager mPager;
+    
     private List<MediaServerListener> mMediaServerListeners = new ArrayList<MediaServerListener>();
 
     @Override
@@ -140,30 +149,41 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
         
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        mPager = (LockableViewPager) findViewById(R.id.pager);
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+        mVolumePanel = new VolumePanel(this);
         
         FragmentUtil fu = new FragmentUtil(getSupportFragmentManager());
         fu.findOrAddFragment(Tags.FRAGMENT_STATUS, StatusFragment.class);        
-        fu.findOrReplaceOptionalFragment(this, R.id.fragment_navigation, Tags.FRAGMENT_NAVIGATION, NavigationFragment.class);
-        mPlaylist = fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
-        mBrowse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
-        mBrowse.registerObserver(mPlaylist);
-        mVolumePanel = new VolumePanel(this);
 
         if(mTabHost == null) {
+            fu.findOrReplaceOptionalFragment(this, R.id.fragment_navigation, Tags.FRAGMENT_NAVIGATION, NavigationFragment.class);
+            mPlaylist = fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
+            mBrowse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
+            mBrowse.registerObserver(mPlaylist);
             fu.findOrReplaceFragment(R.id.fragment_playback, Tags.FRAGMENT_PLAYBACK, PlaybackFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_info, Tags.FRAGMENT_INFO, InfoFragment.class);
             fu.findOrReplaceOptionalFragment(this, R.id.fragment_art, Tags.FRAGMENT_ART, ArtFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_buttons, Tags.FRAGMENT_BUTTONS, ButtonsFragment.class);
             VolumeFragment mVolume = fu.findOrReplaceFragment(R.id.fragment_volume, Tags.FRAGMENT_VOLUME, VolumeFragment.class);
             setVolumeFragmentVisible(mVolume != null);
-            onTabChanged(null);
         } else {
-            if(savedInstanceState != null) {
-                fu.removeFragmentsByTag(Tags.FRAGMENT_PLAYBACK, Tags.FRAGMENT_INFO, Tags.FRAGMENT_BUTTONS, Tags.FRAGMENT_VOLUME, Tags.FRAGMENT_BOTTOMBAR);
-            }
-            fu.findOrReplaceFragment(R.id.fragment_playing, Tags.FRAGMENT_PLAYING, PlayingFragment.class);
             setupTabHost();
+            mPager.setOffscreenPageLimit(4);
+            mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), Preferences.get(this).isHideDVDTabSet()));
+            mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    mTabHost.setCurrentTab(position);
+                }
+            });
+            if(savedInstanceState != null) {
+                fu.removeFragmentsByTag(
+                    Tags.FRAGMENT_PLAYBACK, Tags.FRAGMENT_INFO, Tags.FRAGMENT_BUTTONS,
+                    Tags.FRAGMENT_VOLUME, Tags.FRAGMENT_BOTTOMBAR, Tags.FRAGMENT_BROWSE,
+                    Tags.FRAGMENT_NAVIGATION, Tags.FRAGMENT_PLAYLIST
+                );
+            }
         }
 
         mDrawer = (SlidingDrawer) findViewById(R.id.drawer);
@@ -183,11 +203,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     
     private void setupTabHost() {
         mTabHost.setup();
-        addTab(TAB_MEDIA, R.id.tab_media, R.string.nowplaying_title, R.drawable.ic_tab_artists);
-        addTab(TAB_PLAYLIST, R.id.tab_playlist, R.string.tab_playlist,
-                R.drawable.ic_tab_playlists);
-        addTab(TAB_BROWSE, R.id.tab_browse, R.string.goto_start, R.drawable.ic_tab_playback);
-        addTab(TAB_NAVIGATION, R.id.tab_navigation, R.string.tab_dvd, R.drawable.ic_tab_albums);
+        addTab(TAB_MEDIA, R.string.nowplaying_title, R.drawable.ic_tab_artists);
+        addTab(TAB_PLAYLIST, R.string.tab_playlist, R.drawable.ic_tab_playlists);
+        addTab(TAB_BROWSE, R.string.goto_start, R.drawable.ic_tab_playback);
+        addTab(TAB_NAVIGATION, R.string.tab_dvd, R.drawable.ic_tab_albums);
         if(Preferences.get(this).isHideDVDTabSet()) {
             mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
         }
@@ -195,17 +214,16 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         onTabChanged(mTabHost.getCurrentTabTag());
     }
 
-    private void addTab(String tag, int content, int label, int icon) {
-        if (mTabHost.findViewById(content) != null) {
-            TabHost.TabSpec spec = mTabHost.newTabSpec(tag);
-            spec.setContent(content);
-            spec.setIndicator(getText(label), getResources().getDrawable(icon));
-            mTabHost.addTab(spec);
-            mTabSpecList.add(spec);
-        }
+    private void addTab(String tag, int label, int icon) {
+        TabHost.TabSpec spec = mTabHost.newTabSpec(tag);
+        spec.setContent(new TabFactory(this));
+        spec.setIndicator(getText(label), getResources().getDrawable(icon));
+        mTabHost.addTab(spec);
+        mTabSpecList.add(spec);
     }
     
     public void updateTabs() {
+        boolean isHideDVDSet = Preferences.get(this).isHideDVDTabSet();
         int curTab = mTabHost.getCurrentTab();
         mTabHost.setCurrentTab(0);
         mTabHost.clearAllTabs();
@@ -216,17 +234,35 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             mTabHost.addTab(mTabSpecList.get(i));
             mTabHost.setCurrentTab(i);
         }
-        mTabHost.setCurrentTab(curTab);
+        mTabHost.setCurrentTab(curTab == TAB_NAVIGATION_INDEX ? 0 : curTab);
+        mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), isHideDVDSet));
     }
 
     public void onTabChanged(String tabId) {
-        if (TAB_PLAYLIST.equals(tabId)) {
-            mPlaylist.selectCurrentTrack();
-            mBrowse.notifyPlaylistVisible();
+        if(mPager.getCurrentItem() != mTabHost.getCurrentTab()) {
+            mPager.setCurrentItem(mTabHost.getCurrentTab());
         }
-        mPlaylist.setHasOptionsMenu(TAB_PLAYLIST.equals(tabId) || mTabHost == null);
-        mBrowse.setHasOptionsMenu(TAB_BROWSE.equals(tabId) && mDrawer == null);
-        invalidateOptionsMenu();
+        if (TAB_PLAYLIST.equals(tabId)) {
+            //mPlaylist.selectCurrentTrack();
+            //mBrowse.notifyPlaylistVisible();
+        }
+        supportInvalidateOptionsMenu();
+    }
+    
+    /**
+     * Check if the given tab tag is the tag of the current tab.
+     * @param tabTag Tab tag (cannot be null)
+     * @return true if the given tag is the same as the current tab. false if
+     * the tab host is null or is not the current tab
+     */
+    public boolean isCurrentTab(String tabTag) {
+        return mTabHost != null && tabTag.equals(mTabHost.getCurrentTabTag());
+    }
+    
+    public void toggleViewPagerLock(View v) {
+        if(mPager != null) {
+            mPager.setPagingEnabled(!((CheckBox) v).isChecked());
+        }
     }
 
     /** {@inheritDoc} */
@@ -263,21 +299,28 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.playback_options, menu);            
+        getMenuInflater().inflate(R.menu.playlist_options, menu);            
+        getMenuInflater().inflate(R.menu.browse_options, menu);            
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        String tabId = mTabHost != null ? mTabHost.getCurrentTabTag() : null;
-        boolean visible = tabId == null || TAB_MEDIA.equals(tabId);
-        menu.findItem(R.id.menu_preferences).setVisible(visible);
-        menu.findItem(R.id.menu_help).setVisible(visible);
-        menu.setGroupVisible(R.id.group_vlc_actions, visible);
-        if(isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible())) {
-            menu.setGroupVisible(R.id.group_vlc_actions, false);
-        }
-        return menu.hasVisibleItems();
+        boolean isBrowseVisible = isCurrentTab(TAB_BROWSE);
+        boolean isPlaylistVisible = mTabHost == null || isCurrentTab(TAB_PLAYLIST);
+        boolean defaultVisibility = mTabHost == null || isCurrentTab(TAB_MEDIA) || isCurrentTab(TAB_NAVIGATION);
+        boolean isAllButtonsVisible = isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible());
+        menu.findItem(R.id.menu_preferences).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_help).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
+        menu.findItem(R.id.menu_refresh).setVisible(isPlaylistVisible);
+        menu.findItem(R.id.menu_home).setVisible(isBrowseVisible);
+        menu.findItem(R.id.menu_parent).setVisible(isBrowseVisible);
+        menu.findItem(R.id.menu_set_home).setVisible(isBrowseVisible);
+        menu.findItem(R.id.menu_text_size).setVisible(isBrowseVisible);
+        menu.setGroupVisible(R.id.group_vlc_actions, isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible);
+        return true;
     }
 
     @Override
@@ -350,8 +393,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     preferences.setAuthority(authority);
                     mBrowse.openDirectory("~");
                 } else {
-                    mBrowse.reload();
-                    mPlaylist.reload();
+                    //mBrowse.reload();
+                    //mPlaylist.reload();
                 }
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
@@ -582,6 +625,46 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
                 onVolumeChanged(status.getVolume());
             }
+        }
+    }
+    
+    public static class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final boolean isHideDVDSet;
+        
+        public ViewPagerAdapter(FragmentManager fm, boolean isHideDVDSet) {
+            super(fm);
+            this.isHideDVDSet = isHideDVDSet;
+        }
+        
+        @Override
+        public Fragment getItem(int i) {
+            switch(i) {
+                case 1: return new PlaylistFragment();
+                case 2: return new BrowseFragment();
+                case 3: return NavigationFragment.lockableInstance();
+                default: return new PlayingFragment();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return isHideDVDSet ? 3 : 4;
+        }
+    }
+    
+    public class TabFactory implements TabContentFactory {
+ 
+        private final Context mContext;
+ 
+        public TabFactory(Context context) {
+            mContext = context;
+        }
+ 
+        public View createTabContent(String tag) {
+            View v = new View(mContext);
+            v.setMinimumWidth(0);
+            v.setMinimumHeight(0);
+            return v;
         }
     }
 }

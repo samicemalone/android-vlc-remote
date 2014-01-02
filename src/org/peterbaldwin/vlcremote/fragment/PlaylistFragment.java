@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -131,12 +130,6 @@ public class PlaylistFragment extends MediaListFragment implements
         getActivity().unregisterReceiver(mStatusReceiver);
         mStatusReceiver = null;
         super.onPause();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.playlist_options, menu);
     }
 
     @Override
@@ -271,7 +264,9 @@ public class PlaylistFragment extends MediaListFragment implements
 
     @Override
     public void setEmptyText(CharSequence text) {
-        mEmptyView.setText(text);
+        if(mEmptyView != null) {
+            mEmptyView.setText(text);
+        }
     }
 
     @Override
@@ -285,7 +280,6 @@ public class PlaylistFragment extends MediaListFragment implements
                 }
             });
         }
-        
     }
 
     /** {@inheritDoc} */

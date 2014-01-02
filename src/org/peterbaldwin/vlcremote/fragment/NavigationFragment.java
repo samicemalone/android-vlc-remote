@@ -29,14 +29,29 @@ import org.peterbaldwin.client.android.vlcremote.R;
 
 public class NavigationFragment extends MediaFragment implements View.OnTouchListener,
         GestureDetector.OnGestureListener {
+    
+    private static final String ARG_IS_LOCKABLE = "isLockable";
+    
+    public static NavigationFragment lockableInstance() {
+        NavigationFragment f = new NavigationFragment();
+        Bundle b = new Bundle();
+        b.putBoolean(ARG_IS_LOCKABLE, true);
+        f.setArguments(b);
+        return f;
+    }
 
     private GestureDetector mGestureDetector;
+    private boolean isLockable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.navigation_fragment, root, false);
         mGestureDetector = new GestureDetector(view.getContext(), this);
         view.findViewById(R.id.overlay).setOnTouchListener(this);
+        isLockable = getArguments() != null ? getArguments().getBoolean(ARG_IS_LOCKABLE, false) : false;
+        if(!isLockable) {
+            view.findViewById(R.id.pager_lock).setVisibility(View.GONE);
+        }
         return view;
     }
 
