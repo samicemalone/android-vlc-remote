@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,21 +35,19 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.EnqueueObservable;
-import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.loader.DirectoryLoader;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends MediaListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Directory>>, EnqueueObservable {
+        LoaderManager.LoaderCallbacks<Remote<Directory>>, Reloadable {
     
     private interface Data {
         int DIRECTORY = 1;
@@ -57,8 +56,6 @@ public class BrowseFragment extends MediaListFragment implements
     private interface State {
         String DIRECTORY = "vlc:directory";
     }
-    
-    private List<EnqueueObserver> observers;
 
     private DirectoryAdapter mAdapter;
 
@@ -69,28 +66,11 @@ public class BrowseFragment extends MediaListFragment implements
     private TextView mTitle;
 
     private TextView mEmpty;
-
-    public void registerObserver(EnqueueObserver o) {
-        if(observers == null) {
-            observers = new LinkedList<EnqueueObserver>();
-        }
-        observers.add(o);
-    }
-
-    public void notifyEnqueue() {
-        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
-            it.next().onEnqueue();
-        }
-    }
     
-    public void notifyPlaylistVisible() {
-        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
-            it.next().onPlaylistVisible();
-        }
-    }
-
-    public void unregisterObserver(EnqueueObserver o) {
-        observers.remove(o);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_BROWSE, this);
     }
     
     @Override
@@ -256,7 +236,8 @@ public class BrowseFragment extends MediaListFragment implements
                         return true;
                     case R.id.browse_context_enqueue:
                         getMediaServer().status().command.input.enqueue(file.getMrl());
-                        notifyEnqueue();
+                        // delay reloading playlist to give vlc time to queue and read metadata
+                        ((Reloader) getActivity()).reloadDelayed(Tags.FRAGMENT_PLAYLIST, 100);
                         return true;
                 }
             }
@@ -271,7 +252,6 @@ public class BrowseFragment extends MediaListFragment implements
         return new DirectoryLoader(getActivity(), getMediaServer(), mDirectory);
     }
 
-    /** {@inheritDoc} */
     public void onLoadFinished(Loader<Remote<Directory>> loader, Remote<Directory> result) {
         mAdapter.setDirectory(result.data);
         setEmptyText(getText(R.string.connection_error));

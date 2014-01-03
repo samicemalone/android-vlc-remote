@@ -17,15 +17,14 @@
 
 package org.peterbaldwin.vlcremote.listener;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
-
 import android.app.Activity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SlidingDrawer;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
 
 public final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
         SlidingDrawer.OnDrawerCloseListener {
@@ -51,7 +50,6 @@ public final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenLis
     public void onDrawerClosed() {
         finishActionMode();
         mDrawer.getHandle().setVisibility(View.VISIBLE);
-        mBrowse.notifyPlaylistVisible();
     }
 
     private void startActionMode() {

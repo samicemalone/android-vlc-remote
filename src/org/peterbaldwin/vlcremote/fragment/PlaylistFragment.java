@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,20 +43,22 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
 import org.peterbaldwin.vlcremote.loader.ProgressListener;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
 
 public class PlaylistFragment extends MediaListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver, ProgressListener {
+        LoaderManager.LoaderCallbacks<Remote<Playlist>>, Reloadable, ProgressListener {
     
     private static final int LOADER_PLAYLIST = 1;
 
@@ -69,17 +72,10 @@ public class PlaylistFragment extends MediaListFragment implements
     
     private Queue<PlaylistLoader> mActiveLoaders;
     
-    private boolean mNeedsReload = false;
-    
-    public void onEnqueue() {
-        mNeedsReload = true;
-    }
-    
-    public void onPlaylistVisible() {
-        if(mNeedsReload) {
-            reload();
-            mNeedsReload = false;
-        }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_PLAYLIST, this);
     }
 
     @Override
@@ -91,17 +87,18 @@ public class PlaylistFragment extends MediaListFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.playlist, container, false);
 
         mAdapter = new PlaylistAdapter();
         if(savedInstanceState != null && savedInstanceState.containsKey("adapter")) {
-            mAdapter = (PlaylistAdapter) savedInstanceState.getSerializable("adapter");
+            if(savedInstanceState.containsKey("adapter")) {
+                mAdapter = (PlaylistAdapter) savedInstanceState.getSerializable("adapter");
+            }
+            mCurrent = savedInstanceState.getString("current");
         } 
         setListAdapter(mAdapter);
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
-
         return view;
     }
 
@@ -113,6 +110,8 @@ public class PlaylistFragment extends MediaListFragment implements
 
         if (getMediaServer() != null && savedInstanceState == null) {
             getLoaderManager().initLoader(LOADER_PLAYLIST, null, this);
+        } else {
+            onProgress(10000);
         }
     }
 
@@ -199,6 +198,7 @@ public class PlaylistFragment extends MediaListFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("adapter", mAdapter);
+        outState.putString("current", mCurrent);
     }
 
     @Override
@@ -282,7 +282,7 @@ public class PlaylistFragment extends MediaListFragment implements
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
@@ -290,30 +290,24 @@ public class PlaylistFragment extends MediaListFragment implements
         return mActiveLoaders.peek();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void onLoadFinished(Loader<Remote<Playlist>> loader, Remote<Playlist> remote) {
         if(remote == null) {
             return;
         }
-        
-        boolean wasEmpty = mAdapter.isEmpty();
-        boolean hasError = (remote.error != null);
 
         mAdapter.setItems(remote.data);
+        selectCurrentTrack();
 
-        if (hasError) {
+        if (remote.error != null) {
             setEmptyText(getText(R.string.connection_error));
             showError(String.valueOf(remote.error));
         } else {
             setEmptyText(getText(R.string.emptyplaylist));
         }
-
-        if (wasEmpty) {
-            selectCurrentTrack();
-        }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void onLoaderReset(Loader<Remote<Playlist>> loader) {
         mAdapter.setItems(null);
     }

@@ -36,13 +36,13 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
      * tracks names instead of track id's so files with the same names are all
      * marked as current.
      */
-    private HashSet<Integer> mCurrentPositions;
+    private final HashSet<Integer> mCurrentPositions;
     
     public PlaylistAdapter() {
         mCurrentPositions = new HashSet<Integer>(4);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -57,9 +57,6 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
             holder = (ViewHolder) convertView.getTag();
         }
         setPlaylistDisplayInfo(holder, getItem(position));
-        if(getItem(position).isCurrent()) {
-            mCurrentPositions.add(position);
-        }
         return convertView;
     }
     
@@ -76,12 +73,12 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
         holder.icon.setVisibility(item.isCurrent() ? View.VISIBLE : View.GONE);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public int getCount() {
         return mItems != null ? mItems.size() : 0;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public PlaylistItem getItem(int position) {
         return mItems.get(position);
     }
@@ -91,22 +88,31 @@ public final class PlaylistAdapter extends BaseAdapter implements Serializable {
         return true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public long getItemId(int position) {
         if (position < getCount()) {
             PlaylistItem item = getItem(position);
             return item.getId();
-        } else {
-            return AdapterView.INVALID_ROW_ID;
         }
+        return AdapterView.INVALID_ROW_ID;
     }
 
     public void setItems(List<PlaylistItem> items) {
         mItems = items;
         if (mItems != null) {
+            populateCurrentItems();
             notifyDataSetChanged();
         } else {
             notifyDataSetInvalidated();
+        }
+    }
+    
+    private void populateCurrentItems() {
+        mCurrentPositions.clear();
+        for(int i = 0; i < mItems.size(); i++) {
+            if(mItems.get(i).isCurrent()) {
+                mCurrentPositions.add(i);
+            }
         }
     }
     

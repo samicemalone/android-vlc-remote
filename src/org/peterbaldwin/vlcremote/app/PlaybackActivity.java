@@ -26,6 +26,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Browser;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -45,7 +46,9 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.ViewFlipper;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.fragment.ArtFragment;
 import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
@@ -63,6 +66,8 @@ import org.peterbaldwin.vlcremote.listener.ButtonVisibilityListener;
 import org.peterbaldwin.vlcremote.listener.MediaServerListener;
 import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
@@ -71,7 +76,7 @@ import org.peterbaldwin.vlcremote.widget.LockableViewPager;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
 public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabChangeListener,
-        View.OnClickListener, UIVisibilityListener {
+        View.OnClickListener, UIVisibilityListener, Reloader {
 
     private static final String TAG = "PlaybackActivity";
     
@@ -111,8 +116,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     private TabHost mTabHost;
 
-    private PlaylistFragment mPlaylist;
-
     private BrowseFragment mBrowse;
 
     private VolumePanel mVolumePanel;
@@ -132,6 +135,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private LockableViewPager mPager;
     
     private List<MediaServerListener> mMediaServerListeners = new ArrayList<MediaServerListener>();
+    
+    private Map<String, Reloadable> mReloadables = new HashMap<String, Reloadable>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,9 +163,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
         if(mTabHost == null) {
             fu.findOrReplaceOptionalFragment(this, R.id.fragment_navigation, Tags.FRAGMENT_NAVIGATION, NavigationFragment.class);
-            mPlaylist = fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
+            fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
             mBrowse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
-            mBrowse.registerObserver(mPlaylist);
             fu.findOrReplaceFragment(R.id.fragment_playback, Tags.FRAGMENT_PLAYBACK, PlaybackFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_info, Tags.FRAGMENT_INFO, InfoFragment.class);
             fu.findOrReplaceOptionalFragment(this, R.id.fragment_art, Tags.FRAGMENT_ART, ArtFragment.class);
@@ -241,10 +245,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void onTabChanged(String tabId) {
         if(mPager.getCurrentItem() != mTabHost.getCurrentTab()) {
             mPager.setCurrentItem(mTabHost.getCurrentTab());
-        }
-        if (TAB_PLAYLIST.equals(tabId)) {
-            //mPlaylist.selectCurrentTrack();
-            //mBrowse.notifyPlaylistVisible();
         }
         supportInvalidateOptionsMenu();
     }
@@ -393,8 +393,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     preferences.setAuthority(authority);
                     mBrowse.openDirectory("~");
                 } else {
-                    //mBrowse.reload();
-                    //mPlaylist.reload();
+                    reload(Tags.FRAGMENT_BROWSE);
+                    reload(Tags.FRAGMENT_PLAYLIST);
                 }
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
@@ -424,6 +424,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     protected void onDestroy() {
         super.onDestroy();
         mMediaServerListeners = null;
+        mReloadables = null;
     }
     
     public MediaServer addMediaServerListener(MediaServerListener l) {
@@ -615,6 +616,24 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             // Restore the volume to the last known value
             mMediaServer.status().command.volume(mLastNonZeroVolume);
         }
+    }
+
+    public void addReloadable(String tag, Reloadable r) {
+        mReloadables.put(tag, r);
+    }
+
+    public void reload(String tag) {
+        if(mReloadables.containsKey(tag)) {
+            mReloadables.get(tag).reload();
+        }
+    }
+    
+    public void reloadDelayed(final String tag, long delayMillis) {
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                reload(tag);
+            }
+        }, delayMillis);
     }
 
     private class StatusReceiver extends BroadcastReceiver {
