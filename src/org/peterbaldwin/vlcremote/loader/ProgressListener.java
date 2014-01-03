@@ -22,10 +22,14 @@ package org.peterbaldwin.vlcremote.loader;
  */
 public interface ProgressListener {
     
+    public final static int START = 0;
+    public final static int MAX = 9999;
+    public final static int FINISHED = 10000;
+    
     /**
      * Called periodically when progress is updated.
      * @param progress 0 - 9999 is the range of progress. 10000 will hide
-     * the progress bar
+     * the progress bar. See {@link #FINISHED}, {@link #START}, {@link #MAX} 
      */
     public void onProgress(int progress);
     

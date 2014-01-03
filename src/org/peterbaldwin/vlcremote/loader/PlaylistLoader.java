@@ -48,18 +48,15 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
 
     @Override
     public Remote<Playlist> loadInBackground() {
-        mListener.onProgress(0);
+        mListener.onProgress(ProgressListener.START);
         Remote<Playlist> p = mMediaServer == null ? null : mMediaServer.playlist(mSearch).load();
-        if(p == null || p.data == null) {
-            mListener.onProgress(10000);
+        if(p == null || p.data == null || p.data.isEmpty() || !Preferences.get(getContext()).isParsePlaylistItems()) {
+            mListener.onProgress(ProgressListener.FINISHED);
             return p;
         }
-        mListener.onProgress(1000);
-        boolean parsePlaylist = Preferences.get(getContext()).isParsePlaylistItems();
-        if(!parsePlaylist) {
-            mListener.onProgress(10000);
-            return p;
-        }
+        int progress = ProgressListener.MAX/10;
+        mListener.onProgress(progress);
+        final int increment = (ProgressListener.MAX - progress) / p.data.size();
         for(int i = 0; i < p.data.size(); i++) {
             if(mIsCancelled) {
                 return null;
@@ -72,9 +69,9 @@ public class PlaylistLoader extends ModelLoader<Remote<Playlist>> {
                     p.data.set(i, media);
                 }
             }
-            mListener.onProgress(1000 + (9000 / p.data.size()) * i);
+            mListener.onProgress(progress + (increment * i));
         }
-        mListener.onProgress(10000);
+        mListener.onProgress(ProgressListener.FINISHED);
         return p;
     }
     
