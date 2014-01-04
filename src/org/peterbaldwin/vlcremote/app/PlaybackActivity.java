@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Browser;
@@ -116,8 +115,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     private TabHost mTabHost;
 
-    private BrowseFragment mBrowse;
-
     private VolumePanel mVolumePanel;
 
     private BroadcastReceiver mStatusReceiver;
@@ -158,13 +155,14 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mVolumePanel = new VolumePanel(this);
         
+        BrowseFragment browse = null;
         FragmentUtil fu = new FragmentUtil(getSupportFragmentManager());
-        fu.findOrAddFragment(Tags.FRAGMENT_STATUS, StatusFragment.class);        
-
+        fu.findOrAddFragment(Tags.FRAGMENT_STATUS, StatusFragment.class);
+        
         if(mTabHost == null) {
             fu.findOrReplaceOptionalFragment(this, R.id.fragment_navigation, Tags.FRAGMENT_NAVIGATION, NavigationFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_playlist, Tags.FRAGMENT_PLAYLIST, PlaylistFragment.class);
-            mBrowse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
+            browse = fu.findOrReplaceFragment(R.id.fragment_browse, Tags.FRAGMENT_BROWSE, BrowseFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_playback, Tags.FRAGMENT_PLAYBACK, PlaybackFragment.class);
             fu.findOrReplaceFragment(R.id.fragment_info, Tags.FRAGMENT_INFO, InfoFragment.class);
             fu.findOrReplaceOptionalFragment(this, R.id.fragment_art, Tags.FRAGMENT_ART, ArtFragment.class);
@@ -192,8 +190,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
         mDrawer = (SlidingDrawer) findViewById(R.id.drawer);
         if (mDrawer != null) {
-            assert Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-            BrowseDrawerListener listener = new BrowseDrawerListener(this, mDrawer, mBrowse);
+            BrowseDrawerListener listener = new BrowseDrawerListener(this, mDrawer, browse);
             mDrawer.setOnDrawerOpenListener(listener);
             mDrawer.setOnDrawerCloseListener(listener);
         }
