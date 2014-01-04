@@ -320,8 +320,12 @@ public class PlaylistFragment extends MediaListFragment implements
             reload();
         }
     }
+    
+    private void reload() {
+        reload(null);
+    }
 
-    public void reload() {
+    public void reload(Bundle args) {
         if (getMediaServer() != null) {
             PlaylistLoader loader;
             while((loader = mActiveLoaders.poll()) != null) {

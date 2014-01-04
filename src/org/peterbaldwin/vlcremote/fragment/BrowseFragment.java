@@ -44,6 +44,7 @@ import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Tags;
+import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends MediaListFragment implements
@@ -53,8 +54,8 @@ public class BrowseFragment extends MediaListFragment implements
         int DIRECTORY = 1;
     }
 
-    private interface State {
-        String DIRECTORY = "vlc:directory";
+    public interface State {
+        final String DIRECTORY = "vlc:directory";
     }
 
     private DirectoryAdapter mAdapter;
@@ -125,8 +126,8 @@ public class BrowseFragment extends MediaListFragment implements
         }
     }
 
-    public void reload() {
-        openDirectory(mDirectory);
+    public void reload(Bundle args) {
+        openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
     }
     
     private void openDirectory(File file) {
@@ -237,7 +238,7 @@ public class BrowseFragment extends MediaListFragment implements
                     case R.id.browse_context_enqueue:
                         getMediaServer().status().command.input.enqueue(file.getMrl());
                         // delay reloading playlist to give vlc time to queue and read metadata
-                        ((Reloader) getActivity()).reloadDelayed(Tags.FRAGMENT_PLAYLIST, 100);
+                        ((Reloader) getActivity()).reloadDelayed(Tags.FRAGMENT_PLAYLIST, null, 100);
                         return true;
                 }
             }

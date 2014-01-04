@@ -17,10 +17,18 @@
 
 package org.peterbaldwin.vlcremote.model;
 
+import android.os.Bundle;
+
 /**
  *
  * @author Sam Malone
  */
 public interface Reloadable {
-    public void reload();
+    
+    /**
+     * Reload with arguments
+     * @param args Arguments for reloading
+     */
+    public void reload(Bundle args);
+    
 }

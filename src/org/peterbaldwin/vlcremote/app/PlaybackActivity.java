@@ -391,10 +391,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     String authority = data.getData().getAuthority();
                     changeServer(authority);
                     preferences.setAuthority(authority);
-                    mBrowse.openDirectory("~");
+                    Bundle args = new Bundle();
+                    args.putString(BrowseFragment.State.DIRECTORY, "~");
+                    reload(Tags.FRAGMENT_BROWSE, args);
                 } else {
-                    reload(Tags.FRAGMENT_BROWSE);
-                    reload(Tags.FRAGMENT_PLAYLIST);
+                    reload(Tags.FRAGMENT_BROWSE, null);
+                    reload(Tags.FRAGMENT_PLAYLIST, null);
                 }
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
@@ -622,16 +624,16 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mReloadables.put(tag, r);
     }
 
-    public void reload(String tag) {
+    public void reload(String tag, Bundle args) {
         if(mReloadables.containsKey(tag)) {
-            mReloadables.get(tag).reload();
+            mReloadables.get(tag).reload(args);
         }
     }
     
-    public void reloadDelayed(final String tag, long delayMillis) {
+    public void reloadDelayed(final String tag, final Bundle args, long delayMillis) {
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                reload(tag);
+                reload(tag, args);
             }
         }, delayMillis);
     }

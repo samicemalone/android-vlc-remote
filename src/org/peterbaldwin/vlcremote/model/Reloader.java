@@ -17,18 +17,21 @@
 
 package org.peterbaldwin.vlcremote.model;
 
+import android.os.Bundle;
+
 /**
  *
  * @author Sam Malone
  */
 public interface Reloader {
     public void addReloadable(String tag, Reloadable r);
-    public void reload(String tag);
+    public void reload(String tag, Bundle args);
     
     /**
      * Reload after the given delay. This method is non-blocking
      * @param tag Tag to identify reloadable
+     * @param args Bundle to pass to the reloadable
      * @param delayMillis delay in milliseconds
      */
-    public void reloadDelayed(final String tag, long delayMillis);
+    public void reloadDelayed(final String tag, final Bundle args, long delayMillis);
 }
