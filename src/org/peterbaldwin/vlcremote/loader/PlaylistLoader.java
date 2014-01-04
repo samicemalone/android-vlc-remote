@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.loader;
 
+import org.peterbaldwin.vlcremote.listener.ProgressListener;
 import android.content.Context;
 import org.peterbaldwin.vlcremote.model.Media;
 import org.peterbaldwin.vlcremote.model.Playlist;

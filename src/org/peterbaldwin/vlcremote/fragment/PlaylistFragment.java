@@ -45,7 +45,7 @@ import java.util.Queue;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
-import org.peterbaldwin.vlcremote.loader.ProgressListener;
+import org.peterbaldwin.vlcremote.listener.ProgressListener;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
 import org.peterbaldwin.vlcremote.model.Reloadable;
