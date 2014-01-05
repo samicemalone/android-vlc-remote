@@ -18,7 +18,6 @@
 package org.peterbaldwin.vlcremote.net;
 
 import android.util.Xml;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ContentHandler;
@@ -30,7 +29,9 @@ import java.net.URLConnection;
  * 
  * @param <T>
  */
-abstract class XmlContentHandler<T> extends ContentHandler {
+public abstract class XmlContentHandler<T> extends ContentHandler {
+    
+    public static final String ERROR_INVALID_XML = "Invalid XML";
 
     protected final void parse(URLConnection connection, org.xml.sax.ContentHandler handler)
             throws IOException {
@@ -40,9 +41,7 @@ abstract class XmlContentHandler<T> extends ContentHandler {
             Xml.Encoding encoding = Xml.Encoding.UTF_8;
             Xml.parse(input, encoding, handler);
         } catch (Exception e) {
-            IOException ioe = new IOException("Invalid XML");
-            ioe.initCause(e);
-            throw ioe;
+            throw new IOException(ERROR_INVALID_XML, e);
         } finally {
             input.close();
         }

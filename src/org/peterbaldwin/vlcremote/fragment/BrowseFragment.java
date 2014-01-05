@@ -44,7 +44,7 @@ import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Tags;
-import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.net.XmlContentHandler;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends MediaListFragment implements
@@ -257,7 +257,8 @@ public class BrowseFragment extends MediaListFragment implements
         mAdapter.setDirectory(result.data);
         setEmptyText(getText(R.string.connection_error));
         setTitle(result.data != null ? result.data.getPath() : null);
-        boolean isXMLError = result.error != null && "Invalid XML".equals(result.error.getMessage());
+        
+        boolean isXMLError = result.error != null && XmlContentHandler.ERROR_INVALID_XML.equals(result.error.getMessage());
         if (isEmptyDirectory(result.data) || isXMLError) {
             handleEmptyDirectory();
         }

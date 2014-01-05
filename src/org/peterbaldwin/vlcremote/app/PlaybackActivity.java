@@ -70,6 +70,7 @@ import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.net.XmlContentHandler;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
 import org.peterbaldwin.vlcremote.widget.LockableViewPager;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
@@ -108,6 +109,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private boolean isBottomActionbarVisible = false;
     
     private boolean isVolumeFragmentVisible = false;
+    
+    private boolean lastResponseError = false;
     
     private ButtonVisibilityListener mButtonsVisibleListener;
     
@@ -499,6 +502,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mStatusReceiver = new StatusReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intents.ACTION_STATUS);
+        filter.addAction(Intents.ACTION_ERROR);
         registerReceiver(mStatusReceiver, filter);
         if (mMediaServer == null) {
             pickServer();
@@ -641,7 +645,16 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             String action = intent.getAction();
             if (Intents.ACTION_STATUS.equals(action)) {
                 Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
+                if(lastResponseError) {
+                    lastResponseError = false;
+                    reload(Tags.FRAGMENT_BROWSE, null);
+                }
                 onVolumeChanged(status.getVolume());
+            } else if (Intents.ACTION_ERROR.equals(action)) {
+                Throwable t = (Throwable) intent.getSerializableExtra(Intents.EXTRA_THROWABLE);
+                if(t != null && !XmlContentHandler.ERROR_INVALID_XML.equals(t.getMessage())) {
+                    lastResponseError = true;
+                }
             }
         }
     }
