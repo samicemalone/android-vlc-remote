@@ -18,3 +18,13 @@ v0.6.3
 v0.6.2
 * Added preference for custom seek times
 * Fixed some actions not working after changing server
+
+v0.6.1
+* Display bottom action bar to smaller screens for cropping, subtitle track, fullscreen, audio track and aspect ratio.
+* Playlist loading progress
+* Detect media information from the filename
+* Edit server, test server, HTTP auth servers
+* Fix browsing titles and parent directories
+* Added preference to hide the DVD tab for smaller screens
+* Added preference to display directories sorted before files.
+* Added preference to detect media information for each item in the playlist
