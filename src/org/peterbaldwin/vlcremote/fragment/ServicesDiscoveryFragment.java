@@ -18,17 +18,14 @@
 package org.peterbaldwin.vlcremote.fragment;
 
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.net.MediaServer;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-public class ServicesDiscoveryFragment extends ListFragment {
-    private MediaServer mMediaServer;
+public class ServicesDiscoveryFragment extends MediaListFragment {
 
     private String[] mServiceValues;
 
@@ -46,10 +43,7 @@ public class ServicesDiscoveryFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         String value = mServiceValues[position];
-        mMediaServer.status().command.playback.sd(value);
+        getMediaServer().status().command.playback.sd(value);
     }
-
-    public void setMediaServer(MediaServer server) {
-        mMediaServer = server;
-    }
+    
 }

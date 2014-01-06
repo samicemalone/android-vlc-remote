@@ -25,14 +25,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,26 +43,24 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
-import org.peterbaldwin.vlcremote.loader.ProgressListener;
+import org.peterbaldwin.vlcremote.listener.ProgressListener;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
 
-public class PlaylistFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Playlist>>, EnqueueObserver, ProgressListener {
+public class PlaylistFragment extends MediaListFragment implements
+        LoaderManager.LoaderCallbacks<Remote<Playlist>>, Reloadable, ProgressListener {
     
     private static final int LOADER_PLAYLIST = 1;
-
-    private Context mContext;
-
-    private MediaServer mMediaServer;
 
     private TextView mEmptyView;
 
@@ -76,23 +72,10 @@ public class PlaylistFragment extends ListFragment implements
     
     private Queue<PlaylistLoader> mActiveLoaders;
     
-    private boolean mNeedsReload = false;
-    
-    public void onEnqueue() {
-        mNeedsReload = true;
-    }
-    
-    public void onPlaylistVisible() {
-        if(mNeedsReload) {
-            reload();
-            mNeedsReload = false;
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mContext = activity;
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_PLAYLIST, this);
     }
 
     @Override
@@ -104,17 +87,18 @@ public class PlaylistFragment extends ListFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.playlist, container, false);
 
         mAdapter = new PlaylistAdapter();
         if(savedInstanceState != null && savedInstanceState.containsKey("adapter")) {
-            mAdapter = (PlaylistAdapter) savedInstanceState.getSerializable("adapter");
+            if(savedInstanceState.containsKey("adapter")) {
+                mAdapter = (PlaylistAdapter) savedInstanceState.getSerializable("adapter");
+            }
+            mCurrent = savedInstanceState.getString("current");
         } 
         setListAdapter(mAdapter);
 
         mEmptyView = (TextView) view.findViewById(android.R.id.empty);
-
         return view;
     }
 
@@ -124,8 +108,10 @@ public class PlaylistFragment extends ListFragment implements
 
         registerForContextMenu(getListView());
 
-        if (mMediaServer != null && savedInstanceState == null) {
+        if (getMediaServer() != null && savedInstanceState == null) {
             getLoaderManager().initLoader(LOADER_PLAYLIST, null, this);
+        } else {
+            onProgress(10000);
         }
     }
 
@@ -146,19 +132,13 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.playlist_options, menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh:
                 reload();
                 return true;
             case R.id.menu_clear_playlist:
-                mMediaServer.status().command.playback.empty();
+                getMediaServer().status().command.playback.empty();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -218,11 +198,17 @@ public class PlaylistFragment extends ListFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("adapter", mAdapter);
+        outState.putString("current", mCurrent);
     }
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-        reload();
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        // onActivityCreated will not have been called yet on first use
+        boolean isFirstUse = getMediaServer() == null;
+        super.onNewMediaServer(server);
+        if(!isFirstUse) {
+            reload();
+        }
     }
 
     private void removeItem(PlaylistItem item, int position) {
@@ -230,7 +216,7 @@ public class PlaylistFragment extends ListFragment implements
         // TODO: Register observer and notify observers when playlist item is
         // deleted
         mAdapter.remove(position);
-        mMediaServer.status().command.playback.delete(id);
+        getMediaServer().status().command.playback.delete(id);
     }
 
     private void searchForItem(PlaylistItem item) {
@@ -258,7 +244,7 @@ public class PlaylistFragment extends ListFragment implements
     }
 
     private void selectItem(PlaylistItem item) {
-        mMediaServer.status().command.playback.play(item.getId());
+        getMediaServer().status().command.playback.play(item.getId());
     }
 
     @Override
@@ -278,7 +264,9 @@ public class PlaylistFragment extends ListFragment implements
 
     @Override
     public void setEmptyText(CharSequence text) {
-        mEmptyView.setText(text);
+        if(mEmptyView != null) {
+            mEmptyView.setText(text);
+        }
     }
 
     @Override
@@ -292,41 +280,34 @@ public class PlaylistFragment extends ListFragment implements
                 }
             });
         }
-        
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
         String search = "";
-        mActiveLoaders.offer(new PlaylistLoader(mContext, mMediaServer, search, this));
+        mActiveLoaders.offer(new PlaylistLoader(getActivity(), getMediaServer(), search, this));
         return mActiveLoaders.peek();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void onLoadFinished(Loader<Remote<Playlist>> loader, Remote<Playlist> remote) {
         if(remote == null) {
             return;
         }
-        
-        boolean wasEmpty = mAdapter.isEmpty();
-        boolean hasError = (remote.error != null);
 
         mAdapter.setItems(remote.data);
+        selectCurrentTrack();
 
-        if (hasError) {
+        if (remote.error != null) {
             setEmptyText(getText(R.string.connection_error));
             showError(String.valueOf(remote.error));
         } else {
             setEmptyText(getText(R.string.emptyplaylist));
         }
-
-        if (wasEmpty) {
-            selectCurrentTrack();
-        }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void onLoaderReset(Loader<Remote<Playlist>> loader) {
         mAdapter.setItems(null);
     }
@@ -339,9 +320,13 @@ public class PlaylistFragment extends ListFragment implements
             reload();
         }
     }
+    
+    private void reload() {
+        reload(null);
+    }
 
-    public void reload() {
-        if (mMediaServer != null) {
+    public void reload(Bundle args) {
+        if (getMediaServer() != null) {
             PlaylistLoader loader;
             while((loader = mActiveLoaders.poll()) != null) {
                 loader.cancelBackgroundLoad();

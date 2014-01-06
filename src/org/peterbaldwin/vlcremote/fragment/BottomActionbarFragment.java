@@ -18,23 +18,22 @@
 package org.peterbaldwin.vlcremote.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
+import org.peterbaldwin.vlcremote.listener.CommonPlaybackButtonsListener;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
-public final class BottomActionbarFragment extends Fragment {
+public final class BottomActionbarFragment extends MediaFragment {
 
-    private MediaServer mMediaServer;
-    private CommonPlaybackButtonsListenener listener;
+    private CommonPlaybackButtonsListener listener;
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        super.onNewMediaServer(server);
         if(listener != null) {
-            listener.setMediaServer(mediaServer);
+            listener.setMediaServer(server);
         }
     }
 
@@ -46,10 +45,8 @@ public final class BottomActionbarFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        View view = getView();
-        // set listeners
-        listener = new CommonPlaybackButtonsListenener(getActivity(), mMediaServer);
-        listener.setUp(view);
+        listener = new CommonPlaybackButtonsListener(getMediaServer());
+        listener.setUp(getView());
     }
 
 }

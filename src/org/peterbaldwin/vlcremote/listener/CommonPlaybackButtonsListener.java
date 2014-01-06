@@ -14,9 +14,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.peterbaldwin.vlcremote.app;
+package org.peterbaldwin.vlcremote.listener;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -27,13 +26,11 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
  *
  * @author Sam Malone
  */
-public class CommonPlaybackButtonsListenener implements View.OnClickListener, View.OnLongClickListener {
+public class CommonPlaybackButtonsListener implements View.OnClickListener, View.OnLongClickListener {
     
     private MediaServer mMediaServer;
-    private Context context;
     
-    public CommonPlaybackButtonsListenener(Context ctx, MediaServer server) {
-        context = ctx;
+    public CommonPlaybackButtonsListener(MediaServer server) {
         mMediaServer = server;
     }
     
@@ -82,7 +79,7 @@ public class CommonPlaybackButtonsListenener implements View.OnClickListener, Vi
     }
 
     public boolean onLongClick(View v) {
-        Toast.makeText(context, v.getContentDescription(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(v.getContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
         return true;
     }
     

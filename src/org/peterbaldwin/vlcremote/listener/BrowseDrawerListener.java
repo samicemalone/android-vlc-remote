@@ -15,10 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.app;
-
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
+package org.peterbaldwin.vlcremote.listener;
 
 import android.app.Activity;
 import android.view.ActionMode;
@@ -26,8 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SlidingDrawer;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.fragment.BrowseFragment;
 
-final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
+public final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
         SlidingDrawer.OnDrawerCloseListener {
 
     private final Activity mActivity;
@@ -51,7 +50,6 @@ final class BrowseDrawerListener implements SlidingDrawer.OnDrawerOpenListener,
     public void onDrawerClosed() {
         finishActionMode();
         mDrawer.getHandle().setVisibility(View.VISIBLE);
-        mBrowse.notifyPlaylistVisible();
     }
 
     private void startActionMode() {

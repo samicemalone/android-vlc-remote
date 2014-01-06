@@ -18,6 +18,7 @@
             android:background="?android:attr/actionBarItemBackground"
             style="?android:attr/actionButtonStyle"
             android:onClick="onClick"
+            android:tag="@string/layout_tablet"
             android:src="@drawable/ic_navigation_off" />
 
         <ImageButton

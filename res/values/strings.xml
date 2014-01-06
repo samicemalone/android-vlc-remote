@@ -36,7 +36,7 @@
     <string name="parse_playlist_items">Detect media information in playlist</string>
     <string name="summary_parse_playlist_items">Detect the media information from the filename in the playlist. (May take longer to load playlist)</string>
     <string name="hide_dvd_tab">Hide DVD tab</string>
-    <string name="summary_hide_dvd_tab">Hides the experimental DVD tab (requires app restart)</string>
+    <string name="summary_hide_dvd_tab">Hides the DVD navigation tab</string>
     <string name="summary_wifi_connected">Connected to {0}</string>
     <string name="summary_wifi_disconnected">Warning: Wi-Fi is disconnected</string>
     <string name="summary_not_in_range">Not in range</string>
@@ -84,6 +84,7 @@
     <string name="mediasearch">Search for %s using:</string>
     <string name="emptyplaylist">Playlist is empty.</string>
     <string name="noserver">Server not selected.</string>
+    <string name="lock_pager">Lock Pager</string>
     <string name="section_parent">⇧</string>
     <string name="loading">Loading&#8230;</string>
     <string name="sethome">Home set to %s</string>
@@ -119,4 +120,7 @@
     
     <!-- Content description for hotkeys menu -->
     <string name="hotkeys">Hotkeys</string>
+    
+    <!-- Used to denote tablet only layout item -->
+    <string name="layout_tablet">tablet</string>
 </resources>

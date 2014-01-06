@@ -17,17 +17,16 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,36 +35,30 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.EnqueueObservable;
-import org.peterbaldwin.vlcremote.app.EnqueueObserver;
 import org.peterbaldwin.vlcremote.loader.DirectoryLoader;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
-import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.model.Tags;
+import org.peterbaldwin.vlcremote.net.XmlContentHandler;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
-public class BrowseFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Remote<Directory>>, EnqueueObservable {
+public class BrowseFragment extends MediaListFragment implements
+        LoaderManager.LoaderCallbacks<Remote<Directory>>, Reloadable {
     
     private interface Data {
         int DIRECTORY = 1;
     }
 
-    private interface State {
-        String DIRECTORY = "vlc:directory";
+    public interface State {
+        final String DIRECTORY = "vlc:directory";
     }
-    
-    private List<EnqueueObserver> observers;
 
     private DirectoryAdapter mAdapter;
-
-    private MediaServer mMediaServer;
 
     private String mDirectory = "~";
 
@@ -74,36 +67,18 @@ public class BrowseFragment extends ListFragment implements
     private TextView mTitle;
 
     private TextView mEmpty;
-
-    public void registerObserver(EnqueueObserver o) {
-        if(observers == null) {
-            observers = new LinkedList<EnqueueObserver>();
-        }
-        observers.add(o);
-    }
-
-    public void notifyEnqueue() {
-        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
-            it.next().onEnqueue();
-        }
-    }
     
-    public void notifyPlaylistVisible() {
-        for (Iterator<EnqueueObserver> it = observers.iterator(); it.hasNext();) {
-            it.next().onPlaylistVisible();
-        }
-    }
-
-    public void unregisterObserver(EnqueueObserver o) {
-        observers.remove(o);
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_BROWSE, this);
     }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Context context = getActivity();
-        mPreferences = Preferences.get(context);
+        mPreferences = Preferences.get(getActivity());
         if (savedInstanceState == null) {
             mDirectory = mPreferences.getBrowseDirectory();
         } else {
@@ -124,11 +99,7 @@ public class BrowseFragment extends ListFragment implements
         super.onSaveInstanceState(outState);
         outState.putString(State.DIRECTORY, mDirectory);
     }
-
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-    }
-
+    
     @Override
     public void setEmptyText(CharSequence text) {
         mEmpty.setText(text);
@@ -137,11 +108,10 @@ public class BrowseFragment extends ListFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Context context = getActivity();
-        mAdapter = new DirectoryAdapter(context);
+        mAdapter = new DirectoryAdapter(getActivity());
         setListAdapter(mAdapter);
         registerForContextMenu(getListView());
-        if (mMediaServer != null) {
+        if (getMediaServer() != null) {
             getLoaderManager().initLoader(Data.DIRECTORY, Bundle.EMPTY, this);
         }
     }
@@ -152,12 +122,12 @@ public class BrowseFragment extends ListFragment implements
         if (file.isDirectory()) {
             openDirectory(file);
         } else {
-            mMediaServer.status().command.input.play(file.getMrl(), file.getOptions());
+            getMediaServer().status().command.input.play(file.getMrl(), file.getOptions());
         }
     }
 
-    public void reload() {
-        openDirectory(mDirectory);
+    public void reload(Bundle args) {
+        openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
     }
     
     private void openDirectory(File file) {
@@ -182,15 +152,9 @@ public class BrowseFragment extends ListFragment implements
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.browse_options, menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_refresh:
+            case R.id.menu_refresh_directory:
                 getLoaderManager().restartLoader(Data.DIRECTORY, Bundle.EMPTY, this);
                 return true;
             case R.id.menu_parent:
@@ -263,17 +227,18 @@ public class BrowseFragment extends ListFragment implements
                         openDirectory(file);
                         return true;
                     case R.id.browse_context_play:
-                        mMediaServer.status().command.input.play(file.getMrl(), file.getOptions());
+                        getMediaServer().status().command.input.play(file.getMrl(), file.getOptions());
                         return true;
                     case R.id.browse_context_stream:
-                        mMediaServer.status().command.input.play(file.getMrl(),
+                        getMediaServer().status().command.input.play(file.getMrl(),
                                 file.getStreamingOptions());
-                        Intent intent = file.getIntentForStreaming(mMediaServer.getAuthority());
+                        Intent intent = file.getIntentForStreaming(getMediaServer().getAuthority());
                         startActivity(intent);
                         return true;
                     case R.id.browse_context_enqueue:
-                        mMediaServer.status().command.input.enqueue(file.getMrl());
-                        notifyEnqueue();
+                        getMediaServer().status().command.input.enqueue(file.getMrl());
+                        // delay reloading playlist to give vlc time to queue and read metadata
+                        ((Reloader) getActivity()).reloadDelayed(Tags.FRAGMENT_PLAYLIST, null, 100);
                         return true;
                 }
             }
@@ -283,18 +248,17 @@ public class BrowseFragment extends ListFragment implements
 
     /** {@inheritDoc} */
     public Loader<Remote<Directory>> onCreateLoader(int id, Bundle args) {
-        Context context = getActivity();
         mPreferences.setBrowseDirectory(mDirectory);
         setEmptyText(getText(R.string.loading));
-        return new DirectoryLoader(context, mMediaServer, mDirectory);
+        return new DirectoryLoader(getActivity(), getMediaServer(), mDirectory);
     }
 
-    /** {@inheritDoc} */
     public void onLoadFinished(Loader<Remote<Directory>> loader, Remote<Directory> result) {
         mAdapter.setDirectory(result.data);
         setEmptyText(getText(R.string.connection_error));
         setTitle(result.data != null ? result.data.getPath() : null);
-        boolean isXMLError = result.error != null && "Invalid XML".equals(result.error.getMessage());
+        
+        boolean isXMLError = result.error != null && XmlContentHandler.ERROR_INVALID_XML.equals(result.error.getMessage());
         if (isEmptyDirectory(result.data) || isXMLError) {
             handleEmptyDirectory();
         }

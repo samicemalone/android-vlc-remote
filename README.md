@@ -15,6 +15,7 @@ This has been tested with VLC 1.1, VLC 2.0.x, VLC 2.1 and VLC 2.2.0 nightlies.
     * Layout changes
     * Preference to hide the DVD tab for smaller screens
     * Updated some icons
+    * Added a ViewPager to provide swipeable tabs for phone layouts
 * Media Filename Detection
     * An attempt is made to detect the media information from the filename (TV and Movies) for the current playing item.
     * Preference to detect media information for each item in the playlist

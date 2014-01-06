@@ -17,37 +17,37 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.app.CommonPlaybackButtonsListenener;
 import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.listener.ButtonVisibilityListener;
+import org.peterbaldwin.vlcremote.listener.CommonPlaybackButtonsListener;
+import org.peterbaldwin.vlcremote.listener.MediaServerListener;
+import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
-public final class ButtonsFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
-
-    private MediaServer mMediaServer;
-
+public final class ButtonsFragment extends MediaFragment implements View.OnClickListener,
+        View.OnLongClickListener, MediaServerListener, ButtonVisibilityListener {
+    
     private BroadcastReceiver mStatusReceiver;
 
-    private CommonPlaybackButtonsListenener listener;
+    private CommonPlaybackButtonsListener listener;
     
     private ImageButton mButtonShuffle;
     private ImageButton mButtonRepeat;
-    private ImageButton mButtonPlaylistSeekBackward;
-    private ImageButton mButtonPlaylistSeekForward;
 
     private boolean isAllButtonsVisible;
     
@@ -55,16 +55,23 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     private boolean mRepeat;
     private boolean mLoop;
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        super.onNewMediaServer(server);
         if(listener != null) {
-            listener.setMediaServer(mediaServer);
+            listener.setMediaServer(server);
         }
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((UIVisibilityListener) activity).setButtonVisibilityListener(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.frame_layout, parent, false);
+        return inflater.inflate(R.layout.buttons_fragment, parent, false);
     }
 
     @Override
@@ -73,20 +80,20 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
 
         View view = getView();
 
-        listener = new CommonPlaybackButtonsListenener(getActivity(), mMediaServer);
+        listener = new CommonPlaybackButtonsListener(getMediaServer());
         listener.setUp(view);
         
         mButtonShuffle = (ImageButton) view.findViewById(R.id.playlist_button_shuffle);
         mButtonRepeat = (ImageButton) view.findViewById(R.id.playlist_button_repeat);
-        mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
-        mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
+        ImageButton mButtonPlaylistSeekBackward = (ImageButton) view.findViewById(R.id.action_button_seek_backward);
+        ImageButton mButtonPlaylistSeekForward = (ImageButton) view.findViewById(R.id.action_button_seek_forward);
         isAllButtonsVisible = view.findViewById(R.id.audio_player_buttons_second_row) != null;
         getActivity().invalidateOptionsMenu();
 
         setupImageButtonListeners(mButtonShuffle, mButtonRepeat, mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         
-        if(getResources().getConfiguration().screenWidthDp >= 480) {
-            // seek buttons are displayed in playback fragment if >= 480dp
+        if(getResources().getConfiguration().screenWidthDp >= 400) {
+            // seek buttons are displayed in playback fragment if >= 400dp
             hideImageButton(mButtonPlaylistSeekBackward, mButtonPlaylistSeekForward);
         }
     }
@@ -100,6 +107,16 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
         }
     }
     
+    private void updateDVDButton() {
+        if(getView() == null) {
+            return;
+        }
+        ImageButton dvd = (ImageButton) getView().findViewById(R.id.button_navigation);
+        if(dvd != null && dvd.getTag() == null) {
+            dvd.setVisibility(Preferences.get(getActivity()).isHideDVDTabSet() ? View.GONE : View.VISIBLE);
+        }
+    }
+    
     private void hideImageButton(ImageButton... imageButtons) {
         for(ImageButton b : imageButtons) {
             if(b != null) {
@@ -108,6 +125,7 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    @Override
     public boolean isAllButtonsVisible() {
         return isAllButtonsVisible;
     }
@@ -119,6 +137,7 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intents.ACTION_STATUS);
         getActivity().registerReceiver(mStatusReceiver, filter);
+        updateDVDButton();
     }
 
     @Override
@@ -132,13 +151,13 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.action_button_seek_backward:
-                mMediaServer.status().command.seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
+                getMediaServer().status().command.seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.action_button_seek_forward:
-                mMediaServer.status().command.seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
+                getMediaServer().status().command.seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
                 break;
             case R.id.playlist_button_shuffle:
-                mMediaServer.status().command.playback.random();
+                getMediaServer().status().command.playback.random();
                 mRandom = !mRandom;
                 updateButtons();
                 break;
@@ -146,16 +165,16 @@ public final class ButtonsFragment extends Fragment implements View.OnClickListe
                 // Order: Normal -> Loop -> Repeat
                 if (mLoop) {
                     // Turn-on repeat
-                    mMediaServer.status().command.playback.repeat();
+                    getMediaServer().status().command.playback.repeat();
                     mRepeat = true;
                     mLoop = false;
                 } else if (mRepeat) {
                     // Turn-off repeat
-                    mMediaServer.status().command.playback.repeat();
+                    getMediaServer().status().command.playback.repeat();
                     mRepeat = false;
                 } else {
                     // Turn-on loop
-                    mMediaServer.status().command.playback.loop();
+                    getMediaServer().status().command.playback.loop();
                     mLoop = true;
                 }
                 updateButtons();

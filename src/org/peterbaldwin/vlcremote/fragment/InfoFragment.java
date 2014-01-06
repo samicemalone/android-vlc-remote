@@ -37,11 +37,11 @@ import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 public class InfoFragment extends Fragment {
 
+    private final MediaParser mMediaParser;
     private BroadcastReceiver mStatusReceiver;
     private TextView mArtist;
     private TextView mAlbum;
     private TextView mTrack;
-    private MediaParser mMediaParser;
     private String mCurrentFileName;
 
     public InfoFragment() {
@@ -51,11 +51,10 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.info_fragment, root, false);
-
         mArtist = (TextView) view.findViewById(R.id.artist);
         mAlbum = (TextView) view.findViewById(R.id.album);
         mTrack = (TextView) view.findViewById(R.id.track);
-
+        mCurrentFileName = null;
         return view;
     }
 

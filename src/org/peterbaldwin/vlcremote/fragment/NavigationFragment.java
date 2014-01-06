@@ -17,70 +17,75 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.Fragment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import org.peterbaldwin.client.android.vlcremote.R;
 
-public class NavigationFragment extends Fragment implements View.OnTouchListener,
+public class NavigationFragment extends MediaFragment implements View.OnTouchListener,
         GestureDetector.OnGestureListener {
+    
+    private static final String ARG_IS_LOCKABLE = "isLockable";
+    
+    public static NavigationFragment lockableInstance() {
+        NavigationFragment f = new NavigationFragment();
+        Bundle b = new Bundle();
+        b.putBoolean(ARG_IS_LOCKABLE, true);
+        f.setArguments(b);
+        return f;
+    }
 
-    private MediaServer mMediaServer;
     private GestureDetector mGestureDetector;
+    private boolean isLockable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.navigation_fragment, root, false);
-        Context context = view.getContext();
-        GestureDetector.OnGestureListener listener = this;
-        mGestureDetector = new GestureDetector(context, listener);
+        mGestureDetector = new GestureDetector(view.getContext(), this);
         view.findViewById(R.id.overlay).setOnTouchListener(this);
+        isLockable = getArguments() != null ? getArguments().getBoolean(ARG_IS_LOCKABLE, false) : false;
+        if(!isLockable) {
+            view.findViewById(R.id.pager_lock).setVisibility(View.GONE);
+        }
         return view;
     }
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-    }
-
-    /** {@inheritDoc} */
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         return mGestureDetector.onTouchEvent(event);
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        mMediaServer.status().command.key("nav-activate");
+        getMediaServer().status().command.key("nav-activate");
         vibrate();
         return true;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (Math.abs(velocityX) > Math.abs(velocityY)) {
             if (velocityX > 0) {
-                mMediaServer.status().command.key("nav-right");
+                getMediaServer().status().command.key("nav-right");
                 vibrate();
                 return true;
             } else if (velocityX < 0) {
-                mMediaServer.status().command.key("nav-left");
+                getMediaServer().status().command.key("nav-left");
                 vibrate();
                 return true;
             }
         } else if (Math.abs(velocityY) > Math.abs(velocityX)) {
             if (velocityY > 0) {
-                mMediaServer.status().command.key("nav-down");
+                getMediaServer().status().command.key("nav-down");
                 vibrate();
                 return true;
             } else if (velocityY < 0) {
-                mMediaServer.status().command.key("nav-up");
+                getMediaServer().status().command.key("nav-up");
                 vibrate();
                 return true;
             }
@@ -88,34 +93,26 @@ public class NavigationFragment extends Fragment implements View.OnTouchListener
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> T getSystemService(String name) {
-        Context context = getActivity();
-        return (T) context.getSystemService(Context.VIBRATOR_SERVICE);
-    }
-
     private void vibrate() {
-        Vibrator v = getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         if (v != null) {
             v.vibrate(100);
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onDown(MotionEvent e) {
         return false;
     }
 
-    /** {@inheritDoc} */
-    public void onShowPress(MotionEvent e) {
-    }
+    @Override
+    public void onShowPress(MotionEvent e) {}
 
-    /** {@inheritDoc} */
+    @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return false;
     }
 
-    /** {@inheritDoc} */
-    public void onLongPress(MotionEvent e) {
-    }
+    @Override
+    public void onLongPress(MotionEvent e) {}
 }

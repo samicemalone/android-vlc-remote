@@ -4,33 +4,26 @@ package org.peterbaldwin.vlcremote.fragment;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-public class VolumeFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class VolumeFragment extends MediaFragment implements SeekBar.OnSeekBarChangeListener {
 
     private static final int MAX_VOLUME = 512;
 
     private ImageView mIcon;
     private SeekBar mSeekBar;
-    private MediaServer mMediaServer;
 
     private BroadcastReceiver mStatusReceiver;
-
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup root, Bundle savedInstanceState) {
@@ -58,7 +51,7 @@ public class VolumeFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     }
 
     private void setVolume(int value) {
-        mMediaServer.status().command.volume(value);
+        getMediaServer().status().command.volume(value);
     }
 
     void onVolumeChanged(int value) {

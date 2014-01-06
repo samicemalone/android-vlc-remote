@@ -1,42 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item
-        type="id"
-        name="fragment_services_discovery" />
-    <item
-        type="id"
-        name="fragment_art" />
-    <item
-        type="id"
-        name="fragment_buttons" />
-    <item
-        type="id"
-        name="fragment_info" />
-    <item
-        type="id"
-        name="fragment_volume" />
-    <item
-        type="id"
-        name="fragment_playlist" />
-    <item
-        type="id"
-        name="fragment_browse" />
-    <item
-        type="id"
-        name="fragment_playback" />
-    <item
-        type="id"
-        name="fragment_navigation" />
-    <item
-        type="id"
-        name="tab_media" />
-    <item
-        type="id"
-        name="tab_playlist" />
-    <item
-        type="id"
-        name="tab_browse" />
-    <item
-        type="id"
-        name="tab_navigation" />
+    <item type="id" name="fragment_services_discovery" />
+    <item type="id" name="fragment_playing" />
+    <item type="id" name="fragment_art" />
+    <item type="id" name="fragment_bottom_actionbar" />
+    <item type="id" name="fragment_buttons" />
+    <item type="id" name="fragment_info" />
+    <item type="id" name="fragment_volume" />
+    <item type="id" name="fragment_playlist" />
+    <item type="id" name="fragment_browse" />
+    <item type="id" name="fragment_playback" />
+    <item type="id" name="fragment_navigation" />
+    <item type="id" name="tab_media" />
+    <item type="id" name="tab_playlist" />
+    <item type="id" name="tab_browse" />
+    <item type="id" name="tab_navigation" />
 </resources>

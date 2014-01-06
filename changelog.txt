@@ -1,0 +1,20 @@
+v0.7.0
+* Added swipeable tabs (ViewPager) for phone layouts
+* Hide DVD preferences now takes effect without restarting the app
+* The volume fragment is now hidden if there is not enough space in the UI.
+  Volume can still be adjusted with the hardware volume keys
+
+v0.6.4
+* Fixed widget size
+* Updated Spanish translations
+* Restored "Remove from playlist"
+* Library files and directories are now sorted case insensitively
+* Fixed app crash under certain circumstances
+
+v0.6.3
+* Added action bar item when browsing library to change the text size
+* Fixed force close when scanning for servers in some situations
+
+v0.6.2
+* Added preference for custom seek times
+* Fixed some actions not working after changing server

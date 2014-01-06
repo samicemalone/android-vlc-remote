@@ -14,19 +14,21 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.peterbaldwin.vlcremote.loader;
+
+package org.peterbaldwin.vlcremote.listener;
+
+import org.peterbaldwin.vlcremote.net.MediaServer;
 
 /**
  *
  * @author Sam Malone
  */
-public interface ProgressListener {
+public interface MediaServerListener {
     
     /**
-     * Called periodically when progress is updated.
-     * @param progress 0 - 9999 is the range of progress. 10000 will hide
-     * the progress bar
+     * Called when the media server is changed.
+     * @param server The new media server
      */
-    public void onProgress(int progress);
+    public void onNewMediaServer(MediaServer server);
     
 }

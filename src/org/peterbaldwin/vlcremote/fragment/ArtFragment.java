@@ -31,7 +31,6 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
@@ -40,13 +39,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import org.peterbaldwin.vlcremote.loader.ArtLoader;
 
-public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
+public class ArtFragment extends MediaFragment implements LoaderCallbacks<Drawable> {
 
     private static final int LOADER_IMAGE = 1;
 
     private BroadcastReceiver mStatusReceiver;
-
-    private MediaServer mMediaServer;
 
     private ImageView mImageView;
 
@@ -62,7 +59,7 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (mMediaServer != null) {
+        if (getMediaServer() != null) {
             getLoaderManager().initLoader(LOADER_IMAGE, Bundle.EMPTY, this);
         }
     }
@@ -90,10 +87,10 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
         if (uri != null) {
             uri = resizeImage(uri);
             if("file".equals(uri.getScheme())) {
-                return new ArtLoader(context, mMediaServer);
+                return new ArtLoader(context, getMediaServer());
             }
         }
-        return new ImageLoader(context, mMediaServer, uri);
+        return new ImageLoader(context, getMediaServer(), uri);
     }
 
     /** {@inheritDoc} */
@@ -106,12 +103,13 @@ public class ArtFragment extends Fragment implements LoaderCallbacks<Drawable> {
         mImageView.setImageResource(R.drawable.albumart_mp_unknown);
     }
 
-    public void setMediaServer(MediaServer mediaServer) {
-        mMediaServer = mediaServer;
-        if (mMediaServer != null) {
+    @Override
+    public void onNewMediaServer(MediaServer server) {
+        super.onNewMediaServer(server);
+        if (getMediaServer() != null) {
             getLoaderManager().restartLoader(LOADER_IMAGE, Bundle.EMPTY, this);
         }
-    } 
+    }
 
     private void onStatusChanged(Status status) {
         Track track = status.getTrack();
