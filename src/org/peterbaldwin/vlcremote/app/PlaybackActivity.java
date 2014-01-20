@@ -67,6 +67,7 @@ import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
+import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
@@ -149,9 +150,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         // that sound even when the activity handles volume key events.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        String authority = Preferences.get(this).getAuthority();
+        Preferences pref = Preferences.get(this);
+        String authority = pref.getAuthority();
         if (authority != null) {
             mMediaServer = new MediaServer(this, authority);
+            setServerSubtitle(pref.isServerSubtitleSet());
         }
         
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
@@ -198,7 +201,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             mDrawer.setOnDrawerOpenListener(listener);
             mDrawer.setOnDrawerCloseListener(listener);
         }
-
+        
         if (savedInstanceState == null) {
             onNewIntent(getIntent());
         } else {
@@ -369,6 +372,23 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void setVolumeFragmentVisible(boolean isVisible) {
         isVolumeFragmentVisible = isVisible;
     }
+    
+    private void setServerSubtitle(boolean isServerSubtitleSet) {
+        if(!isServerSubtitleSet) {
+            getActionBar().setSubtitle(null);
+            return;
+        }
+        Preferences pref = Preferences.get(this);
+        List<String> servers = pref.getRememberedServers();
+        for(String key : servers) {
+            Server s = Server.fromKey(key);
+            if(s.getUri().getAuthority().equals(pref.getAuthority())) {
+                getActionBar().setSubtitle(s.getNickname().isEmpty() ? s.getHostAndPort() : s.getNickname());
+                return;
+            }
+        }
+    }
+    
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
@@ -401,6 +421,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
                     updateTabs();
                 }
+                
+                setServerSubtitle(preferences.isServerSubtitleSet());
 
                 if (mMediaServer == null) {
                     finish();

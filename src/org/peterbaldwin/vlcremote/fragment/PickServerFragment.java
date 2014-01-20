@@ -77,6 +77,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     private static final String KEY_ADD_SERVER = "add_server";
     private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
     private static final String KEY_SEEK_TIME = "seek_time";
+    private static final String KEY_SERVER_SUBTITLE = "server_subtitle";
     
     public static final String STATE_HOSTS = "hosts";
 
@@ -98,6 +99,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     private CheckBoxPreference mPreferenceParsePlaylistItems;
     private CheckBoxPreference mPreferenceSortDirectoriesFirst;
     private CheckBoxPreference mPreferenceHideDVDTab;
+    private CheckBoxPreference mPreferenceServerSubtitle;
     private ProgressCategory mProgressCategory;
     private Preference mPreferenceAddServer;
 
@@ -121,6 +123,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
         mPreferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(KEY_SEEK_TIME);
         mPreferenceSeekTime.setOnPreferenceChangeListener(this);
+        mPreferenceServerSubtitle = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SERVER_SUBTITLE);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
         
@@ -323,6 +326,9 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             return true;
         } else if (preference == mPreferenceSeekTime) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (preference == mPreferenceServerSubtitle) {
+            Preferences.get(getActivity()).setServerSubtitle(mPreferenceServerSubtitle.isChecked());
+            return true;
         } else {
             Server server = Server.fromKey(preference.getKey());
             if(server.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {

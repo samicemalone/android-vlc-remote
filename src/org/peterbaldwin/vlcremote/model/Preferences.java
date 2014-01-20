@@ -51,8 +51,10 @@ public final class Preferences {
     private static final String PREFERENCE_SEEK_TIME = "seek_time";
     
     private static final String PREFERENCE_TEXT_SIZE = "browse_text_size";
+    
+    private static final String PREFERENCE_SERVER_SUBTITLE = "server_subtitle";
 
-    private SharedPreferences mPreferences;
+    private final SharedPreferences mPreferences;
 
     public final static int TEXT_SMALL = 0;
     public final static int TEXT_MEDIUM = 1;
@@ -73,8 +75,8 @@ public final class Preferences {
     }
 
     /**
-     * Returns {@code true} if {@link #setResumeOnIdle()} was called in the last
-     * hour.
+     * Checks if {@link #setResumeOnIdle()} was called in the last hour.
+     * @return {@code true} if {@link #setResumeOnIdle()} was called in the last hour.
      */
     public boolean isResumeOnIdleSet() {
         long start = mPreferences.getLong(PREFERENCE_RESUME_ON_IDLE, 0L);
@@ -105,6 +107,16 @@ public final class Preferences {
     public boolean setParsePlaylistItems(boolean parsePlaylist) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putBoolean(PREFERENCE_PARSE_PLAYLIST_ITEMS, parsePlaylist);
+        return editor.commit();
+    }
+    
+    public boolean isServerSubtitleSet() {
+        return mPreferences.getBoolean(PREFERENCE_SERVER_SUBTITLE, false);
+    }
+	
+    public boolean setServerSubtitle(boolean isServerSubtitle) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean(PREFERENCE_SERVER_SUBTITLE, isServerSubtitle);
         return editor.commit();
     }
     
