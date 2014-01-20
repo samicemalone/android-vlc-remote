@@ -68,6 +68,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     private static final ComponentName PHONE_STATE_RECEIVER = new ComponentName(PACKAGE_NAME,
             PhoneStateChangedReceiver.class.getName());
 
+    private static final String KEY_SCREEN_INTERFACE = "preference_screen_interface";
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
     private static final String KEY_SORT_DIRECTORIES_FIRST = "sort_directories_first";
@@ -296,6 +297,9 @@ public final class PickServerFragment extends PreferenceFragment implements Port
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if(KEY_SCREEN_INTERFACE.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        }
         if (preference == mPreferenceAddServer) {
             ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);
             return true;

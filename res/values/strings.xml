@@ -50,6 +50,9 @@
         file on your PC
     </string>
     <string name="summary_unauthorized">Requires Authentication</string>
+    <string name="preference_screen_interface_title">Interface Settings</string>
+    <string name="preference_screen_interface_key">preference_screen_interface</string>
+    <string name="preference_category_phone_title">Phone</string>
     <string name="context_forget">Forget Server</string>
     <string name="progress_scanning">Scanning</string>
     <string name="vlc_servers">VLC Servers</string>

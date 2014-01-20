@@ -1,40 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/settings" >
+    
+    <PreferenceScreen
+        android:title="@string/preference_screen_interface_title"
+        android:key="@string/preference_screen_interface_key"
+        android:persistent="false">
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="pause_for_call"
-        android:persistent="false"
-        android:summary="@string/summary_pause_for_call"
-        android:title="@string/pause_for_call" />
-    <CheckBoxPreference
-        android:key="wifi"
-        android:persistent="false"
-        android:summary="@string/summary_wifi_disconnected"
-        android:title="@string/wifi" />
-    <CheckBoxPreference
-        android:key="parse_playlist_items"
-        android:title="@string/parse_playlist_items"
-        android:summary="@string/summary_parse_playlist_items"
-        android:persistent="true" />
-    <CheckBoxPreference
-        android:key="hide_dvd_tab"
-        android:title="@string/hide_dvd_tab"
-        android:summary="@string/summary_hide_dvd_tab"
-        android:persistent="true" />
-    <CheckBoxPreference
-        android:key="sort_directories_first"
-        android:title="@string/sort_directories_first"
-        android:summary="@string/summary_sort_directories_first"
-        android:persistent="true" />
-    <EditTextPreference
-        android:key="seek_time"
-        android:title="@string/preferences_seek_title"
-        android:summary="@string/preferences_seek_summary"
-        android:defaultValue="10"
-        android:inputType="number"
-        android:persistent="true" />
+        <CheckBoxPreference
+            android:key="parse_playlist_items"
+            android:title="@string/parse_playlist_items"
+            android:summary="@string/summary_parse_playlist_items"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="hide_dvd_tab"
+            android:title="@string/hide_dvd_tab"
+            android:summary="@string/summary_hide_dvd_tab"
+            android:persistent="true" />
+        <CheckBoxPreference
+            android:key="sort_directories_first"
+            android:title="@string/sort_directories_first"
+            android:summary="@string/summary_sort_directories_first"
+            android:persistent="true" />
+        <EditTextPreference
+            android:key="seek_time"
+            android:title="@string/preferences_seek_title"
+            android:summary="@string/preferences_seek_summary"
+            android:defaultValue="10"
+            android:inputType="number"
+            android:persistent="true" />
+        
+    </PreferenceScreen>
+    
+    <PreferenceCategory android:title="@string/preference_category_phone_title">
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pause_for_call"
+            android:persistent="false"
+            android:summary="@string/summary_pause_for_call"
+            android:title="@string/pause_for_call" />
+        <CheckBoxPreference
+            android:key="wifi"
+            android:persistent="false"
+            android:summary="@string/summary_wifi_disconnected"
+            android:title="@string/wifi" />
+        
+    </PreferenceCategory>
     
     <org.peterbaldwin.vlcremote.preference.ProgressCategory
         android:key="servers"
