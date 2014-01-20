@@ -29,12 +29,14 @@ public class Server {
     public final static int DEFAULT_PORT = 8080;
     public final static int DEFAULT_RESPONSE_CODE = HttpURLConnection.HTTP_OK;
     
+    private String nickname;
     private String user;
     private String password;
     private Uri uri;
     private int responseCode;
     
-    public Server(String host, int port, String user, String password, int responseCode) {
+    public Server(String nickname, String host, int port, String user, String password, int responseCode) {
+        this.nickname = nickname != null ? nickname : "";
         this.user = user != null ? user : "";
         this.password = password != null ? password : "";
         StringBuilder authority = new StringBuilder();
@@ -52,14 +54,19 @@ public class Server {
         this.responseCode = responseCode;
     }
     
-    public Server(String host, int port, String user, String password) {
-        this(host, port, user, password, DEFAULT_RESPONSE_CODE);
+    public Server(String nickname, String host, int port, String user, String password) {
+        this(nickname, host, port, user, password, DEFAULT_RESPONSE_CODE);
     }
     
-    public Server(String authority, int responseCode) {
+    public Server(String nickname, String authority, int responseCode) {
         uri = Uri.parse("http://" + authority);
         setUserInfo(uri.getUserInfo());
         this.responseCode = responseCode;
+        this.nickname = nickname;
+    }
+    
+    public Server(String authority, int responseCode) {
+        this("", authority, responseCode);
     }
     
     public Server(String authority) {
@@ -84,6 +91,10 @@ public class Server {
             user = userInfo.substring(0, passDelim);
             password = userInfo.substring(passDelim + 1, userInfo.length());
         }
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public String getUser() {
@@ -140,11 +151,11 @@ public class Server {
     
     /**
      * Creates a key that denotes the server information. The format is
-     * authority#responseCode
+     * authority#responseCode;nickname
      * @return key to represent server information
      */
     public String toKey() {
-        return String.format("%s#%d", uri.getAuthority(), responseCode);
+        return String.format("%s#%d;%s", uri.getAuthority(), responseCode, nickname);
     }
     
     /**
@@ -160,7 +171,10 @@ public class Server {
         } else if(responseDelim == 0) {
             return null;
         }
-        return new Server(key.substring(0, responseDelim), Integer.valueOf(key.substring(responseDelim + 1)));
+        int nicknameDelim = key.indexOf(';');
+        String nickname = nicknameDelim > 0 ? key.substring(nicknameDelim + 1) : "";
+        int response = Integer.valueOf(key.substring(responseDelim + 1, nicknameDelim));
+        return new Server(nickname, key.substring(0, responseDelim), response);
     }
     
 }

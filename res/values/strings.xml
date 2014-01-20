@@ -26,6 +26,7 @@
     <string name="validate_host">The host cannot be empty</string>
     <string name="validate_port">The port number must be numeric</string>
     <string name="validate_auth">A username or password is required</string>
+    <string name="label_nickname">Server Nickname (Optional)</string>
     <string name="label_hostname">Hostname or IP address</string>
     <string name="label_port">Port (default: 8080)</string>
     <string name="label_user">User (default: none)</string>

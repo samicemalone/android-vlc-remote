@@ -372,13 +372,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
-        ArrayList<String> remembered = preferences.getRememberedServers();
         isHideDVDTab = preferences.isHideDVDTabSet();
         Intent intent = new Intent(this, PickServerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(PortSweeper.EXTRA_PORT, 8080);
         intent.putExtra(PortSweeper.EXTRA_FILE, "/requests/status.xml");
-        intent.putStringArrayListExtra(PortSweeper.EXTRA_REMEMBERED, remembered);
         startActivityForResult(intent, REQUEST_PICK_SERVER);
     }
 
@@ -402,16 +400,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
                     updateTabs();
-                }
-
-                if (data != null) {
-                    // Update remembered servers even if
-                    // (resultCode == RESULT_CANCELED)
-                    String key = PortSweeper.EXTRA_REMEMBERED;
-                    ArrayList<String> remembered = data.getStringArrayListExtra(key);
-                    if (remembered != null) {
-                        preferences.setRemeberedServers(remembered);
-                    }
                 }
 
                 if (mMediaServer == null) {

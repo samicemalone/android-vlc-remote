@@ -39,7 +39,6 @@ public final class PortSweeper {
     public static final String EXTRA_PORT = "org.peterbaldwin.portsweep.intent.extra.PORT";
     public static final String EXTRA_FILE = "org.peterbaldwin.portsweep.intent.extra.FILE";
     public static final String EXTRA_WORKERS = "org.peterbaldwin.portsweep.intent.extra.WORKERS";
-    public static final String EXTRA_REMEMBERED = "org.peterbaldwin.portsweep.intent.extra.REMEMBERED";
 
     private static final String TAG = "Scanner";
 

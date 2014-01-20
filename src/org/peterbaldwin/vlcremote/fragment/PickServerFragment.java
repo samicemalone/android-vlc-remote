@@ -47,7 +47,9 @@ import android.widget.ListAdapter;
 import java.net.HttpURLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.PickServerActivity;
 import org.peterbaldwin.vlcremote.model.Preferences;
@@ -87,7 +89,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     
     private int mPort;
 
-    private ArrayList<String> mRemembered;
+    private Map<String, Server> mRemembered;
 
     private EditTextPreference mPreferenceSeekTime;
     private CheckBoxPreference mPreferenceWiFi;
@@ -130,10 +132,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             throw new IllegalArgumentException("Port must be specified");
         }
         
-        mRemembered = intent.getStringArrayListExtra(PortSweeper.EXTRA_REMEMBERED);
-        if (mRemembered == null) {
-            mRemembered = new ArrayList<String>();
-        }
+        mRemembered = buildRememberedServersMap(Preferences.get(getActivity()).getRememberedServers());
         
         mReceiver = new MyBroadcastReceiver();
         updateWifiInfo();
@@ -144,18 +143,6 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         View v = super.onCreateView(inflater, container, savedInstanceState);
         registerForContextMenu(v.findViewById(android.R.id.list));
         return v;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState != null) {
-            List<String> hosts = savedInstanceState.getStringArrayList(STATE_HOSTS);
-            for (int i = 0; i < hosts.size(); i++) {
-                Preference preference = createServerPreference(Server.fromKey(hosts.get(i)));
-                mProgressCategory.addPreference(preference);
-            }
-        }
     }
 
     @Override
@@ -174,21 +161,6 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         super.onPause();
         getActivity().unregisterReceiver(mReceiver);
     }
-    
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        int n = mProgressCategory.getPreferenceCount();
-        ArrayList<String> hosts = new ArrayList<String>(n);
-        for (int i = 0; i < n; i++) {
-            Preference preference = mProgressCategory.getPreference(i);
-            String authority = Server.fromKey(preference.getKey()).getUri().getAuthority();
-            if (!mRemembered.contains(authority)) {
-                hosts.add(preference.getKey());
-            }
-        }
-        outState.putStringArrayList(STATE_HOSTS, hosts);
-    }
 
     @Override
     public void onDetach() {
@@ -196,13 +168,30 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         ((PickServerActivity) getActivity()).setServerInfoDialogListener(null);
     }
     
+    private Map<String, Server> buildRememberedServersMap(List<String> keyList) {
+        Map<String, Server> map = new HashMap<String, Server>(keyList.size());
+        for(String key : keyList) {
+            Server s = Server.fromKey(key);
+            map.put(s.getUri().getAuthority(), s);
+        }
+        return map;
+    }
+    
+    private ArrayList<String> buildRememberedServers() {
+        ArrayList<String> list = new ArrayList<String>(mRemembered.size());
+        for(Server server : mRemembered.values()) {
+            list.add(server.toKey());
+        }
+        return list;
+    }
+    
     private Preference createServerPreference(Server server) {
         Preference preference = new Preference(getActivity());
         preference.setKey(server.toKey());
-        preference.setTitle(server.getHostAndPort());
+        preference.setTitle(server.getNickname().isEmpty() ? server.getHostAndPort() : server.getNickname());
         preference.setPersistent(false);
         String authority = server.getUri().getAuthority();
-        if(mRemembered.contains(authority) && authority.equals(Preferences.get(getActivity()).getAuthority())) {
+        if(mRemembered.containsKey(authority) && authority.equals(Preferences.get(getActivity()).getAuthority())) {
             preference.setWidgetLayoutResource(R.layout.tick_image);
         }
         switch (server.getResponseCode()) {
@@ -243,8 +232,8 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         }
         if (progress == 0) {
             mProgressCategory.removeAll();
-            for (String authority : mRemembered) {
-                Preference preference = createServerPreference(new Server(authority));
+            for (String authority : mRemembered.keySet()) {
+                Preference preference = createServerPreference(mRemembered.get(authority));
                 preference.setSummary(R.string.summary_remembered);
                 mProgressCategory.addPreference(preference);
             }
@@ -259,7 +248,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_FORBIDDEN:
             case HttpURLConnection.HTTP_UNAUTHORIZED:
-                if (!mRemembered.contains(server.getUri().getAuthority())) {
+                if (!mRemembered.containsKey(server.getUri().getAuthority())) {
                     Preference preference = createServerPreference(server);
                     mProgressCategory.addPreference(preference);
                 }
@@ -274,10 +263,10 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     public void onAddServer(Server server) {
         Intent data = new Intent();
         data.setData(server.getUri());
-        if (!mRemembered.contains(server.getUri().getAuthority())) {
-            mRemembered.add(server.getUri().getAuthority());
+        if (!mRemembered.containsKey(server.getUri().getAuthority())) {
+            mRemembered.put(server.getUri().getAuthority(), server);
         }
-        data.putStringArrayListExtra(PortSweeper.EXTRA_REMEMBERED, mRemembered);
+        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
         getActivity().setResult(Activity.RESULT_OK, data);
         getActivity().finish();
     }
@@ -285,13 +274,11 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     @Override
     public void onEditServer(Server newServer, String oldServerKey) {
         String oldAuthority = Server.fromKey(oldServerKey).getUri().getAuthority();
-        for(int i = 0; i < mRemembered.size(); i++) {
-            if(mRemembered.get(i).equals(oldAuthority)) {
-                mRemembered.set(i, newServer.getUri().getAuthority());
-                break;
-            }
+        if(mRemembered.containsKey(oldAuthority)) {
+            mRemembered.remove(oldAuthority);
+            mRemembered.put(newServer.getUri().getAuthority(), newServer);
         }
-        Preferences.get(getActivity()).setRemeberedServers(mRemembered);
+        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
     }
     
     private void forget(Server server) {
@@ -304,12 +291,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
                 break;
             }
         }
-
-        // Send the updated list of remembered servers even if the activity is
-        // canceled
-        Intent data = new Intent();
-        data.putStringArrayListExtra(PortSweeper.EXTRA_REMEMBERED, mRemembered);
-        getActivity().setResult(Activity.RESULT_CANCELED, data);
+        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
     }
 
     @Override
@@ -379,7 +361,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         Preference preference = getPreferenceFromMenuInfo(menuInfo);
         if (preference != null) {
             String authority = Server.fromKey(preference.getKey()).getUri().getAuthority();
-            if (mRemembered.contains(authority)) {
+            if (mRemembered.containsKey(authority)) {
                 menu.add(Menu.NONE, CONTEXT_EDIT_SERVER, Menu.NONE, R.string.edit_server);
                 menu.add(Menu.NONE, CONTEXT_FORGET, Menu.NONE, R.string.context_forget);
             }

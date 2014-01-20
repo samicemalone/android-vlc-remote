@@ -49,6 +49,7 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
     private boolean requiresAuthentication;
     private int dialogType;
     
+    private EditText mEditNickname;
     private EditText mEditHostname;
     private EditText mEditPort;
     private EditText mEditUser;
@@ -142,12 +143,14 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
      * @param view Inflated root of the view hierarchy
      */
     public void setupViews(View view) {
+        mEditNickname = (EditText) view.findViewById(R.id.edit_nickname);
         mEditHostname = (EditText) view.findViewById(R.id.edit_hostname);
         mEditPort = (EditText) view.findViewById(R.id.edit_port);
         mEditUser = (EditText) view.findViewById(R.id.edit_user);
         mEditPassword = (EditText) view.findViewById(R.id.edit_password);
         if(getArguments().getString("currentKey") != null) {
             Server server = Server.fromKey(getArguments().getString("currentKey"));
+            mEditNickname.setText(server.getNickname());
             mEditHostname.setText(server.getHost());
             mEditPort.setText(String.valueOf(server.getPort()));
             mEditUser.setText(server.getUser());
@@ -206,6 +209,7 @@ public class ServerInfoDialog extends DialogFragment implements View.OnClickList
     
     private Server createServerFromInput() {
         return new Server(
+            mEditNickname.getText().toString(),
             mEditHostname.getText().toString(),
             getPort(),
             mEditUser.getText().toString(),
