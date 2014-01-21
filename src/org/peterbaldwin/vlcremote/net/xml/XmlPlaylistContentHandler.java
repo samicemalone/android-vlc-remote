@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.net;
+package org.peterbaldwin.vlcremote.net.xml;
 
 import android.net.Uri;
 import android.text.Html;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-final class PlaylistContentHandler extends XmlContentHandler<Playlist> implements ContentHandler {
+public final class XmlPlaylistContentHandler extends XmlContentHandler<Playlist> implements ContentHandler {
 
     private static final String[] TEXT_ELEMENTS = {
             "title", "artist", "genre", "copyright", "album", "track", "description", "rating",
@@ -49,7 +49,7 @@ final class PlaylistContentHandler extends XmlContentHandler<Playlist> implement
 
     private Track mTrack;
 
-    public PlaylistContentHandler() {
+    public XmlPlaylistContentHandler() {
         mNodeStack = new Stack<Playlist>();
         mBuilder = new StringBuilder();
     }

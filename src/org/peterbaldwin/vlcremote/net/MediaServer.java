@@ -17,6 +17,21 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.SystemClock;
+import android.util.Log;
+import java.io.IOException;
+import java.net.ContentHandler;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.http.Header;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.auth.BasicScheme;
@@ -26,24 +41,10 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.xml.XmlDirectoryContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlPlaylistContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlStatusContentHandler;
 import org.peterbaldwin.vlcremote.service.StatusService;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.SystemClock;
-import android.util.Log;
-
-import java.io.IOException;
-import java.net.ContentHandler;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public final class MediaServer {
 
@@ -201,11 +202,11 @@ public final class MediaServer {
          * Loads the server status synchronously.
          */
         public Remote<Status> load() {
-            return load(new StatusContentHandler());
+            return load(new XmlStatusContentHandler());
         }
 
         public Status read() throws IOException {
-            return read(new StatusContentHandler());
+            return read(new XmlStatusContentHandler());
         }
 
         /**
@@ -396,7 +397,7 @@ public final class MediaServer {
         }
 
         public Remote<Playlist> load() {
-            return load(new PlaylistContentHandler());
+            return load(new XmlPlaylistContentHandler());
         }
     }
 
@@ -407,7 +408,7 @@ public final class MediaServer {
         }
 
         public Remote<Directory> load() {
-            return load(new DirectoryContentHandler());
+            return load(new XmlDirectoryContentHandler());
         }
     }
 

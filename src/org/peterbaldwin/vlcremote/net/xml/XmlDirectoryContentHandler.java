@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.net;
+package org.peterbaldwin.vlcremote.net.xml;
 
 import android.sax.Element;
 import android.sax.RootElement;
@@ -26,7 +26,7 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.xml.sax.Attributes;
 
-final class DirectoryContentHandler extends XmlContentHandler<Directory> {
+public final class XmlDirectoryContentHandler extends XmlContentHandler<Directory> {
     
     private static Directory DIRECTORY;
 

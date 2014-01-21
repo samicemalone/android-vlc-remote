@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.net;
+package org.peterbaldwin.vlcremote.net.xml;
 
 import android.util.Xml;
 import java.io.IOException;

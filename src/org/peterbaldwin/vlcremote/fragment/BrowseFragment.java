@@ -44,7 +44,7 @@ import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Tags;
-import org.peterbaldwin.vlcremote.net.XmlContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends MediaListFragment implements

@@ -71,7 +71,7 @@ import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.net.XmlContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
 import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
 import org.peterbaldwin.vlcremote.widget.LockableViewPager;
