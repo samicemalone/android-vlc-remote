@@ -99,6 +99,10 @@
     <string name="playlist_loop">Loop</string>
     <string name="playlist_repeat">Repeat</string>
     <string name="service_label">VLC Remote Service</string>
+    <string name="desc_button_skip_backward">Previous track</string>
+    <string name="desc_button_skip_forward">Next track</string>
+    <string name="desc_button_stop">Stop</string>
+    <string name="desc_button_play_pause">Play/Pause</string>
     <string name="seek_backwards">Seek backward</string>
     <string name="seek_forwards">Seek forward</string>
     <string name="preferences_seek_title">Seek time (s)</string>

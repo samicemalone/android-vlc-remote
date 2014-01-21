@@ -37,13 +37,14 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.peterbaldwin.vlcremote.model.Preferences;
 
 /**
  * Controls playback and displays progress.
  */
 public class PlaybackFragment extends MediaFragment implements View.OnClickListener,
-        OnSeekBarChangeListener {
+        View.OnLongClickListener, OnSeekBarChangeListener {
 
     private BroadcastReceiver mStatusReceiver;
 
@@ -88,6 +89,7 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         ImageButton button = (ImageButton) v.findViewById(viewId);
         if (button != null) {
             button.setOnClickListener(this);
+            button.setOnLongClickListener(this);
         }
         return button;
     }
@@ -119,6 +121,11 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         } else if (v == mButtonPlaylistSeekForward) {
             command().seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
         }
+    }
+
+    public boolean onLongClick(View v) {
+        Toast.makeText(v.getContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     /** {@inheritDoc} */
