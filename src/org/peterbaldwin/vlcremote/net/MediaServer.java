@@ -41,6 +41,7 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.json.JsonStatusContentHandler;
 import org.peterbaldwin.vlcremote.net.xml.XmlDirectoryContentHandler;
 import org.peterbaldwin.vlcremote.net.xml.XmlPlaylistContentHandler;
 import org.peterbaldwin.vlcremote.net.xml.XmlStatusContentHandler;
@@ -155,6 +156,7 @@ public final class MediaServer {
             start(intent(encodedQuery));
         }
 
+        @SuppressWarnings("unchecked")
         protected final <T> Remote<T> load(ContentHandler handler) {
             String spec = mUri.toString();
             try {
@@ -187,9 +189,11 @@ public final class MediaServer {
     }
 
     public static final class StatusRequest extends Request {
+        
+        private final boolean mUseXml = StatusService.USE_XML_STATUS;
 
         StatusRequest(Context context, String authority) {
-            super(context, authority, "/requests/status.xml");
+            super(context, authority, String.format("/requests/status.%s", StatusService.USE_XML_STATUS ? "xml" : "json"));
         }
 
         public StatusRequest(Context context, Uri uri) {
@@ -200,13 +204,14 @@ public final class MediaServer {
 
         /**
          * Loads the server status synchronously.
+         * @return Remote Status
          */
         public Remote<Status> load() {
-            return load(new XmlStatusContentHandler());
+            return load(mUseXml ? new XmlStatusContentHandler() : new JsonStatusContentHandler());
         }
 
         public Status read() throws IOException {
-            return read(new XmlStatusContentHandler());
+            return read(mUseXml ? new XmlStatusContentHandler() : new JsonStatusContentHandler());
         }
 
         /**

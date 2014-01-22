@@ -17,11 +17,6 @@
 
 package org.peterbaldwin.vlcremote.service;
 
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Preferences;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,14 +28,20 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import org.peterbaldwin.vlcremote.intent.Intents;
+import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.net.json.JsonContentHandler;
 
 /**
  * Sends commands to a VLC server and receives &amp; broadcasts the status.
  */
 public class StatusService extends Service implements Handler.Callback {
 
+    public static boolean USE_XML_STATUS = false;
+    
     private static final String TAG = "StatusService";
 
     private static final int HANDLE_STATUS = 1;
@@ -48,7 +49,7 @@ public class StatusService extends Service implements Handler.Callback {
     private static final int HANDLE_STOP = 3;
 
     private static boolean isCommand(Uri uri) {
-        return uri.getQueryParameters("command").size() != 0;
+        return !uri.getQueryParameters("command").isEmpty();
     }
 
     /**
@@ -72,6 +73,8 @@ public class StatusService extends Service implements Handler.Callback {
         String value = uri.getQueryParameter("val");
         return value != null && !value.startsWith("+") && !value.startsWith("-");
     }
+    
+    private String mAuthority;
 
     private Handler mStatusHandler;
 
@@ -80,7 +83,7 @@ public class StatusService extends Service implements Handler.Callback {
     private Handler mCommandHandler;
 
     private AtomicInteger mSequenceNumber;
-
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -162,12 +165,16 @@ public class StatusService extends Service implements Handler.Callback {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case HANDLE_STATUS: {
                 Uri uri = (Uri) msg.obj;
                 MediaServer server = new MediaServer(this, uri);
+                if(!server.getAuthority().equals(mAuthority)) {
+                    mAuthority = server.getAuthority();
+                    USE_XML_STATUS = false; // new server so try json first
+                }
                 int sequenceNumber = msg.arg1;
                 int flags = msg.arg2;
                 if (sequenceNumber == mSequenceNumber.get()) {
@@ -202,6 +209,9 @@ public class StatusService extends Service implements Handler.Callback {
                             Preferences.get(this).setResumeOnIdle();
                         }
                     } catch (Throwable tr) {
+                        if(JsonContentHandler.FILE_NOT_FOUND.equals(tr.getMessage())) {
+                            USE_XML_STATUS = true;
+                        }
                         String message = String.valueOf(tr);
                         Log.e(TAG, message, tr);
                         Intent broadcast = Intents.error(tr);
