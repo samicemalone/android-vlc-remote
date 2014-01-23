@@ -5,6 +5,7 @@
     <PreferenceScreen
         android:title="@string/preference_screen_interface_title"
         android:key="@string/preference_screen_interface_key"
+        android:icon="@drawable/ic_menu_preferences"
         android:persistent="false">
 
         <CheckBoxPreference
@@ -43,11 +44,13 @@
             android:defaultValue="true"
             android:key="pause_for_call"
             android:persistent="false"
+            android:icon="@drawable/ic_menu_call"
             android:summary="@string/summary_pause_for_call"
             android:title="@string/pause_for_call" />
         <CheckBoxPreference
             android:key="wifi"
             android:persistent="false"
+            android:icon="@drawable/ic_appwidget_settings_wifi_on_holo"
             android:summary="@string/summary_wifi_disconnected"
             android:title="@string/wifi" />
         
