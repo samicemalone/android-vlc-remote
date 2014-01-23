@@ -30,6 +30,8 @@ public final class Track extends Media implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private final Chapters mChapters = new Chapters();
+    
     private long mDuration;
 
     private String mTitle;
@@ -68,13 +70,11 @@ public final class Track extends Media implements Serializable {
      * Bit Mask of the stream types the track holds.
      */
     private byte streamTypesMask;
-
-    /** {@inheritDoc} */
+    
     public String getPlaylistHeading() {
         return isNotEmpty(mTitle) ? mTitle : isNotEmpty(mName) ? mName : "";
     }
 
-    /** {@inheritDoc} */
     public String getPlaylistText() {
         return isNotEmpty(mArtist) ? mArtist : isNotEmpty(mTitle) ? mName : "";
     }
@@ -213,6 +213,10 @@ public final class Track extends Media implements Serializable {
 
     public void setTrackId(String trackId) {
         this.mTrackId = trackId;
+    }
+
+    public Chapters getChapters() {
+        return mChapters;
     }
     
     /**

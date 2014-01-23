@@ -320,6 +320,10 @@ public final class MediaServer {
                     execute("command=pl_previous");
                 }
 
+                public void chapter(int chapter) {
+                    execute("command=chapter&val=" + chapter);
+                }
+
                 public void delete(int id) {
                     mNotifyPlaylist = true;
                     execute("command=pl_delete&id=" + id);
