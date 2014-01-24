@@ -252,7 +252,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_FORBIDDEN:
             case HttpURLConnection.HTTP_UNAUTHORIZED:
-                if (!mRemembered.containsKey(server.getUri().getAuthority())) {
+                if (!mRemembered.containsKey(server.getUri().getAuthority()) && getActivity() != null) {
                     Preference preference = createServerPreference(server);
                     mProgressCategory.addPreference(preference);
                 }
