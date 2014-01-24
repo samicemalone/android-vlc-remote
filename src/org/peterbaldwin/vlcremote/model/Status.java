@@ -59,7 +59,7 @@ public final class Status implements Serializable {
     }
 
     public boolean isStopped() {
-        return "stop".equals(mState);
+        return "stopped".equals(mState) || "stop".equals(mState);
     }
 
     public String getState() {

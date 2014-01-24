@@ -71,6 +71,8 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
     private TextView mTextLength;
     
     private Chapters mChapters;
+    
+    private boolean mIsStopped;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,10 +139,9 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
     
     private void chapter(int chapter) {
         boolean hasChapters = mChapters.hasChapters();
-        boolean canNavigateChapters = mChapters.canNavigateChapters();
-        if(canNavigateChapters) {
+        if(mChapters.canNavigateChapters()) {
             playlist().chapter(chapter);
-        } else {   
+        } else if(!mIsStopped) {   
             Toast.makeText(getActivity(), hasChapters ? R.string.no_chapter : R.string.no_chapters, Toast.LENGTH_SHORT).show();
         }
     }
@@ -212,6 +213,7 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         mTextLength.setText(formattedLength);
         
         mChapters = status.getTrack().getChapters();
+        mIsStopped = status.isStopped();
     }
 
     private static void doubleDigit(StringBuilder builder, long value) {
