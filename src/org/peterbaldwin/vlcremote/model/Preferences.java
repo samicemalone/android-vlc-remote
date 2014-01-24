@@ -176,7 +176,7 @@ public final class Preferences {
         return fromJSONArray(mPreferences.getString(PREFERENCE_REMEMBERED_SERVERS, "[]"));
     }
 
-    public boolean setRemeberedServers(List<String> rememberedServers) {
+    public boolean setRememberedServers(List<String> rememberedServers) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(PREFERENCE_REMEMBERED_SERVERS, toJSONArray(rememberedServers));
         return editor.commit();

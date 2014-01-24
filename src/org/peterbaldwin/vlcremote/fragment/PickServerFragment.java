@@ -270,7 +270,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         if (!mRemembered.containsKey(server.getUri().getAuthority())) {
             mRemembered.put(server.getUri().getAuthority(), server);
         }
-        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
+        Preferences.get(getActivity()).setRememberedServers(buildRememberedServers());
         getActivity().setResult(Activity.RESULT_OK, data);
         getActivity().finish();
     }
@@ -282,7 +282,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             mRemembered.remove(oldAuthority);
             mRemembered.put(newServer.getUri().getAuthority(), newServer);
         }
-        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
+        Preferences.get(getActivity()).setRememberedServers(buildRememberedServers());
     }
     
     private void forget(Server server) {
@@ -295,7 +295,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
                 break;
             }
         }
-        Preferences.get(getActivity()).setRemeberedServers(buildRememberedServers());
+        Preferences.get(getActivity()).setRememberedServers(buildRememberedServers());
     }
 
     @Override
