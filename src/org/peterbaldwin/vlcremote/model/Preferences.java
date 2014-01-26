@@ -30,29 +30,22 @@ import org.json.JSONException;
  */
 public final class Preferences {
 
+    /**
+     * The server authority preference key
+     */
+    public static final String KEY_SERVER = "server";
+    public static final String KEY_REMEMBERED_SERVERS = "remembered_servers";
+    public static final String KEY_BROWSE_DIRECTORY = "browse_directory";
+    public static final String KEY_HOME_DIRECTORY = "home_directory";
+    public static final String KEY_RESUME_ON_IDLE = "resume_on_idle";
+    public static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
+    public static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
+    public static final String KEY_SORT_DIRECTORIES_FIRST = "sort_directories_first";
+    public static final String KEY_SEEK_TIME = "seek_time";
+    public static final String KEY_TEXT_SIZE = "browse_text_size";
+    public static final String KEY_SERVER_SUBTITLE = "server_subtitle";
+    
     private static final String PREFERENCES = "preferences";
-
-    private static final String PREFERENCE_SERVER = "server";
-
-    private static final String PREFERENCE_REMEMBERED_SERVERS = "remembered_servers";
-
-    private static final String PREFERENCE_BROWSE_DIRECTORY = "browse_directory";
-
-    private static final String PREFERENCE_HOME_DIRECTORY = "home_directory";
-
-    private static final String PREFERENCE_RESUME_ON_IDLE = "resume_on_idle";
-    
-    private static final String PREFERENCE_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
-    
-    private static final String PREFERENCE_HIDE_DVD_TAB = "hide_dvd_tab";
-    
-    private static final String PREFERENCE_SORT_DIRECTORIES_FIRST = "sort_directories_first";
-    
-    private static final String PREFERENCE_SEEK_TIME = "seek_time";
-    
-    private static final String PREFERENCE_TEXT_SIZE = "browse_text_size";
-    
-    private static final String PREFERENCE_SERVER_SUBTITLE = "server_subtitle";
 
     private final SharedPreferences mPreferences;
 
@@ -70,7 +63,7 @@ public final class Preferences {
 
     public boolean setResumeOnIdle() {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putLong(PREFERENCE_RESUME_ON_IDLE, System.currentTimeMillis());
+        editor.putLong(KEY_RESUME_ON_IDLE, System.currentTimeMillis());
         return editor.commit();
     }
 
@@ -79,106 +72,106 @@ public final class Preferences {
      * @return {@code true} if {@link #setResumeOnIdle()} was called in the last hour.
      */
     public boolean isResumeOnIdleSet() {
-        long start = mPreferences.getLong(PREFERENCE_RESUME_ON_IDLE, 0L);
+        long start = mPreferences.getLong(KEY_RESUME_ON_IDLE, 0L);
         long end = System.currentTimeMillis();
         return start < end && (end - start) < DateUtils.HOUR_IN_MILLIS;
     }
     
     public boolean clearResumeOnIdle() {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.remove(PREFERENCE_RESUME_ON_IDLE);
+        editor.remove(KEY_RESUME_ON_IDLE);
         return editor.commit();
     }
     
     public boolean isSortDirectoriesFirst() {
-        return mPreferences.getBoolean(PREFERENCE_SORT_DIRECTORIES_FIRST, false);
+        return mPreferences.getBoolean(KEY_SORT_DIRECTORIES_FIRST, false);
     }
 	
     public boolean setSortDirectoriesFirst(boolean sortDirectoriesFirst) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putBoolean(PREFERENCE_SORT_DIRECTORIES_FIRST, sortDirectoriesFirst);
+        editor.putBoolean(KEY_SORT_DIRECTORIES_FIRST, sortDirectoriesFirst);
         return editor.commit();
     }
     
     public boolean isParsePlaylistItems() {
-        return mPreferences.getBoolean(PREFERENCE_PARSE_PLAYLIST_ITEMS, false);
+        return mPreferences.getBoolean(KEY_PARSE_PLAYLIST_ITEMS, false);
     }
 	
     public boolean setParsePlaylistItems(boolean parsePlaylist) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putBoolean(PREFERENCE_PARSE_PLAYLIST_ITEMS, parsePlaylist);
+        editor.putBoolean(KEY_PARSE_PLAYLIST_ITEMS, parsePlaylist);
         return editor.commit();
     }
     
     public boolean isServerSubtitleSet() {
-        return mPreferences.getBoolean(PREFERENCE_SERVER_SUBTITLE, false);
+        return mPreferences.getBoolean(KEY_SERVER_SUBTITLE, false);
     }
 	
     public boolean setServerSubtitle(boolean isServerSubtitle) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putBoolean(PREFERENCE_SERVER_SUBTITLE, isServerSubtitle);
+        editor.putBoolean(KEY_SERVER_SUBTITLE, isServerSubtitle);
         return editor.commit();
     }
     
     public boolean isHideDVDTabSet() {
-        return mPreferences.getBoolean(PREFERENCE_HIDE_DVD_TAB, false);
+        return mPreferences.getBoolean(KEY_HIDE_DVD_TAB, false);
     }
 	
     public boolean setHideDVDTab(boolean hideTab) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putBoolean(PREFERENCE_HIDE_DVD_TAB, hideTab);
+        editor.putBoolean(KEY_HIDE_DVD_TAB, hideTab);
         return editor.commit();
     }
 	
     public boolean setSeekTime(String seekTime) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putString(PREFERENCE_SEEK_TIME, seekTime);
+        editor.putString(KEY_SEEK_TIME, seekTime);
         return editor.commit();
     }
     
     public String getSeekTime() {
-        return mPreferences.getString(PREFERENCE_SEEK_TIME, "10");
+        return mPreferences.getString(KEY_SEEK_TIME, "10");
     }
     
     public boolean setTextSize(int textSize) {
-        return mPreferences.edit().putInt(PREFERENCE_TEXT_SIZE, textSize).commit();
+        return mPreferences.edit().putInt(KEY_TEXT_SIZE, textSize).commit();
     }
     
     public int getTextSize() {
-        return mPreferences.getInt(PREFERENCE_TEXT_SIZE, TEXT_LARGE);
+        return mPreferences.getInt(KEY_TEXT_SIZE, TEXT_LARGE);
     }
 
     public String getAuthority() {
-        return mPreferences.getString(PREFERENCE_SERVER, null);
+        return mPreferences.getString(KEY_SERVER, null);
     }
 
     public String getHomeDirectory() {
-        return mPreferences.getString(PREFERENCE_HOME_DIRECTORY, "~");
+        return mPreferences.getString(KEY_HOME_DIRECTORY, "~");
     }
 
     public String getBrowseDirectory() {
-        return mPreferences.getString(PREFERENCE_BROWSE_DIRECTORY, "~");
+        return mPreferences.getString(KEY_BROWSE_DIRECTORY, "~");
     }
 
     public boolean setAuthority(String authority) {
-        return mPreferences.edit().putString(PREFERENCE_SERVER, authority).commit();
+        return mPreferences.edit().putString(KEY_SERVER, authority).commit();
     }
 
     public boolean setHomeDirectory(String dir) {
-        return mPreferences.edit().putString(PREFERENCE_HOME_DIRECTORY, dir).commit();
+        return mPreferences.edit().putString(KEY_HOME_DIRECTORY, dir).commit();
     }
 
     public boolean setBrowseDirectory(String dir) {
-        return mPreferences.edit().putString(PREFERENCE_BROWSE_DIRECTORY, dir).commit();
+        return mPreferences.edit().putString(KEY_BROWSE_DIRECTORY, dir).commit();
     }
     
     public ArrayList<String> getRememberedServers() {
-        return fromJSONArray(mPreferences.getString(PREFERENCE_REMEMBERED_SERVERS, "[]"));
+        return fromJSONArray(mPreferences.getString(KEY_REMEMBERED_SERVERS, "[]"));
     }
 
     public boolean setRememberedServers(List<String> rememberedServers) {
         SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putString(PREFERENCE_REMEMBERED_SERVERS, toJSONArray(rememberedServers));
+        editor.putString(KEY_REMEMBERED_SERVERS, toJSONArray(rememberedServers));
         return editor.commit();
     }
 

@@ -70,14 +70,9 @@ public final class PickServerFragment extends PreferenceFragment implements Port
 
     private static final String KEY_SCREEN_INTERFACE = "preference_screen_interface";
     private static final String KEY_WIFI = "wifi";
-    private static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
-    private static final String KEY_SORT_DIRECTORIES_FIRST = "sort_directories_first";
-    private static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
     private static final String KEY_PAUSE_FOR_CALL = "pause_for_call";
-    private static final String KEY_SEEK_TIME = "seek_time";
-    private static final String KEY_SERVER_SUBTITLE = "server_subtitle";
     
     public static final String STATE_HOSTS = "hosts";
 
@@ -93,15 +88,8 @@ public final class PickServerFragment extends PreferenceFragment implements Port
 
     private Map<String, Server> mRemembered;
 
-    private EditTextPreference mPreferenceSeekTime;
     private CheckBoxPreference mPreferenceWiFi;
-    private CheckBoxPreference mPreferencePauseForCall;
-    private CheckBoxPreference mPreferenceParsePlaylistItems;
-    private CheckBoxPreference mPreferenceSortDirectoriesFirst;
-    private CheckBoxPreference mPreferenceHideDVDTab;
-    private CheckBoxPreference mPreferenceServerSubtitle;
     private ProgressCategory mProgressCategory;
-    private Preference mPreferenceAddServer;
 
     @Override
     public void onAttach(Activity activity) {
@@ -117,18 +105,13 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
-        mPreferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
-        mPreferenceParsePlaylistItems = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PARSE_PLAYLIST_ITEMS);
-        mPreferenceSortDirectoriesFirst = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SORT_DIRECTORIES_FIRST);
-        mPreferenceHideDVDTab = (CheckBoxPreference) preferenceScreen.findPreference(KEY_HIDE_DVD_TAB);
-        mPreferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(KEY_SEEK_TIME);
-        mPreferenceSeekTime.setOnPreferenceChangeListener(this);
-        mPreferenceServerSubtitle = (CheckBoxPreference) preferenceScreen.findPreference(KEY_SERVER_SUBTITLE);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
-        mPreferenceAddServer = preferenceScreen.findPreference(KEY_ADD_SERVER);
+        CheckBoxPreference preferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
+        EditTextPreference  preferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_SEEK_TIME);
         
-        mPreferencePauseForCall.setOnPreferenceChangeListener(this);
-        mPreferencePauseForCall.setChecked(getPauseForCall());
+        preferenceSeekTime.setOnPreferenceChangeListener(this);
+        preferencePauseForCall.setOnPreferenceChangeListener(this);
+        preferencePauseForCall.setChecked(getPauseForCall());
 
         Intent intent = getActivity().getIntent();
         mPort = intent.getIntExtra(PortSweeper.EXTRA_PORT, 0);
@@ -302,32 +285,28 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if(KEY_SCREEN_INTERFACE.equals(preference.getKey())) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
-        }
-        if (preference == mPreferenceAddServer) {
+        } else if (KEY_PAUSE_FOR_CALL.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if(Preferences.KEY_HIDE_DVD_TAB.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setHideDVDTab(((CheckBoxPreference) preference).isChecked());
+            return true;
+        } else if(Preferences.KEY_SORT_DIRECTORIES_FIRST.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setSortDirectoriesFirst(((CheckBoxPreference) preference).isChecked());
+            return true;
+        } else if(Preferences.KEY_PARSE_PLAYLIST_ITEMS.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setParsePlaylistItems(((CheckBoxPreference) preference).isChecked());
+            return true;
+        } else if (Preferences.KEY_SERVER_SUBTITLE.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setServerSubtitle(((CheckBoxPreference) preference).isChecked());
+            return true;
+        } else if(KEY_ADD_SERVER.equals(preference.getKey())) {
             ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);
             return true;
-        } else if (preference == mPreferenceWiFi) {
-            Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
-            startActivity(intent);
-
-            // Undo checkbox toggle
-            updateWifiInfo();
-            return true;
-        } else if (preference == mPreferencePauseForCall) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (preference == mPreferenceParsePlaylistItems) {
-            Preferences.get(getActivity()).setParsePlaylistItems(mPreferenceParsePlaylistItems.isChecked());
-            return true;
-        } else if (preference == mPreferenceHideDVDTab) {
-            Preferences.get(getActivity()).setHideDVDTab(mPreferenceHideDVDTab.isChecked());
-            return true;
-        } else if (preference == mPreferenceSortDirectoriesFirst) {
-            Preferences.get(getActivity()).setSortDirectoriesFirst(mPreferenceSortDirectoriesFirst.isChecked());
-            return true;
-        } else if (preference == mPreferenceSeekTime) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (preference == mPreferenceServerSubtitle) {
-            Preferences.get(getActivity()).setServerSubtitle(mPreferenceServerSubtitle.isChecked());
+        } else if (KEY_WIFI.equals(preference.getKey())) {
+            startActivity(new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK));
+            updateWifiInfo(); // Undo checkbox toggle
             return true;
         } else {
             Server server = Server.fromKey(preference.getKey());
@@ -342,10 +321,10 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     
     /** {@inheritDoc} */
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if (preference == mPreferencePauseForCall) {
+        if (KEY_PAUSE_FOR_CALL.equals(preference.getKey())) {
             setPauseForCall(Boolean.TRUE.equals(newValue));
             return true;
-        } else if(preference == mPreferenceSeekTime) {
+        } else if(Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
             Preferences.get(getActivity()).setSeekTime((String) newValue);
             return true;
         }
