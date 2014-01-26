@@ -51,8 +51,16 @@
     </string>
     <string name="summary_unauthorized">Requires Authentication</string>
     <string name="summary_server_subtitle">Show the server nickname (or address if not set) as a subtitle in the action bar.</string>
+    <string name="summary_preference_audio_delay">Audio delay (in ms) to be toggled</string>
+    <string name="summary_preference_subtitle_delay">Subtitle delay (in ms) to be toggled</string>
     <string name="preference_screen_interface_title">Interface Settings</string>
     <string name="preference_screen_interface_key">preference_screen_interface</string>
+    <string name="preference_screen_presets_title">Presets</string>
+    <string name="preference_screen_presets_key">preference_screen_presets</string>
+    <string name="preference_title_audio_delay">Audio Delay</string>
+    <string name="preference_key_audio_delay">audio_delay</string>
+    <string name="preference_title_subtitle_delay">Subtitle Delay</string>
+    <string name="preference_key_subtitle_delay">subtitle_delay</string>
     <string name="preference_category_phone_title">Phone</string>
     <string name="preference_server_subtitle_key">server_subtitle</string>
     <string name="preference_server_subtitle_title">Show Server Subtitle</string>

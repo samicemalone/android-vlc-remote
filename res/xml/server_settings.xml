@@ -28,6 +28,29 @@
             android:title="@string/preference_server_subtitle_title"
             android:summary="@string/summary_server_subtitle"
             android:persistent="true" />
+        
+    </PreferenceScreen>
+    
+    <PreferenceScreen
+        android:title="@string/preference_screen_presets_title"
+        android:key="@string/preference_screen_presets_key"
+        android:icon="@drawable/ic_menu_preferences"
+        android:persistent="false">
+
+        <EditTextPreference
+            android:key="@string/preference_key_audio_delay"
+            android:title="@string/preference_title_audio_delay"
+            android:summary="@string/summary_preference_audio_delay"
+            android:defaultValue="0"
+            android:inputType="numberSigned"
+            android:persistent="true" />
+        <EditTextPreference
+            android:key="@string/preference_key_subtitle_delay"
+            android:title="@string/preference_title_subtitle_delay"
+            android:summary="@string/summary_preference_subtitle_delay"
+            android:defaultValue="0"
+            android:inputType="numberSigned"
+            android:persistent="true" />
         <EditTextPreference
             android:key="seek_time"
             android:title="@string/preferences_seek_title"

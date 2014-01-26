@@ -44,6 +44,8 @@ public final class Preferences {
     public static final String KEY_SEEK_TIME = "seek_time";
     public static final String KEY_TEXT_SIZE = "browse_text_size";
     public static final String KEY_SERVER_SUBTITLE = "server_subtitle";
+    public static final String KEY_AUDIO_DELAY = "audio_delay";
+    public static final String KEY_SUBTITLE_DELAY = "subtitle_delay";
     
     private static final String PREFERENCES = "preferences";
 
@@ -126,6 +128,26 @@ public final class Preferences {
     public boolean setSeekTime(String seekTime) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putString(KEY_SEEK_TIME, seekTime);
+        return editor.commit();
+    }
+    
+    public int getAudioDelayToggle() {
+        return mPreferences.getInt(KEY_AUDIO_DELAY, 0);
+    }
+	
+    public boolean setAudioDelayToggle(int delay) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putInt(KEY_AUDIO_DELAY, delay);
+        return editor.commit();
+    }
+    
+    public int getSubtitleDelayToggle() {
+        return mPreferences.getInt(KEY_SUBTITLE_DELAY, 0);
+    }
+	
+    public boolean setSubtitleDelayToggle(int delay) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putInt(KEY_SUBTITLE_DELAY, delay);
         return editor.commit();
     }
     

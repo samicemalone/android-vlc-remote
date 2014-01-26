@@ -69,6 +69,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             PhoneStateChangedReceiver.class.getName());
 
     private static final String KEY_SCREEN_INTERFACE = "preference_screen_interface";
+    private static final String KEY_SCREEN_PRESETS = "preference_screen_presets";
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
@@ -108,7 +109,11 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         CheckBoxPreference preferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
         EditTextPreference  preferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_SEEK_TIME);
+        EditTextPreference  preferenceAudioDelay = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_AUDIO_DELAY);
+        EditTextPreference  preferenceSubtitleDelay = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_SUBTITLE_DELAY);
         
+        preferenceAudioDelay.setOnPreferenceChangeListener(this);
+        preferenceSubtitleDelay.setOnPreferenceChangeListener(this);
         preferenceSeekTime.setOnPreferenceChangeListener(this);
         preferencePauseForCall.setOnPreferenceChangeListener(this);
         preferencePauseForCall.setChecked(getPauseForCall());
@@ -285,9 +290,15 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if(KEY_SCREEN_INTERFACE.equals(preference.getKey())) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (KEY_SCREEN_PRESETS.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else if (KEY_PAUSE_FOR_CALL.equals(preference.getKey())) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else if (Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (Preferences.KEY_AUDIO_DELAY.equals(preference.getKey())) {
+            return super.onPreferenceTreeClick(preferenceScreen, preference);
+        } else if (Preferences.KEY_SUBTITLE_DELAY.equals(preference.getKey())) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else if(Preferences.KEY_HIDE_DVD_TAB.equals(preference.getKey())) {
             Preferences.get(getActivity()).setHideDVDTab(((CheckBoxPreference) preference).isChecked());
@@ -326,6 +337,12 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             return true;
         } else if(Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
             Preferences.get(getActivity()).setSeekTime((String) newValue);
+            return true;
+        } else if(Preferences.KEY_AUDIO_DELAY.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setAudioDelayToggle(Integer.valueOf((String) newValue));
+            return true;
+        } else if(Preferences.KEY_SUBTITLE_DELAY.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setSubtitleDelayToggle(Integer.valueOf((String) newValue));
             return true;
         }
         return false;
