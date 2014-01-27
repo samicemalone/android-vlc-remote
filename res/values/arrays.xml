@@ -37,5 +37,35 @@
         <item>Bonjour services</item>
         <item>My Music</item>
     </string-array>
+    <string-array name="buttonEntries">
+        <item>Default</item>
+        <item>Crop Video</item>
+        <item>Subtitle Track</item>
+        <item>Fullscreen Toggle</item>
+        <item>Audio Track</item>
+        <item>Aspect Ratio</item>
+        <item>Subtitle Delay Increase</item>
+        <item>Subtitle Delay Decrease</item>
+        <item>Subtitle Delay Preset Toggle</item>
+        <item>Audio Delay Increase</item>
+        <item>Audio Delay Decrease</item>
+        <item>Audio Delay Preset Toggle</item>
+        <item>Toggle Delay Presets</item>
+    </string-array>
+    <string-array name="buttonEntryValues">
+        <item>default</item>
+        <item>crop</item>
+        <item>subtitle</item>
+        <item>fullscreen</item>
+        <item>audio_track</item>
+        <item>aspect_ratio</item>
+        <item>subtitle_delay_increase</item>
+        <item>subtitle_delay_decrease</item>
+        <item>subtitle_delay_toggle</item>
+        <item>audio_delay_increase</item>
+        <item>audio_delay_decrease</item>
+        <item>audio_delay_toggle</item>
+        <item>delay_toggle</item>
+    </string-array>
 
 </resources>

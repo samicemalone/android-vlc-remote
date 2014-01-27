@@ -46,6 +46,11 @@ public final class Preferences {
     public static final String KEY_SERVER_SUBTITLE = "server_subtitle";
     public static final String KEY_AUDIO_DELAY = "audio_delay";
     public static final String KEY_SUBTITLE_DELAY = "subtitle_delay";
+    public static final String KEY_BUTTON_FIRST = "button_first";
+    public static final String KEY_BUTTON_SECOND = "button_second";
+    public static final String KEY_BUTTON_THIRD = "button_third";
+    public static final String KEY_BUTTON_FOURTH = "button_fourth";
+    public static final String KEY_BUTTON_FIFTH = "button_fifth";
     
     private static final String PREFERENCES = "preferences";
 
@@ -61,6 +66,14 @@ public final class Preferences {
 
     public static Preferences get(Context context) {
         return new Preferences(context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE));
+    }
+
+    public static boolean isButtonKey(String key) {
+        return KEY_BUTTON_FIRST.equals(key)  ||
+               KEY_BUTTON_SECOND.equals(key) ||
+               KEY_BUTTON_THIRD.equals(key)  ||
+               KEY_BUTTON_FOURTH.equals(key) ||
+               KEY_BUTTON_FIFTH.equals(key);
     }
 
     public boolean setResumeOnIdle() {
@@ -149,6 +162,14 @@ public final class Preferences {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putInt(KEY_SUBTITLE_DELAY, delay);
         return editor.commit();
+    }
+    
+    public String getButton(String key) {
+        return key == null ? "default" : mPreferences.getString(key, "default");
+    }
+    
+    public boolean setButton(String key, String button) {
+        return mPreferences.edit().putString(key, button).commit();
     }
     
     public String getSeekTime() {

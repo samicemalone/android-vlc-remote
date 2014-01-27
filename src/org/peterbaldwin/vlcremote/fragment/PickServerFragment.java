@@ -30,6 +30,7 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
@@ -57,6 +58,7 @@ import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.preference.ProgressCategory;
 import org.peterbaldwin.vlcremote.receiver.PhoneStateChangedReceiver;
 import org.peterbaldwin.vlcremote.sweep.PortSweeper;
+import org.peterbaldwin.vlcremote.widget.Buttons;
 
 public final class PickServerFragment extends PreferenceFragment implements PortSweeper.Callback,
         ServerInfoDialog.ServerInfoDialogListener, OnPreferenceChangeListener {
@@ -70,6 +72,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
 
     private static final String KEY_SCREEN_INTERFACE = "preference_screen_interface";
     private static final String KEY_SCREEN_PRESETS = "preference_screen_presets";
+    private static final String KEY_SCREEN_BUTTONS = "preference_screen_buttons";
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
@@ -90,6 +93,11 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     private Map<String, Server> mRemembered;
 
     private CheckBoxPreference mPreferenceWiFi;
+    private ListPreference mPreferenceButtonFirst;
+    private ListPreference mPreferenceButtonSecond;
+    private ListPreference mPreferenceButtonThird;
+    private ListPreference mPreferenceButtonFourth;
+    private ListPreference mPreferenceButtonFifth;
     private ProgressCategory mProgressCategory;
 
     @Override
@@ -106,12 +114,22 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         PreferenceScreen preferenceScreen = getPreferenceScreen();
 
         mPreferenceWiFi = (CheckBoxPreference) preferenceScreen.findPreference(KEY_WIFI);
+        mPreferenceButtonFirst = (ListPreference) preferenceScreen.findPreference(Preferences.KEY_BUTTON_FIRST);
+        mPreferenceButtonSecond = (ListPreference) preferenceScreen.findPreference(Preferences.KEY_BUTTON_SECOND);
+        mPreferenceButtonThird = (ListPreference) preferenceScreen.findPreference(Preferences.KEY_BUTTON_THIRD);
+        mPreferenceButtonFourth = (ListPreference) preferenceScreen.findPreference(Preferences.KEY_BUTTON_FOURTH);
+        mPreferenceButtonFifth = (ListPreference) preferenceScreen.findPreference(Preferences.KEY_BUTTON_FIFTH);
         mProgressCategory = (ProgressCategory) preferenceScreen.findPreference(KEY_SERVERS);
         CheckBoxPreference preferencePauseForCall = (CheckBoxPreference) preferenceScreen.findPreference(KEY_PAUSE_FOR_CALL);
         EditTextPreference  preferenceSeekTime = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_SEEK_TIME);
         EditTextPreference  preferenceAudioDelay = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_AUDIO_DELAY);
         EditTextPreference  preferenceSubtitleDelay = (EditTextPreference) preferenceScreen.findPreference(Preferences.KEY_SUBTITLE_DELAY);
         
+        mPreferenceButtonFirst.setOnPreferenceChangeListener(this);
+        mPreferenceButtonSecond.setOnPreferenceChangeListener(this);
+        mPreferenceButtonThird.setOnPreferenceChangeListener(this);
+        mPreferenceButtonFourth.setOnPreferenceChangeListener(this);
+        mPreferenceButtonFifth.setOnPreferenceChangeListener(this);
         preferenceAudioDelay.setOnPreferenceChangeListener(this);
         preferenceSubtitleDelay.setOnPreferenceChangeListener(this);
         preferenceSeekTime.setOnPreferenceChangeListener(this);
@@ -127,6 +145,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         mRemembered = buildRememberedServersMap(Preferences.get(getActivity()).getRememberedServers());
         
         mReceiver = new MyBroadcastReceiver();
+        setButtonIcons();
         updateWifiInfo();
     }
 
@@ -285,20 +304,21 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         }
         Preferences.get(getActivity()).setRememberedServers(buildRememberedServers());
     }
+    
+    private boolean isHandledByChangeListener(String preferenceKey) {
+        return KEY_SCREEN_INTERFACE.equals(preferenceKey)            ||
+               KEY_SCREEN_PRESETS.equals(preferenceKey)              ||
+               KEY_SCREEN_BUTTONS.equals(preferenceKey)              ||
+               KEY_PAUSE_FOR_CALL.contains(preferenceKey)            ||
+               Preferences.isButtonKey(preferenceKey)                ||
+               Preferences.KEY_SEEK_TIME.equals(preferenceKey)       ||
+               Preferences.KEY_AUDIO_DELAY.equals(preferenceKey)     ||
+               Preferences.KEY_SUBTITLE_DELAY.equals(preferenceKey);
+    }
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if(KEY_SCREEN_INTERFACE.equals(preference.getKey())) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (KEY_SCREEN_PRESETS.equals(preference.getKey())) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (KEY_PAUSE_FOR_CALL.equals(preference.getKey())) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (Preferences.KEY_AUDIO_DELAY.equals(preference.getKey())) {
-            return super.onPreferenceTreeClick(preferenceScreen, preference);
-        } else if (Preferences.KEY_SUBTITLE_DELAY.equals(preference.getKey())) {
+        if(isHandledByChangeListener(preference.getKey())) {
             return super.onPreferenceTreeClick(preferenceScreen, preference);
         } else if(Preferences.KEY_HIDE_DVD_TAB.equals(preference.getKey())) {
             Preferences.get(getActivity()).setHideDVDTab(((CheckBoxPreference) preference).isChecked());
@@ -344,9 +364,27 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         } else if(Preferences.KEY_SUBTITLE_DELAY.equals(preference.getKey())) {
             Preferences.get(getActivity()).setSubtitleDelayToggle(Integer.valueOf((String) newValue));
             return true;
+        } else if(Preferences.isButtonKey(preference.getKey())) {
+            Preferences.get(getActivity()).setButton(preference.getKey(), (String) newValue);
+            setButtonIcon(preference, (String) newValue);
+            return true;
         }
         return false;
     }
+    
+    private void setButtonIcon(Preference preference, String button) {
+        preference.setIcon(Buttons.getDrawableResourceId(preference.getKey(), button));
+    }
+    
+    private void setButtonIcons() {
+        Preferences p = Preferences.get(getActivity());
+        mPreferenceButtonFirst.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FIRST, p.getButton(Preferences.KEY_BUTTON_FIRST)));
+        mPreferenceButtonSecond.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_SECOND, p.getButton(Preferences.KEY_BUTTON_SECOND)));
+        mPreferenceButtonThird.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_THIRD, p.getButton(Preferences.KEY_BUTTON_THIRD)));
+        mPreferenceButtonFourth.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FOURTH, p.getButton(Preferences.KEY_BUTTON_FOURTH)));
+        mPreferenceButtonFifth.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FIFTH, p.getButton(Preferences.KEY_BUTTON_FIFTH)));
+    }
+    
 
     private Preference getPreferenceFromMenuInfo(ContextMenuInfo menuInfo) {
         if (menuInfo != null) {
