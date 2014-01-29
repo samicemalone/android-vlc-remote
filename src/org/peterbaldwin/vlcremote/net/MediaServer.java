@@ -324,6 +324,22 @@ public final class MediaServer {
                     execute("command=chapter&val=" + chapter);
                 }
 
+                /**
+                 * 
+                 * @param delay delay in milliseconds
+                 */
+                public void subtitleDelay(float delay) {
+                    execute("command=subdelay&val=" + (delay / 1000));
+                }
+
+                /**
+                 * 
+                 * @param delay delay in milliseconds
+                 */
+                public void audioDelay(float delay) {
+                    execute("command=audiodelay&val=" + (delay / 1000));
+                }
+
                 public void delete(int id) {
                     mNotifyPlaylist = true;
                     execute("command=pl_delete&id=" + id);
