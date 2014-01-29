@@ -133,6 +133,13 @@
     <string name="desc_button_skip_forward">Next track</string>
     <string name="desc_button_stop">Stop</string>
     <string name="desc_button_play_pause">Play/Pause</string>
+    <string name="desc_button_subtitle_delay_increase">Increase subtitle delay</string>
+    <string name="desc_button_subtitle_delay_decrease">Decrease subtitle delay</string>
+    <string name="desc_button_subtitle_delay_toggle">Toggle subtitle delay between none and preset</string>
+    <string name="desc_button_audio_delay_increase">Increase audio delay</string>
+    <string name="desc_button_audio_delay_decrease">Decrease audio delay</string>
+    <string name="desc_button_audio_delay_toggle">Toggle audio delay between none and preset</string>
+    <string name="desc_button_delay_toggle">Toggle audio and subtitle delays between none and the presets</string>
     <string name="seek_backwards">Seek backward</string>
     <string name="seek_forwards">Seek forward</string>
     <string name="preferences_seek_title">Seek time (s)</string>

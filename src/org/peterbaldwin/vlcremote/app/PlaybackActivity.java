@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -74,6 +75,7 @@ import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
 import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
+import org.peterbaldwin.vlcremote.widget.Buttons;
 import org.peterbaldwin.vlcremote.widget.LockableViewPager;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
@@ -129,6 +131,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private int mLastNonZeroVolume = VOLUME_LEVEL_UNKNOWN;
 
     private String mInput;
+    
+    private String mLastFileName; // used for comparing against current to detect change
 
     private SlidingDrawer mDrawer;
 
@@ -315,6 +319,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         boolean isPlaylistVisible = mTabHost == null || isCurrentTab(TAB_PLAYLIST);
         boolean defaultVisibility = mTabHost == null || isCurrentTab(TAB_MEDIA) || isCurrentTab(TAB_NAVIGATION);
         boolean isAllButtonsVisible = isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible());
+        boolean isButtonGroupVisible = isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible;
         menu.findItem(R.id.menu_preferences).setVisible(defaultVisibility);
         menu.findItem(R.id.menu_help).setVisible(defaultVisibility);
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
@@ -323,6 +328,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.findItem(R.id.menu_parent).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_set_home).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_text_size).setVisible(isBrowseVisible);
+        if(isButtonGroupVisible) {
+            Buttons.setupMenu(menu, Preferences.get(this));
+        }
         menu.setGroupVisible(R.id.group_vlc_actions, isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible);
         return true;
     }
@@ -338,20 +346,20 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
                 startActivity(intent);
                 return true;
-            case R.id.menu_playlist_cycle_crop:
-                mMediaServer.status().command.key("crop");
+            case R.id.menu_action_button_first:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIRST);
                 return true;
-            case R.id.menu_playlist_cycle_subtitles:
-                mMediaServer.status().command.key("subtitle-track");
+            case R.id.menu_action_button_second:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_SECOND);
                 return true;
-            case R.id.menu_playlist_button_fullscreen:
-                mMediaServer.status().command.fullscreen();
+            case R.id.menu_action_button_third:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_THIRD);
                 return true;
-            case R.id.menu_playlist_cycle_audio_track:
-                mMediaServer.status().command.key("audio-track");
+            case R.id.menu_action_button_fourth:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FOURTH);
                 return true;
-            case R.id.menu_playlist_cycle_aspect_ratio:
-                mMediaServer.status().command.key("aspect-ratio");
+            case R.id.menu_action_button_fifth:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIFTH);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -388,7 +396,6 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             }
         }
     }
-    
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
@@ -422,6 +429,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                     updateTabs();
                 }
                 
+                reload(Tags.FRAGMENT_BOTTOMBAR, null);
+                reload(Tags.FRAGMENT_BUTTONS, null);
+                supportInvalidateOptionsMenu();
                 setServerSubtitle(preferences.isServerSubtitleSet());
 
                 if (mMediaServer == null) {
@@ -656,6 +666,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             String action = intent.getAction();
             if (Intents.ACTION_STATUS.equals(action)) {
                 Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
+                if(!TextUtils.equals(mLastFileName, status.getTrack().getName())) {
+                    mLastFileName = status.getTrack().getName();
+                    Preferences.get(PlaybackActivity.this).resetPresetDelay();
+                }
                 if(lastResponseError) {
                     lastResponseError = false;
                     reload(Tags.FRAGMENT_BROWSE, null);

@@ -373,16 +373,16 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     }
     
     private void setButtonIcon(Preference preference, String button) {
-        preference.setIcon(Buttons.getDrawableResourceId(preference.getKey(), button));
+        preference.setIcon(Buttons.getButton(preference.getKey(), button).getIconId());
     }
     
     private void setButtonIcons() {
         Preferences p = Preferences.get(getActivity());
-        mPreferenceButtonFirst.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FIRST, p.getButton(Preferences.KEY_BUTTON_FIRST)));
-        mPreferenceButtonSecond.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_SECOND, p.getButton(Preferences.KEY_BUTTON_SECOND)));
-        mPreferenceButtonThird.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_THIRD, p.getButton(Preferences.KEY_BUTTON_THIRD)));
-        mPreferenceButtonFourth.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FOURTH, p.getButton(Preferences.KEY_BUTTON_FOURTH)));
-        mPreferenceButtonFifth.setIcon(Buttons.getDrawableResourceId(Preferences.KEY_BUTTON_FIFTH, p.getButton(Preferences.KEY_BUTTON_FIFTH)));
+        mPreferenceButtonFirst.setIcon(Buttons.getButton(Preferences.KEY_BUTTON_FIRST, p).getIconId());
+        mPreferenceButtonSecond.setIcon(Buttons.getButton(Preferences.KEY_BUTTON_SECOND, p).getIconId());
+        mPreferenceButtonThird.setIcon(Buttons.getButton(Preferences.KEY_BUTTON_THIRD, p).getIconId());
+        mPreferenceButtonFourth.setIcon(Buttons.getButton(Preferences.KEY_BUTTON_FOURTH, p).getIconId());
+        mPreferenceButtonFifth.setIcon(Buttons.getButton(Preferences.KEY_BUTTON_FIFTH, p).getIconId());
     }
     
 

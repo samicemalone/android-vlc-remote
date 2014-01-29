@@ -36,11 +36,14 @@ import org.peterbaldwin.vlcremote.listener.CommonPlaybackButtonsListener;
 import org.peterbaldwin.vlcremote.listener.MediaServerListener;
 import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
 public final class ButtonsFragment extends MediaFragment implements View.OnClickListener,
-        View.OnLongClickListener, MediaServerListener, ButtonVisibilityListener {
+        View.OnLongClickListener, MediaServerListener, ButtonVisibilityListener, Reloadable {
     
     private BroadcastReceiver mStatusReceiver;
 
@@ -67,6 +70,7 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((UIVisibilityListener) activity).setButtonVisibilityListener(this);
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_BUTTONS, this);
     }
 
     @Override
@@ -215,6 +219,10 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
     public boolean onLongClick(View v) {
         Toast.makeText(getActivity(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
         return true;
+    }
+
+    public void reload(Bundle args) {
+        listener.setUp(getView());
     }
 
     private class StatusReceiver extends BroadcastReceiver {

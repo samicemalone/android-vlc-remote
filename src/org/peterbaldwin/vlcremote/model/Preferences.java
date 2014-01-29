@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.peterbaldwin.vlcremote.widget.Buttons;
 
 /**
  * Convenience class for reading and writing application preferences.
@@ -161,6 +162,33 @@ public final class Preferences {
     public boolean setSubtitleDelayToggle(int delay) {
         SharedPreferences.Editor editor = mPreferences.edit();
         editor.putInt(KEY_SUBTITLE_DELAY, delay);
+        return editor.commit();
+    }
+    
+    /**
+     * Get whether the given preset has been toggled
+     * @param key Button preset key e.g. {@link Buttons#AUDIO_DELAY_TOGGLE}
+     * @return true if preset has been toggled on by the user, false otherwise
+     */
+    public boolean isPresetDelayInUse(String key) {
+        return mPreferences.getBoolean("preset_" + key, false);
+    }
+    
+    /**
+     * Set whether the given preset has been toggled
+     * @param key Button preset key
+     * @param use whether the preset has been toggled
+     * @return true if new values were written to preferences. false otherwise
+     */
+    public boolean setPresetDelayInUse(String key, boolean use) {
+        return mPreferences.edit().putBoolean("preset_" + key, use).commit();
+    }
+    
+    public boolean resetPresetDelay() {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        editor.putBoolean("preset_subtitle_delay_toggle", false);
+        editor.putBoolean("preset_audio_delay_toggle", false);
+        editor.putBoolean("preset_delay_toggle", false);
         return editor.commit();
     }
     

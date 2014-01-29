@@ -20,7 +20,10 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.model.Button;
+import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.net.MediaServer;
+import org.peterbaldwin.vlcremote.widget.Buttons;
 
 /**
  *
@@ -39,18 +42,21 @@ public class CommonPlaybackButtonsListener implements View.OnClickListener, View
     }
     
     public void setUp(View view) {
-        ImageButton mButtonCrop = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_crop);
-        ImageButton mButtonSubtitles = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_subtitles);
-        ImageButton mButtonFullscreen = (ImageButton) view.findViewById(R.id.menu_playlist_button_fullscreen);
-        ImageButton mButtonAudioTrack = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_audio_track);
-        ImageButton mButtonAspectRatio = (ImageButton) view.findViewById(R.id.menu_playlist_cycle_aspect_ratio);
+        ImageButton mButtonFirst = (ImageButton) view.findViewById(R.id.menu_action_button_first);
+        ImageButton mButtonSecond = (ImageButton) view.findViewById(R.id.menu_action_button_second);
+        ImageButton mButtonThird = (ImageButton) view.findViewById(R.id.menu_action_button_third);
+        ImageButton mButtonFourth = (ImageButton) view.findViewById(R.id.menu_action_button_fourth);
+        ImageButton mButtonFifth = (ImageButton) view.findViewById(R.id.menu_action_button_fifth);
 
-        setupImageButtonListeners(mButtonCrop, mButtonSubtitles, mButtonFullscreen, mButtonAudioTrack, mButtonAspectRatio);
+        setupImageButtonListeners(mButtonFirst, mButtonSecond, mButtonThird, mButtonFourth, mButtonFifth);
     }
     
     private void setupImageButtonListeners(ImageButton... imageButtons) {
         for(ImageButton b : imageButtons) {
             if(b != null) {
+                Button info = Buttons.getButton(b.getId(), Preferences.get(b.getContext()));
+                b.setImageResource(info.getIconId());
+                b.setContentDescription(b.getContext().getString(info.getContentDescriptionId()));
                 b.setOnClickListener(this);
                 b.setOnLongClickListener(this);
             }
@@ -60,20 +66,20 @@ public class CommonPlaybackButtonsListener implements View.OnClickListener, View
     /** {@inheritDoc} */
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.menu_playlist_cycle_crop:
-                mMediaServer.status().command.key("crop");
+            case R.id.menu_action_button_first:
+                Buttons.sendCommand(mMediaServer, v.getContext(), Preferences.KEY_BUTTON_FIRST);
                 break;
-            case R.id.menu_playlist_cycle_subtitles:
-                mMediaServer.status().command.key("subtitle-track");
+            case R.id.menu_action_button_second:
+                Buttons.sendCommand(mMediaServer, v.getContext(), Preferences.KEY_BUTTON_SECOND);
                 break;
-            case R.id.menu_playlist_button_fullscreen:
-                mMediaServer.status().command.fullscreen();
+            case R.id.menu_action_button_third:
+                Buttons.sendCommand(mMediaServer, v.getContext(), Preferences.KEY_BUTTON_THIRD);
                 break;
-            case R.id.menu_playlist_cycle_audio_track:
-                mMediaServer.status().command.key("audio-track");
+            case R.id.menu_action_button_fourth:
+                Buttons.sendCommand(mMediaServer, v.getContext(), Preferences.KEY_BUTTON_FOURTH);
                 break;
-            case R.id.menu_playlist_cycle_aspect_ratio:
-                mMediaServer.status().command.key("aspect-ratio");
+            case R.id.menu_action_button_fifth:
+                Buttons.sendCommand(mMediaServer, v.getContext(), Preferences.KEY_BUTTON_FIFTH);
                 break;
         }
     }
