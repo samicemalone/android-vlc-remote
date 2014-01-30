@@ -29,8 +29,6 @@ public final class Track extends Media implements Serializable {
     private static final byte SUBTITLE_STREAM_FLAG = 4;    
 
     private static final long serialVersionUID = 1L;
-
-    private final Chapters mChapters = new Chapters();
     
     private long mDuration;
 
@@ -213,10 +211,6 @@ public final class Track extends Media implements Serializable {
 
     public void setTrackId(String trackId) {
         this.mTrackId = trackId;
-    }
-
-    public Chapters getChapters() {
-        return mChapters;
     }
     
     /**

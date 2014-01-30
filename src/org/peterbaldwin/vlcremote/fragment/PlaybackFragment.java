@@ -33,7 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Chapters;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest;
@@ -69,10 +68,6 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
     private TextView mTextTime;
 
     private TextView mTextLength;
-    
-    private Chapters mChapters;
-    
-    private boolean mIsStopped;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,18 +126,9 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         } else if (v == mButtonPlaylistSeekForward) {
             command().seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
         } else if (v == mButtonPlaylistChapterPrevious) {
-            chapter(mChapters.getPreviousChapter());
+            command().key("chapter-prev");
         } else if (v == mButtonPlaylistChapterNext) {
-            chapter(mChapters.getNextChapter());
-        }
-    }
-    
-    private void chapter(int chapter) {
-        boolean hasChapters = mChapters.hasChapters();
-        if(mChapters.canNavigateChapters()) {
-            playlist().chapter(chapter);
-        } else if(!mIsStopped) {   
-            Toast.makeText(getActivity(), hasChapters ? R.string.no_chapter : R.string.no_chapters, Toast.LENGTH_SHORT).show();
+            command().key("chapter-next");
         }
     }
 
@@ -211,9 +197,6 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
 
         String formattedLength = formatTime(length);
         mTextLength.setText(formattedLength);
-        
-        mChapters = status.getTrack().getChapters();
-        mIsStopped = status.isStopped();
     }
 
     private static void doubleDigit(StringBuilder builder, long value) {

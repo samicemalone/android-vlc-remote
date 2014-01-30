@@ -98,28 +98,11 @@ public class JsonStatusContentHandler extends JsonContentHandler<Status> {
             String name = reader.nextName();
             if("category".equals(name)) {
                 parseCategory();
-            } else if("chapters".equals(name)) {
-                parseChapters();
-            } else if("chapter".equals(name)) {
-                mStatus.getTrack().getChapters().setChapter(reader.nextInt());
             } else {
                 reader.skipValue();
             }
         }
         reader.endObject();
-    }
-    
-    private void parseChapters() throws IOException {
-        reader.beginArray();
-        int max = 0;
-        while(reader.hasNext()) {
-            int chapter = reader.nextInt();
-            if(chapter > max) {
-                max = chapter;
-            }
-        }
-        mStatus.getTrack().getChapters().setLastChapter(max);
-        reader.endArray();
     }
     
     private void parseMeta() throws IOException {
