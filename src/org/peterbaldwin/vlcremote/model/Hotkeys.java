@@ -27,6 +27,8 @@ public class Hotkeys {
     public static final String FULLSCREEN = "toggle-fullscreen";
     public static final String AUDIO_TRACK = "audio-track";
     public static final String ASPECT_RATIO = "aspect-ratio";
+    public static final String CHAPTER_PREV = "chapter-prev";
+    public static final String CHAPTER_NEXT = "chapter-next";
     public static final String SUBTITLE_DELAY_INCREASE = "subdelay-up";
     public static final String SUBTITLE_DELAY_DECREASE = "subdelay-down";
     public static final String AUDIO_DELAY_INCREASE = "audiodelay-up";

@@ -44,6 +44,8 @@
         <item>Fullscreen Toggle</item>
         <item>Audio Track</item>
         <item>Aspect Ratio</item>
+        <item>Previous Chapter</item>
+        <item>Next Chapter</item>
         <item>Subtitle Delay Increase</item>
         <item>Subtitle Delay Decrease</item>
         <item>Subtitle Delay Preset Toggle</item>
@@ -59,6 +61,8 @@
         <item>fullscreen</item>
         <item>audio_track</item>
         <item>aspect_ratio</item>
+        <item>chapter_prev</item>
+        <item>chapter_next</item>
         <item>subtitle_delay_increase</item>
         <item>subtitle_delay_decrease</item>
         <item>subtitle_delay_toggle</item>

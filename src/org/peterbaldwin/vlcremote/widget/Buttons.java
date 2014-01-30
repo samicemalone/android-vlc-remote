@@ -115,6 +115,10 @@ public class Buttons {
             return new Button(button, Hotkeys.AUDIO_TRACK, R.drawable.ic_media_cycle_audio_track, R.string.audio_track);
         } else if("aspect_ratio".equals(button)) {
             return new Button(button, Hotkeys.ASPECT_RATIO, R.drawable.ic_menu_chat_dashboard, R.string.aspect_ratio);
+        } else if("chapter_prev".equals(button)) {
+            return new Button(button, Hotkeys.CHAPTER_PREV, R.drawable.ic_media_previous_chapter, R.string.desc_button_chapter_previous);
+        } else if("chapter_next".equals(button)) {
+            return new Button(button, Hotkeys.CHAPTER_NEXT, R.drawable.ic_media_next_chapter, R.string.desc_button_chapter_next);
         } else if("subtitle_delay_increase".equals(button)) {
             return new Button(button, Hotkeys.SUBTITLE_DELAY_INCREASE, R.drawable.ic_menu_subtitle_delay_increase, R.string.desc_button_subtitle_delay_increase);
         } else if("subtitle_delay_decrease".equals(button)) {
