@@ -155,6 +155,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         Preferences pref = Preferences.get(this);
+        isHideDVDTab = pref.isHideDVDTabSet();
         String authority = pref.getAuthority();
         if (authority != null) {
             mMediaServer = new MediaServer(this, authority);
@@ -183,7 +184,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         } else {
             setupTabHost();
             mPager.setOffscreenPageLimit(4);
-            mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), Preferences.get(this).isHideDVDTabSet()));
+            mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), pref.isHideDVDTabSet()));
             mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
@@ -219,7 +220,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         addTab(TAB_PLAYLIST, R.string.tab_playlist, R.drawable.ic_tab_playlists);
         addTab(TAB_BROWSE, R.string.goto_start, R.drawable.ic_tab_playback);
         addTab(TAB_NAVIGATION, R.string.tab_dvd, R.drawable.ic_tab_albums);
-        if(Preferences.get(this).isHideDVDTabSet()) {
+        if(isHideDVDTab) {
             mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
         }
         mTabHost.setOnTabChangedListener(this);
@@ -240,7 +241,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mTabHost.setCurrentTab(0);
         mTabHost.clearAllTabs();
         for (int i = 0; i < mTabSpecList.size(); i++) {
-            if(i == TAB_NAVIGATION_INDEX && Preferences.get(this).isHideDVDTabSet()) {
+            if(i == TAB_NAVIGATION_INDEX && isHideDVDSet) {
                 continue;
             }
             mTabHost.addTab(mTabSpecList.get(i));
@@ -427,6 +428,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
                     updateTabs();
+                    isHideDVDTab = !isHideDVDTab;
                 }
                 
                 reload(Tags.FRAGMENT_BOTTOMBAR, null);

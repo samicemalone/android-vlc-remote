@@ -326,7 +326,7 @@ public class PlaylistFragment extends MediaListFragment implements
     }
 
     public void reload(Bundle args) {
-        if (getMediaServer() != null) {
+        if (getActivity() != null && getMediaServer() != null) {
             PlaylistLoader loader;
             while((loader = mActiveLoaders.poll()) != null) {
                 loader.cancelBackgroundLoad();

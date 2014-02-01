@@ -60,7 +60,9 @@ public final class BottomActionbarFragment extends MediaFragment implements Relo
     }
 
     public void reload(Bundle args) {
-        listener.setUp(getView());
+        if(listener != null) {
+            listener.setUp(getView());
+        }
     }
 
 }

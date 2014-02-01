@@ -222,7 +222,9 @@ public final class ButtonsFragment extends MediaFragment implements View.OnClick
     }
 
     public void reload(Bundle args) {
-        listener.setUp(getView());
+        if(listener != null) {
+            listener.setUp(getView());
+        }
     }
 
     private class StatusReceiver extends BroadcastReceiver {

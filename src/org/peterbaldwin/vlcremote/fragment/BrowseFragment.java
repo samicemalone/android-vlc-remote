@@ -127,7 +127,9 @@ public class BrowseFragment extends MediaListFragment implements
     }
 
     public void reload(Bundle args) {
-        openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
+        if(getActivity() != null) {
+            openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
+        }
     }
     
     private void openDirectory(File file) {
