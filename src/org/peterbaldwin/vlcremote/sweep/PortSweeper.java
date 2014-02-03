@@ -23,7 +23,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Queue;
@@ -36,6 +35,10 @@ public final class PortSweeper {
 
         void onProgress(int progress, int max);
     }
+    
+    public static final String EXTRA_PORT = "org.peterbaldwin.portsweep.intent.extra.PORT";
+    public static final String EXTRA_FILE = "org.peterbaldwin.portsweep.intent.extra.FILE";
+    public static final String EXTRA_WORKERS = "org.peterbaldwin.portsweep.intent.extra.WORKERS";
 
     private static final String TAG = "Scanner";
 
@@ -132,7 +135,7 @@ public final class PortSweeper {
         Handler.Callback scanHandlerCallback = new MyScanHandlerCallback();
         mScanHandler = new Handler(mScanThread.getLooper(), scanHandlerCallback);
     }
-
+    
     public void setCallback(Callback callback) {
         mCallback = callback;
         if (mCallback != null) {
@@ -142,11 +145,13 @@ public final class PortSweeper {
         }
     }
 
+    /**
+     * Schedule a new sweep. The new sweep will not start until all previous
+     * sweeps have been fully aborted.
+     * @param ipAddress Interface IP address
+     */
     public void sweep(byte[] ipAddress) {
         abort();
-
-        // Schedule a new sweep. The new sweep will not start until all previous
-        // sweeps have been fully aborted.
         mScanHandler.obtainMessage(HANDLE_SCAN, ipAddress).sendToTarget();
     }
 
@@ -195,13 +200,11 @@ public final class PortSweeper {
             }
         }
         mCallbackHandler.obtainMessage(HANDLE_START, 0, count).sendToTarget();
-        for (int i = 0; i < workers.length; i++) {
-            Worker worker = workers[i];
+        for(Worker worker : workers) {
             worker.start();
         }
         try {
-            for (int i = 0; i < workers.length; i++) {
-                Worker worker = workers[i];
+            for(Worker worker : workers) {
                 worker.join();
             }
         } catch (InterruptedException e) {

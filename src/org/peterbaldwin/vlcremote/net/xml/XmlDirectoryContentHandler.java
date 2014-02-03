@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.net;
+package org.peterbaldwin.vlcremote.net.xml;
 
 import android.sax.Element;
 import android.sax.RootElement;
@@ -26,9 +26,9 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
 import org.xml.sax.Attributes;
 
-final class DirectoryContentHandler extends XmlContentHandler<Directory> {
+public final class XmlDirectoryContentHandler extends XmlContentHandler<Directory> {
     
-    private static Directory DIRECTORY;
+    private Directory mDirectory;
 
     private File createFile(Attributes attributes) {
         String type = attributes.getValue("", "type");
@@ -55,7 +55,7 @@ final class DirectoryContentHandler extends XmlContentHandler<Directory> {
 
     @Override
     public Object getContent(URLConnection connection) throws IOException {
-        DIRECTORY = new Directory();
+        mDirectory = new Directory();
         RootElement root = new RootElement("", "root");
         Element element = root.getChild("", "element");
         element.setStartElementListener(new StartElementListener() {
@@ -68,26 +68,26 @@ final class DirectoryContentHandler extends XmlContentHandler<Directory> {
                     File.PATH_TYPE = File.PATH_UNIX;
                 }
                 File file = createFile(attributes);
-                DIRECTORY.add(file);
+                mDirectory.add(file);
             }
         });
         parse(connection, root.getContentHandler());
         Directory.ROOT_DIRECTORY = (File.PATH_TYPE == File.PATH_WINDOWS) ? Directory.WINDOWS_ROOT_DIRECTORY : Directory.UNIX_DIRECTORY;
-        if(Directory.ROOT_DIRECTORY.equals(DIRECTORY.getPath())) {
+        if(Directory.ROOT_DIRECTORY.equals(mDirectory.getPath())) {
             hideParent();
         } else {
             setParentTop();
         }
-        return DIRECTORY;
+        return mDirectory;
     }
     
     /**
      * Hide the parent directory item if one exists
      */
     private void hideParent() {
-        for(int i = 0; i < DIRECTORY.size(); i++) {
-            if(DIRECTORY.get(i).isParent()) {
-                DIRECTORY.remove(i);
+        for(int i = 0; i < mDirectory.size(); i++) {
+            if(mDirectory.get(i).isParent()) {
+                mDirectory.remove(i);
                 return;
             }
         }
@@ -98,14 +98,14 @@ final class DirectoryContentHandler extends XmlContentHandler<Directory> {
      * exists, one will be added with the default path being the root directory
      */
     private void setParentTop() {
-        for(int i = 0; i < DIRECTORY.size(); i++) {
-            if(DIRECTORY.get(i).isParent()) {
+        for(int i = 0; i < mDirectory.size(); i++) {
+            if(mDirectory.get(i).isParent()) {
                 if(i != 0) {
-                    DIRECTORY.add(0, DIRECTORY.remove(i));
+                    mDirectory.add(0, mDirectory.remove(i));
                 }
                 return;
             }
         }
-        DIRECTORY.add(0, new File("dir", 0L, null, Directory.ROOT_DIRECTORY, "..", null));
+        mDirectory.add(0, new File("dir", 0L, null, Directory.ROOT_DIRECTORY, "..", null));
     }
 }

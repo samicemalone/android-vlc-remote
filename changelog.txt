@@ -1,3 +1,11 @@
+v0.7.1
+* Added next/previous chapter buttons for large enough screens (VLC 2.0+)
+* Can now choose the action bar buttons in Settings -> Interface Settings.
+* Added presets for toggling audio/subtitle delays
+* Can now give servers a nickname to display instead of ip/hostname:port
+* Can now display the current server as a subtitle in the action bar
+* Fixed some crashes/hidden views on orientation change
+
 v0.7.0
 * Added swipeable tabs (ViewPager) for phone layouts
 * Hide DVD preferences now takes effect without restarting the app
@@ -18,3 +26,13 @@ v0.6.3
 v0.6.2
 * Added preference for custom seek times
 * Fixed some actions not working after changing server
+
+v0.6.1
+* Display bottom action bar to smaller screens for cropping, subtitle track, fullscreen, audio track and aspect ratio.
+* Playlist loading progress
+* Detect media information from the filename
+* Edit server, test server, HTTP auth servers
+* Fix browsing titles and parent directories
+* Added preference to hide the DVD tab for smaller screens
+* Added preference to display directories sorted before files.
+* Added preference to detect media information for each item in the playlist

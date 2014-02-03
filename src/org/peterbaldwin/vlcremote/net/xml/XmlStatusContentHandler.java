@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.peterbaldwin.vlcremote.net;
+package org.peterbaldwin.vlcremote.net.xml;
 
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Track;
@@ -32,7 +32,7 @@ import android.text.Html;
 import java.io.IOException;
 import java.net.URLConnection;
 
-final class StatusContentHandler extends XmlContentHandler<Status> {
+public final class XmlStatusContentHandler extends XmlContentHandler<Status> {
     private static String unescape(String text) {
         // The response text is escaped twice so that it can be used in HTML.
         if (text.indexOf("&") != -1) {

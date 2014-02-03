@@ -44,14 +44,14 @@ import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Tags;
-import org.peterbaldwin.vlcremote.net.XmlContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
 import org.peterbaldwin.vlcremote.widget.DirectoryAdapter;
 
 public class BrowseFragment extends MediaListFragment implements
         LoaderManager.LoaderCallbacks<Remote<Directory>>, Reloadable {
     
     private interface Data {
-        int DIRECTORY = 1;
+        int DIRECTORY = 2;
     }
 
     public interface State {
@@ -127,7 +127,9 @@ public class BrowseFragment extends MediaListFragment implements
     }
 
     public void reload(Bundle args) {
-        openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
+        if(getActivity() != null) {
+            openDirectory(args != null && args.containsKey(State.DIRECTORY) ? args.getString(State.DIRECTORY) : mDirectory);
+        }
     }
     
     private void openDirectory(File file) {
@@ -257,7 +259,7 @@ public class BrowseFragment extends MediaListFragment implements
         mAdapter.setDirectory(result.data);
         setEmptyText(getText(R.string.connection_error));
         setTitle(result.data != null ? result.data.getPath() : null);
-        
+
         boolean isXMLError = result.error != null && XmlContentHandler.ERROR_INVALID_XML.equals(result.error.getMessage());
         if (isEmptyDirectory(result.data) || isXMLError) {
             handleEmptyDirectory();

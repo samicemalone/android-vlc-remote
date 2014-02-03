@@ -17,6 +17,21 @@
 
 package org.peterbaldwin.vlcremote.net;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.SystemClock;
+import android.util.Log;
+import java.io.IOException;
+import java.net.ContentHandler;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.http.Header;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.auth.BasicScheme;
@@ -26,24 +41,11 @@ import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Remote;
 import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.json.JsonStatusContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlDirectoryContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlPlaylistContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlStatusContentHandler;
 import org.peterbaldwin.vlcremote.service.StatusService;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.SystemClock;
-import android.util.Log;
-
-import java.io.IOException;
-import java.net.ContentHandler;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public final class MediaServer {
 
@@ -154,6 +156,7 @@ public final class MediaServer {
             start(intent(encodedQuery));
         }
 
+        @SuppressWarnings("unchecked")
         protected final <T> Remote<T> load(ContentHandler handler) {
             String spec = mUri.toString();
             try {
@@ -186,9 +189,11 @@ public final class MediaServer {
     }
 
     public static final class StatusRequest extends Request {
+        
+        private final boolean mUseXml = StatusService.USE_XML_STATUS;
 
         StatusRequest(Context context, String authority) {
-            super(context, authority, "/requests/status.xml");
+            super(context, authority, String.format("/requests/status.%s", StatusService.USE_XML_STATUS ? "xml" : "json"));
         }
 
         public StatusRequest(Context context, Uri uri) {
@@ -199,13 +204,14 @@ public final class MediaServer {
 
         /**
          * Loads the server status synchronously.
+         * @return Remote Status
          */
         public Remote<Status> load() {
-            return load(new StatusContentHandler());
+            return load(mUseXml ? new XmlStatusContentHandler() : new JsonStatusContentHandler());
         }
 
         public Status read() throws IOException {
-            return read(new StatusContentHandler());
+            return read(mUseXml ? new XmlStatusContentHandler() : new JsonStatusContentHandler());
         }
 
         /**
@@ -314,6 +320,26 @@ public final class MediaServer {
                     execute("command=pl_previous");
                 }
 
+                public void chapter(int chapter) {
+                    execute("command=chapter&val=" + chapter);
+                }
+
+                /**
+                 * 
+                 * @param delay delay in milliseconds
+                 */
+                public void subtitleDelay(float delay) {
+                    execute("command=subdelay&val=" + (delay / 1000));
+                }
+
+                /**
+                 * 
+                 * @param delay delay in milliseconds
+                 */
+                public void audioDelay(float delay) {
+                    execute("command=audiodelay&val=" + (delay / 1000));
+                }
+
                 public void delete(int id) {
                     mNotifyPlaylist = true;
                     execute("command=pl_delete&id=" + id);
@@ -396,7 +422,7 @@ public final class MediaServer {
         }
 
         public Remote<Playlist> load() {
-            return load(new PlaylistContentHandler());
+            return load(new XmlPlaylistContentHandler());
         }
     }
 
@@ -407,7 +433,7 @@ public final class MediaServer {
         }
 
         public Remote<Directory> load() {
-            return load(new DirectoryContentHandler());
+            return load(new XmlDirectoryContentHandler());
         }
     }
 

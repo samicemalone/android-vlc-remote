@@ -10,6 +10,13 @@
         android:padding="8dip" >
 
         <EditText
+            android:id="@+id/edit_nickname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_nickname"
+            android:singleLine="true" />
+
+        <EditText
             android:id="@+id/edit_hostname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -21,7 +28,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/label_port"
-            android:numeric="integer"
+            android:inputType="number"
             android:singleLine="true" />
 
         <EditText

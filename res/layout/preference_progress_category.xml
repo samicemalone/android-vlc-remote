@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:paddingBottom="8dp"
     />
 
     <ProgressBar
@@ -38,6 +39,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="?android:attr/scrollbarSize"
+        android:paddingBottom="8dp"
         style="?android:attr/progressBarStyleSmallTitle"
         />
 
@@ -51,6 +53,7 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/scanning_progress"
         android:layout_marginRight="5sp"
+        android:paddingBottom="8dp"
         android:text="@string/progress_scanning"
         />
 

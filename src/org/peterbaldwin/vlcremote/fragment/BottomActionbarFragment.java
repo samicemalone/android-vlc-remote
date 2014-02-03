@@ -17,15 +17,19 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.listener.CommonPlaybackButtonsListener;
+import org.peterbaldwin.vlcremote.model.Reloadable;
+import org.peterbaldwin.vlcremote.model.Reloader;
+import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 
-public final class BottomActionbarFragment extends MediaFragment {
+public final class BottomActionbarFragment extends MediaFragment implements Reloadable {
 
     private CommonPlaybackButtonsListener listener;
 
@@ -38,6 +42,12 @@ public final class BottomActionbarFragment extends MediaFragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        ((Reloader) activity).addReloadable(Tags.FRAGMENT_BOTTOMBAR, this);
+    }
+    
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.playback_bottom, parent, false);
     }
@@ -47,6 +57,12 @@ public final class BottomActionbarFragment extends MediaFragment {
         super.onActivityCreated(savedInstanceState);
         listener = new CommonPlaybackButtonsListener(getMediaServer());
         listener.setUp(getView());
+    }
+
+    public void reload(Bundle args) {
+        if(listener != null) {
+            listener.setUp(getView());
+        }
     }
 
 }

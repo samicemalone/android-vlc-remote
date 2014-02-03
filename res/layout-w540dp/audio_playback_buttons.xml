@@ -24,6 +24,13 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/desc_button_skip_backward"
         android:src="@drawable/ic_media_skip_backward" />
+    
+    <ImageButton
+        android:id="@+id/button_chapter_previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/desc_button_chapter_previous"
+        android:src="@drawable/ic_media_previous_chapter" />
 		
     <ImageButton
         android:id="@+id/button_seek_backward"
@@ -52,6 +59,13 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/seek_forwards"
         android:src="@drawable/ic_media_seek_forward" />
+
+    <ImageButton
+        android:id="@+id/button_chapter_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/desc_button_chapter_next"
+        android:src="@drawable/ic_media_next_chapter" />
 
     <ImageButton
         android:id="@+id/button_skip_forward"

@@ -17,13 +17,6 @@
 
 package org.peterbaldwin.vlcremote.fragment;
 
-import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest;
-import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest.CommandInterface;
-import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest.CommandInterface.PlaybackInterface;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,13 +30,20 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
+import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest;
+import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest.CommandInterface;
+import org.peterbaldwin.vlcremote.net.MediaServer.StatusRequest.CommandInterface.PlaybackInterface;
 
 /**
  * Controls playback and displays progress.
  */
 public class PlaybackFragment extends MediaFragment implements View.OnClickListener,
-        OnSeekBarChangeListener {
+        View.OnLongClickListener, OnSeekBarChangeListener {
 
     private BroadcastReceiver mStatusReceiver;
 
@@ -58,6 +58,10 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
     private ImageButton mButtonPlaylistSeekForward;
 
     private ImageButton mButtonPlaylistSeekBackward;
+
+    private ImageButton mButtonPlaylistChapterNext;
+
+    private ImageButton mButtonPlaylistChapterPrevious;
 
     private SeekBar mSeekPosition;
 
@@ -74,6 +78,8 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         mButtonPlaylistSkipBackward = setupImageButton(v, R.id.button_skip_backward);
         mButtonPlaylistSeekForward = setupImageButton(v, R.id.button_seek_forward);
         mButtonPlaylistSeekBackward = setupImageButton(v, R.id.button_seek_backward);
+        mButtonPlaylistChapterNext = setupImageButton(v, R.id.button_chapter_next);
+        mButtonPlaylistChapterPrevious = setupImageButton(v, R.id.button_chapter_previous);
 
         mSeekPosition = (SeekBar) v.findViewById(R.id.seek_progress);
         mSeekPosition.setMax(100);
@@ -88,6 +94,7 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
         ImageButton button = (ImageButton) v.findViewById(viewId);
         if (button != null) {
             button.setOnClickListener(this);
+            button.setOnLongClickListener(this);
         }
         return button;
     }
@@ -118,7 +125,16 @@ public class PlaybackFragment extends MediaFragment implements View.OnClickListe
             command().seek(Uri.encode("-".concat(Preferences.get(getActivity()).getSeekTime())));
         } else if (v == mButtonPlaylistSeekForward) {
             command().seek(Uri.encode("+".concat(Preferences.get(getActivity()).getSeekTime())));
+        } else if (v == mButtonPlaylistChapterPrevious) {
+            command().key("chapter-prev");
+        } else if (v == mButtonPlaylistChapterNext) {
+            command().key("chapter-next");
         }
+    }
+
+    public boolean onLongClick(View v) {
+        Toast.makeText(v.getContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     /** {@inheritDoc} */

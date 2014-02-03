@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -67,11 +68,14 @@ import org.peterbaldwin.vlcremote.listener.UIVisibilityListener;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Reloadable;
 import org.peterbaldwin.vlcremote.model.Reloader;
+import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.net.XmlContentHandler;
+import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
+import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
+import org.peterbaldwin.vlcremote.widget.Buttons;
 import org.peterbaldwin.vlcremote.widget.LockableViewPager;
 import org.peterbaldwin.vlcremote.widget.VolumePanel;
 
@@ -127,6 +131,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private int mLastNonZeroVolume = VOLUME_LEVEL_UNKNOWN;
 
     private String mInput;
+    
+    private String mLastFileName; // used for comparing against current to detect change
 
     private SlidingDrawer mDrawer;
 
@@ -148,9 +154,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         // that sound even when the activity handles volume key events.
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        String authority = Preferences.get(this).getAuthority();
+        Preferences pref = Preferences.get(this);
+        isHideDVDTab = pref.isHideDVDTabSet();
+        String authority = pref.getAuthority();
         if (authority != null) {
             mMediaServer = new MediaServer(this, authority);
+            setServerSubtitle(pref.isServerSubtitleSet());
         }
         
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
@@ -175,7 +184,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         } else {
             setupTabHost();
             mPager.setOffscreenPageLimit(4);
-            mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), Preferences.get(this).isHideDVDTabSet()));
+            mPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), pref.isHideDVDTabSet()));
             mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
@@ -197,7 +206,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             mDrawer.setOnDrawerOpenListener(listener);
             mDrawer.setOnDrawerCloseListener(listener);
         }
-
+        
         if (savedInstanceState == null) {
             onNewIntent(getIntent());
         } else {
@@ -211,7 +220,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         addTab(TAB_PLAYLIST, R.string.tab_playlist, R.drawable.ic_tab_playlists);
         addTab(TAB_BROWSE, R.string.goto_start, R.drawable.ic_tab_playback);
         addTab(TAB_NAVIGATION, R.string.tab_dvd, R.drawable.ic_tab_albums);
-        if(Preferences.get(this).isHideDVDTabSet()) {
+        if(isHideDVDTab) {
             mTabHost.getTabWidget().removeView(mTabHost.getTabWidget().getChildTabViewAt(TAB_NAVIGATION_INDEX));
         }
         mTabHost.setOnTabChangedListener(this);
@@ -232,7 +241,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mTabHost.setCurrentTab(0);
         mTabHost.clearAllTabs();
         for (int i = 0; i < mTabSpecList.size(); i++) {
-            if(i == TAB_NAVIGATION_INDEX && Preferences.get(this).isHideDVDTabSet()) {
+            if(i == TAB_NAVIGATION_INDEX && isHideDVDSet) {
                 continue;
             }
             mTabHost.addTab(mTabSpecList.get(i));
@@ -311,6 +320,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         boolean isPlaylistVisible = mTabHost == null || isCurrentTab(TAB_PLAYLIST);
         boolean defaultVisibility = mTabHost == null || isCurrentTab(TAB_MEDIA) || isCurrentTab(TAB_NAVIGATION);
         boolean isAllButtonsVisible = isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible());
+        boolean isButtonGroupVisible = isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible;
         menu.findItem(R.id.menu_preferences).setVisible(defaultVisibility);
         menu.findItem(R.id.menu_help).setVisible(defaultVisibility);
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
@@ -319,6 +329,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.findItem(R.id.menu_parent).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_set_home).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_text_size).setVisible(isBrowseVisible);
+        if(isButtonGroupVisible) {
+            Buttons.setupMenu(menu, Preferences.get(this));
+        }
         menu.setGroupVisible(R.id.group_vlc_actions, isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible);
         return true;
     }
@@ -334,20 +347,20 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
                 startActivity(intent);
                 return true;
-            case R.id.menu_playlist_cycle_crop:
-                mMediaServer.status().command.key("crop");
+            case R.id.menu_action_button_first:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIRST);
                 return true;
-            case R.id.menu_playlist_cycle_subtitles:
-                mMediaServer.status().command.key("subtitle-track");
+            case R.id.menu_action_button_second:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_SECOND);
                 return true;
-            case R.id.menu_playlist_button_fullscreen:
-                mMediaServer.status().command.fullscreen();
+            case R.id.menu_action_button_third:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_THIRD);
                 return true;
-            case R.id.menu_playlist_cycle_audio_track:
-                mMediaServer.status().command.key("audio-track");
+            case R.id.menu_action_button_fourth:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FOURTH);
                 return true;
-            case R.id.menu_playlist_cycle_aspect_ratio:
-                mMediaServer.status().command.key("aspect-ratio");
+            case R.id.menu_action_button_fifth:
+                Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIFTH);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -368,16 +381,30 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public void setVolumeFragmentVisible(boolean isVisible) {
         isVolumeFragmentVisible = isVisible;
     }
+    
+    private void setServerSubtitle(boolean isServerSubtitleSet) {
+        if(!isServerSubtitleSet) {
+            getActionBar().setSubtitle(null);
+            return;
+        }
+        Preferences pref = Preferences.get(this);
+        List<String> servers = pref.getRememberedServers();
+        for(String key : servers) {
+            Server s = Server.fromKey(key);
+            if(s.getUri().getAuthority().equals(pref.getAuthority())) {
+                getActionBar().setSubtitle(s.getNickname().isEmpty() ? s.getHostAndPort() : s.getNickname());
+                return;
+            }
+        }
+    }
 
     private void pickServer() {
         Preferences preferences = Preferences.get(this);
-        ArrayList<String> remembered = preferences.getRememberedServers();
         isHideDVDTab = preferences.isHideDVDTabSet();
         Intent intent = new Intent(this, PickServerActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(PickServerActivity.EXTRA_PORT, 8080);
-        intent.putExtra(PickServerActivity.EXTRA_FILE, "/requests/status.xml");
-        intent.putStringArrayListExtra(PickServerActivity.EXTRA_REMEMBERED, remembered);
+        intent.putExtra(PortSweeper.EXTRA_PORT, 8080);
+        intent.putExtra(PortSweeper.EXTRA_FILE, "/requests/status.xml");
         startActivityForResult(intent, REQUEST_PICK_SERVER);
     }
 
@@ -401,17 +428,13 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
                 
                 if(preferences.isHideDVDTabSet() != isHideDVDTab && mTabHost != null) {
                     updateTabs();
+                    isHideDVDTab = !isHideDVDTab;
                 }
-
-                if (data != null) {
-                    // Update remembered servers even if
-                    // (resultCode == RESULT_CANCELED)
-                    String key = PickServerActivity.EXTRA_REMEMBERED;
-                    ArrayList<String> remembered = data.getStringArrayListExtra(key);
-                    if (remembered != null) {
-                        preferences.setRemeberedServers(remembered);
-                    }
-                }
+                
+                reload(Tags.FRAGMENT_BOTTOMBAR, null);
+                reload(Tags.FRAGMENT_BUTTONS, null);
+                supportInvalidateOptionsMenu();
+                setServerSubtitle(preferences.isServerSubtitleSet());
 
                 if (mMediaServer == null) {
                     finish();
@@ -645,6 +668,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             String action = intent.getAction();
             if (Intents.ACTION_STATUS.equals(action)) {
                 Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
+                if(!TextUtils.equals(mLastFileName, status.getTrack().getName())) {
+                    mLastFileName = status.getTrack().getName();
+                    Preferences.get(PlaybackActivity.this).resetPresetDelay();
+                }
                 if(lastResponseError) {
                     lastResponseError = false;
                     reload(Tags.FRAGMENT_BROWSE, null);

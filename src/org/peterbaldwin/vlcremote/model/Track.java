@@ -29,7 +29,7 @@ public final class Track extends Media implements Serializable {
     private static final byte SUBTITLE_STREAM_FLAG = 4;    
 
     private static final long serialVersionUID = 1L;
-
+    
     private long mDuration;
 
     private String mTitle;
@@ -68,13 +68,11 @@ public final class Track extends Media implements Serializable {
      * Bit Mask of the stream types the track holds.
      */
     private byte streamTypesMask;
-
-    /** {@inheritDoc} */
+    
     public String getPlaylistHeading() {
         return isNotEmpty(mTitle) ? mTitle : isNotEmpty(mName) ? mName : "";
     }
 
-    /** {@inheritDoc} */
     public String getPlaylistText() {
         return isNotEmpty(mArtist) ? mArtist : isNotEmpty(mTitle) ? mName : "";
     }
