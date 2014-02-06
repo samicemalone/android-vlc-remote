@@ -123,8 +123,7 @@ public class StatusService extends Service implements Handler.Callback {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    public int onStartCommand(Intent intent, int flags, int startId) {
         String action = (intent != null) ? intent.getAction() : null;
         Uri uri = (intent != null) ? intent.getData() : null;
         if (Intents.ACTION_STATUS.equals(action) && uri != null) {
@@ -148,8 +147,8 @@ public class StatusService extends Service implements Handler.Callback {
             if (isCommand(uri) || !handler.hasMessages(HANDLE_STATUS)) {
                 int sequenceNumber = isCommand(uri) ? mSequenceNumber.incrementAndGet()
                         : mSequenceNumber.get();
-                int flags = intent.getIntExtra(Intents.EXTRA_FLAGS, 0);
-                Message msg = handler.obtainMessage(HANDLE_STATUS, sequenceNumber, flags, uri);
+                int extraFlags = intent.getIntExtra(Intents.EXTRA_FLAGS, 0);
+                Message msg = handler.obtainMessage(HANDLE_STATUS, sequenceNumber, extraFlags, uri);
                 handler.sendMessage(msg);
             }
         } else if (Intents.ACTION_ART.equals(action) && uri != null) {
@@ -157,12 +156,11 @@ public class StatusService extends Service implements Handler.Callback {
             Message msg = mAlbumArtHandler.obtainMessage(HANDLE_ALBUM_ART, sequenceNumber, -1, uri);
             msg.sendToTarget();
         }
-        {
-            // Stop the service if no new Intents are received for 20 seconds
-            Handler handler = mCommandHandler;
-            Message msg = handler.obtainMessage(HANDLE_STOP, startId, -1);
-            handler.sendMessageDelayed(msg, 20 * 1000);
-        }
+        // Stop the service if no new Intents are received for 20 seconds
+        Handler handler = mCommandHandler;
+        Message msg = handler.obtainMessage(HANDLE_STOP, startId, -1);
+        handler.sendMessageDelayed(msg, 20 * 1000);
+        return START_STICKY;
     }
 
     @Override
