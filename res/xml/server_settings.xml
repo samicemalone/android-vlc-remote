@@ -120,6 +120,12 @@
             android:icon="@drawable/ic_appwidget_settings_wifi_on_holo"
             android:summary="@string/summary_wifi_disconnected"
             android:title="@string/wifi" />
+        <CheckBoxPreference
+            android:key="@string/preference_key_notification"
+            android:persistent="true"
+            android:icon="@drawable/ic_menu_notifications"
+            android:summary="@string/summary_preference_notification"
+            android:title="@string/preference_title_notification" />
         
     </PreferenceCategory>
     

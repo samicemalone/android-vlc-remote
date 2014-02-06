@@ -332,6 +332,9 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         } else if (Preferences.KEY_SERVER_SUBTITLE.equals(preference.getKey())) {
             Preferences.get(getActivity()).setServerSubtitle(((CheckBoxPreference) preference).isChecked());
             return true;
+        } else if (Preferences.KEY_NOTIFICATION.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setNotification(((CheckBoxPreference) preference).isChecked());
+            return true;
         } else if(KEY_ADD_SERVER.equals(preference.getKey())) {
             ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);
             return true;
