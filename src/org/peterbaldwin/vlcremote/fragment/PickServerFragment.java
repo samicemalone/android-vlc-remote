@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.PickServerActivity;
+import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.preference.ProgressCategory;
@@ -333,7 +334,10 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             Preferences.get(getActivity()).setServerSubtitle(((CheckBoxPreference) preference).isChecked());
             return true;
         } else if (Preferences.KEY_NOTIFICATION.equals(preference.getKey())) {
-            Preferences.get(getActivity()).setNotification(((CheckBoxPreference) preference).isChecked());
+            boolean isChecked = ((CheckBoxPreference) preference).isChecked();
+            Intent i = Intents.service(getActivity(), isChecked ? Intents.ACTION_NOTIFICATION_CREATE : Intents.ACTION_NOTIFICATION_CANCEL);
+            Preferences.get(getActivity()).setNotification(isChecked);
+            getActivity().startService(i);
             return true;
         } else if(KEY_ADD_SERVER.equals(preference.getKey())) {
             ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);

@@ -18,8 +18,12 @@
 package org.peterbaldwin.vlcremote.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -27,13 +31,17 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.Log;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.net.json.JsonContentHandler;
+import org.peterbaldwin.vlcremote.widget.NotificationControls;
 
 /**
  * Sends commands to a VLC server and receives &amp; broadcasts the status.
@@ -47,6 +55,8 @@ public class StatusService extends Service implements Handler.Callback {
     private static final int HANDLE_STATUS = 1;
     private static final int HANDLE_ALBUM_ART = 2;
     private static final int HANDLE_STOP = 3;
+    private static final int HANDLE_NOTIFICATION = 4;
+    private static final int HANDLE_NOTIFICATION_CREATE = 5;
 
     private static boolean isCommand(Uri uri) {
         return !uri.getQueryParameters("command").isEmpty();
@@ -82,13 +92,25 @@ public class StatusService extends Service implements Handler.Callback {
 
     private Handler mCommandHandler;
 
+    private Handler mNotificationHandler;
+
     private AtomicInteger mSequenceNumber;
+    
+    private StatusReceiver mStatusReceiver;
+    
+    private String mLastFileName;
+    
+    private boolean mUpdateNotification;
+    
+    private boolean mWasPaused;
     
     @Override
     public void onCreate() {
         super.onCreate();
 
         mSequenceNumber = new AtomicInteger();
+        
+        mNotificationHandler = startHandlerThread("NotificationThread");
 
         mStatusHandler = startHandlerThread("StatusThread");
 
@@ -99,10 +121,17 @@ public class StatusService extends Service implements Handler.Callback {
         // Create a separate thread for commands to improve latency
         // (commands shouldn't have to wait for partially complete reads).
         mCommandHandler = startHandlerThread("CommandThread");
+        
+        mStatusReceiver = new StatusReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intents.ACTION_STATUS);
+        registerReceiver(mStatusReceiver, filter);
     }
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(mStatusReceiver);
+        stopHandlerThread(mNotificationHandler);
         stopHandlerThread(mStatusHandler);
         stopHandlerThread(mCommandHandler);
         stopHandlerThread(mAlbumArtHandler);
@@ -155,11 +184,15 @@ public class StatusService extends Service implements Handler.Callback {
             int sequenceNumber = mSequenceNumber.get();
             Message msg = mAlbumArtHandler.obtainMessage(HANDLE_ALBUM_ART, sequenceNumber, -1, uri);
             msg.sendToTarget();
+        } else if (Intents.ACTION_NOTIFICATION_CANCEL.equals(action)) {
+            NotificationControls.cancel(this);
+        } else if (Intents.ACTION_NOTIFICATION_CREATE.equals(action)) {
+            mNotificationHandler.obtainMessage(HANDLE_NOTIFICATION_CREATE).sendToTarget();
         }
         // Stop the service if no new Intents are received for 20 seconds
         Handler handler = mCommandHandler;
         Message msg = handler.obtainMessage(HANDLE_STOP, startId, -1);
-        handler.sendMessageDelayed(msg, 20 * 1000);
+        handler.sendMessageDelayed(msg, 20 * 1000);     
         return START_STICKY;
     }
 
@@ -215,7 +248,6 @@ public class StatusService extends Service implements Handler.Callback {
                         Intent broadcast = Intents.error(tr);
                         broadcast.putExtra(Intents.EXTRA_FLAGS, flags);
                         sendBroadcast(broadcast);
-
                     }
                 } else {
                     Log.d(TAG, "Dropped stale status request: " + uri);
@@ -244,6 +276,25 @@ public class StatusService extends Service implements Handler.Callback {
                 }
                 return true;
             }
+            case HANDLE_NOTIFICATION_CREATE: {
+                new NotificationControls(this).showLoading();
+                mUpdateNotification = true;
+                return true;
+            }
+            case HANDLE_NOTIFICATION: {
+                int sequenceNumber = msg.arg1;
+                if (sequenceNumber == mSequenceNumber.get()) {
+                    MediaServer server = new MediaServer(this, Preferences.get(this).getAuthority());
+                    Bitmap bitmap;
+                    try {
+                        bitmap = server.art().read();
+                    } catch(IOException ex) {
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.albumart_mp_unknown);
+                    }
+                    new NotificationControls(this).show((Status) msg.obj, bitmap);
+                }
+                return true;
+            }
             case HANDLE_STOP: {
                 int startId = msg.arg1;
                 stopSelf(startId);
@@ -257,5 +308,24 @@ public class StatusService extends Service implements Handler.Callback {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+    
+    private final class StatusReceiver extends BroadcastReceiver {    
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(mUpdateNotification || Preferences.get(context).isNotificationSet()) {
+                Status status = (Status) intent.getSerializableExtra(Intents.EXTRA_STATUS);
+                if(mUpdateNotification || mWasPaused != status.isPaused() || !TextUtils.equals(status.getTrack().getName(), mLastFileName)) {
+                    mWasPaused = status.isPaused();
+                    mLastFileName = status.getTrack().getName();
+                    int seq = mSequenceNumber.get();
+                    Message msg = mNotificationHandler.obtainMessage(HANDLE_NOTIFICATION, seq, -1, status);
+                    msg.sendToTarget();
+                }
+                mUpdateNotification = false;
+            }
+        }
+        
     }
 }

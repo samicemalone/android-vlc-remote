@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <ImageView
+        android:id="@+id/art"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="fitXY" />
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="top"
+        android:layout_marginLeft="8dp"
+        android:layout_gravity="fill_vertical"
+        android:paddingTop="8dp"
+        android:paddingBottom="2dp"
+        android:minHeight="64dp"
+        android:layout_toLeftOf="@+id/controls"
+        android:layout_toRightOf="@+id/art">
+            
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true" />
+            
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center"
+                android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true" />
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:id="@+id/controls"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true">
+        
+        <ImageButton
+            android:id="@+id/control_play"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_media_play"
+            style="@style/actionButtonStyleSmall" />
+
+        <ImageButton
+            android:id="@+id/control_next"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_media_next"
+            style="@style/actionButtonStyleSmall"/>
+
+        <ImageButton
+            android:id="@+id/control_close"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_menu_close_clear_cancel"
+            style="@style/actionButtonStyleSmall"/>
+        
+    </LinearLayout>
+    
+</RelativeLayout>
