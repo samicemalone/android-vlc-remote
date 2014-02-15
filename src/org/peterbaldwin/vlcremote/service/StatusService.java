@@ -87,7 +87,7 @@ public class StatusService extends Service implements Handler.Callback {
 
     private Handler mCommandHandler;
 
-    private Handler mNotificationHandler;
+    private Handler mRemoteViewsHandler;
 
     private AtomicInteger mSequenceNumber;
     
@@ -95,7 +95,7 @@ public class StatusService extends Service implements Handler.Callback {
     
     private String mLastFileName;
     
-    private boolean mUpdateNotification;
+    private boolean mUpdateRemoteViews;
     
     @Override
     public void onCreate() {
@@ -103,7 +103,7 @@ public class StatusService extends Service implements Handler.Callback {
 
         mSequenceNumber = new AtomicInteger();
         
-        mNotificationHandler = startHandlerThread("NotificationThread");
+        mRemoteViewsHandler = startHandlerThread("RemoteViewsThread");
 
         mStatusHandler = startHandlerThread("StatusThread");
 
@@ -118,7 +118,7 @@ public class StatusService extends Service implements Handler.Callback {
 
     @Override
     public void onDestroy() {
-        stopHandlerThread(mNotificationHandler);
+        stopHandlerThread(mRemoteViewsHandler);
         stopHandlerThread(mStatusHandler);
         stopHandlerThread(mCommandHandler);
         stopHandlerThread(mAlbumArtHandler);
@@ -168,7 +168,7 @@ public class StatusService extends Service implements Handler.Callback {
         } else if (Intents.ACTION_NOTIFICATION_CANCEL.equals(action)) {
             NotificationControls.cancel(this);
         } else if (Intents.ACTION_NOTIFICATION_CREATE.equals(action)) {
-            mNotificationHandler.obtainMessage(HANDLE_NOTIFICATION_CREATE).sendToTarget();
+            mRemoteViewsHandler.obtainMessage(HANDLE_NOTIFICATION_CREATE).sendToTarget();
         }
         // Stop the service if no new Intents are received for 20 seconds
         Handler handler = mCommandHandler;
@@ -187,11 +187,11 @@ public class StatusService extends Service implements Handler.Callback {
                 handleArt(msg);
                 return true;
             case HANDLE_NOTIFICATION_CREATE:
-                new NotificationControls(this).showLoading();
-                mUpdateNotification = true;
+                NotificationControls.showLoading(this);
+                mUpdateRemoteViews = true;
                 return true;
             case HANDLE_NOTIFICATION:
-                handleNotification(msg);
+                handleRemoteViews(msg);
                 return true;
             case HANDLE_STOP:
                 int startId = msg.arg1;
@@ -229,10 +229,10 @@ public class StatusService extends Service implements Handler.Callback {
                 Status status = server.status(uri).read();
                 if (seqNumber == mSequenceNumber.get()) {
                     sendBroadcast(Intents.status(status));
-                    if((checkStatusChanged(status) || mUpdateNotification) && pref.isNotificationSet()) {
-                        Message n = mNotificationHandler.obtainMessage(HANDLE_NOTIFICATION, seqNumber, -1, status);
+                    if((checkStatusChanged(status) || mUpdateRemoteViews) && pref.isNotificationSet()) {
+                        Message n = mRemoteViewsHandler.obtainMessage(HANDLE_NOTIFICATION, seqNumber, -1, status);
                         n.sendToTarget();
-                        mUpdateNotification = false;
+                        mUpdateRemoteViews = false;
                     }
                     if (isCommand(uri)) {
                         // Check the status again after the command has had time to take effect.
@@ -282,7 +282,7 @@ public class StatusService extends Service implements Handler.Callback {
         }
     }
     
-    private void handleNotification(Message msg) {
+    private void handleRemoteViews(Message msg) {
         int seqNumber = msg.arg1;
         if (seqNumber == mSequenceNumber.get()) {
             MediaServer server = new MediaServer(this, Preferences.get(this).getAuthority());
@@ -292,7 +292,7 @@ public class StatusService extends Service implements Handler.Callback {
             } catch(IOException ex) {
                 bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.albumart_mp_unknown);
             }
-            new NotificationControls(this).show((Status) msg.obj, bitmap);
+            NotificationControls.show(this, (Status) msg.obj, bitmap);
         }
     }
     

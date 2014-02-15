@@ -27,18 +27,9 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.TextUtils;
-import android.widget.RemoteViews;
 import org.peterbaldwin.client.android.vlcremote.PlaybackActivity;
 import org.peterbaldwin.client.android.vlcremote.R;
-import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.model.File;
-import org.peterbaldwin.vlcremote.model.Media;
-import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
-import org.peterbaldwin.vlcremote.model.Track;
-import org.peterbaldwin.vlcremote.net.MediaServer;
-import org.peterbaldwin.vlcremote.parser.MediaParser;
 
 /**
  *
@@ -51,28 +42,16 @@ public class NotificationControls {
     }
     
     private static final int ID = 1;
-    
-    private final Context context;
-    private final Preferences preferences;
-    private final MediaServer server;
-    private final MediaParser parser;
 
-    public NotificationControls(Context context) {
-        this.context = context;
-        this.preferences = Preferences.get(context);
-        this.server = new MediaServer(context, preferences.getAuthority());
-        this.parser = new MediaParser();
+    public static void showLoading(Context context) {
+        show(context, null);
     }
     
-    public void showLoading() {
-        show(null);
+    public static void show(Context context, Status status) {
+        show(context, status, BitmapFactory.decodeResource(context.getResources(), R.drawable.albumart_mp_unknown));
     }
     
-    public void show(Status status) {
-        show(status, BitmapFactory.decodeResource(context.getResources(), R.drawable.albumart_mp_unknown));
-    }
-    
-    public void show(Status status, Bitmap art) {       
+    public static void show(Context context, Status status, Bitmap art) {       
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         
         // Creates an explicit intent for an Activity in your app
@@ -90,81 +69,16 @@ public class NotificationControls {
         builder.setContentIntent(resultPendingIntent);
         
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification n = builder.setContent(getNormalView(status, art))
+        RemoteViewsFactory views = new RemoteViewsFactory(context);
+        Notification n = builder.setContent(views.getNotifiation(status, art))
                                 .setWhen(0)
                                 .setOngoing(true)
                                 .setSmallIcon(R.drawable.ic_vlc_server)
                                 .build();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            n.bigContentView = getExpandedView(status, art);
+            n.bigContentView = views.getNotifiationExpanded(status, art);
         }
         notificationManager.notify(ID, n);
-    }
-    
-    private RemoteViews getNormalView(Status status, Bitmap art) {
-        RemoteViews remote = new RemoteViews(context.getPackageName(), R.layout.notification_normal);
-        setupCommonViews(remote, status, art);
-        if(status == null || status.isStopped()) {
-            resetText(remote, R.id.text);
-            return remote;
-        }
-        String fileName = status.getTrack().getName() != null ? status.getTrack().getName() : status.getTrack().getTitle();
-        Media track = parseMedia(status, fileName);
-        String text = TextUtils.isEmpty(track.getPlaylistText()) ? File.baseName(fileName) : track.getPlaylistText();
-        remote.setTextViewText(R.id.title, track.getPlaylistHeading());
-        remote.setTextViewText(R.id.text, text);
-        return remote;
-    }
-    
-    private RemoteViews getExpandedView(Status status, Bitmap art) {
-        RemoteViews remote = new RemoteViews(context.getPackageName(), R.layout.notification_expanded);
-        setupCommonViews(remote, status, art);
-        remote.setOnClickPendingIntent(R.id.control_prev, server.status().command.playback.pendingPrevious());
-        if(status == null || status.isStopped()) {
-            resetText(remote, R.id.text1, R.id.text2);
-            return remote;
-        }
-        String fileName = status.getTrack().getName() != null ? status.getTrack().getName() : status.getTrack().getTitle();
-        Media track = parseMedia(status, fileName);
-        String text2 = TextUtils.isEmpty(track.getMediaSecondText()) ? File.baseName(fileName) : track.getMediaSecondText();
-        remote.setTextViewText(R.id.title, track.getMediaHeading());
-        remote.setTextViewText(R.id.text1, track.getMediaFirstText());
-        remote.setTextViewText(R.id.text2, text2);
-        return remote;
-    }
-    
-    private void setupCommonViews(RemoteViews remote, Status status, Bitmap art) {
-        remote.setOnClickPendingIntent(R.id.control_play, server.status().command.playback.pendingPause());
-        remote.setOnClickPendingIntent(R.id.control_next, server.status().command.playback.pendingNext());
-        remote.setOnClickPendingIntent(R.id.control_close, PendingIntent.getService(context, 0, Intents.service(context, Intents.ACTION_NOTIFICATION_CANCEL), 0));
-        remote.setImageViewBitmap(R.id.art, art);
-        if(status == null) {
-            remote.setTextViewText(R.id.title, context.getString(R.string.loading));
-        } else {
-            if(status.isStopped()) {
-                remote.setTextViewText(R.id.title, context.getString(R.string.no_media));
-                remote.setImageViewResource(R.id.control_play, R.drawable.ic_media_play);
-            } else {
-                remote.setImageViewResource(R.id.control_play, status.isPaused() ? R.drawable.ic_media_play : R.drawable.ic_media_pause);
-            }
-        }
-    }
-    
-    private Media parseMedia(Status status, String fileName) {
-        Track track = status.getTrack();
-        if(fileName != null && (!track.containsStream() || track.hasVideoStream())) {
-            Media media = parser.parse(fileName);
-            if(media != null) {
-                return media;
-            }
-        }
-        return track;
-    }
-    
-    private void resetText(RemoteViews remote, int... textViewIds) {
-        for(int id : textViewIds) {
-            remote.setTextViewText(id, "");
-        }
     }
     
 }
