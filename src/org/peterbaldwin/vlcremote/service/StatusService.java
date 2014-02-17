@@ -46,6 +46,8 @@ public class StatusService extends Service implements Handler.Callback {
 
     public static boolean USE_XML_STATUS = false;
     
+    private static boolean HAS_CANCELLED_NOTIFICATION;
+    
     private static final String TAG = "StatusService";
 
     private static final int REMOTE_STATUS = 0;
@@ -171,6 +173,7 @@ public class StatusService extends Service implements Handler.Callback {
             mAlbumArtHandler.obtainMessage(HANDLE_ALBUM_ART, seqNumber, -1, uri).sendToTarget();
         } else if (Intents.ACTION_NOTIFICATION_CANCEL.equals(action)) {
             NotificationControls.cancel(this);
+            HAS_CANCELLED_NOTIFICATION = true;
         } else if (Intents.ACTION_NOTIFICATION_CREATE.equals(action)) {
             mRemoteViewsHandler.obtainMessage(HANDLE_NOTIFICATION_CREATE).sendToTarget();
         }
@@ -193,6 +196,7 @@ public class StatusService extends Service implements Handler.Callback {
             case HANDLE_NOTIFICATION_CREATE:
                 NotificationControls.showLoading(this);
                 mUpdateRemoteViews = true;
+                HAS_CANCELLED_NOTIFICATION = false;
                 return true;
             case HANDLE_REMOTE_VIEWS:
                 handleRemoteViews(msg);
@@ -305,7 +309,7 @@ public class StatusService extends Service implements Handler.Callback {
             return; 
         }
         int[] widgetIds = MediaAppWidgetProvider.getWidgetIds(this);
-        if(widgetIds.length == 0 && !pref.isNotificationSet()) {
+        if(widgetIds.length == 0 && (!pref.isNotificationSet() || HAS_CANCELLED_NOTIFICATION)) {
             return;
         }
         MediaServer server = new MediaServer(this, pref.getAuthority());
@@ -315,7 +319,7 @@ public class StatusService extends Service implements Handler.Callback {
         } catch(IOException ex) {
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.albumart_mp_unknown);
         }
-        if(pref.isNotificationSet()) {
+        if(pref.isNotificationSet() && !HAS_CANCELLED_NOTIFICATION) {
             NotificationControls.show(this, status, bitmap);
         }
         if(widgetIds.length != 0) {
@@ -326,10 +330,10 @@ public class StatusService extends Service implements Handler.Callback {
     private void handleRemoteViewsError(Throwable tr, Preferences pref) {
         MediaAppWidgetProvider.cancelPendingUpdate(this);
         int[] widgetIds = MediaAppWidgetProvider.getWidgetIds(this);
-        if(widgetIds.length == 0 && !pref.isNotificationSet()) {
+        if(widgetIds.length == 0 && (!pref.isNotificationSet() || HAS_CANCELLED_NOTIFICATION)) {
             return;
         }
-        if(pref.isNotificationSet()) {
+        if(pref.isNotificationSet() && !HAS_CANCELLED_NOTIFICATION) {
             NotificationControls.showError(this, tr);
         }
         if(widgetIds.length != 0) {

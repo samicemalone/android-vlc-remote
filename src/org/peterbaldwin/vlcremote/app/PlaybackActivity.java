@@ -530,6 +530,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         if (mMediaServer == null) {
             pickServer();
         }
+        if(Preferences.get(this).isNotificationSet()) {
+            startService(Intents.service(this, Intents.ACTION_NOTIFICATION_CREATE));
+        }
     }
 
     @Override
