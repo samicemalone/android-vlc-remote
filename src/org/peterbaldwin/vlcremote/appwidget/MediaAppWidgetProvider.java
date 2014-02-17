@@ -102,7 +102,7 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        update(context);
+        context.startService(Intents.service(context, Intents.ACTION_PROGRAMMATIC_APPWIDGET_UPDATE));
     }
 
     private void update(Context context) {

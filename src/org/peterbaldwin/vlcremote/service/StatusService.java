@@ -176,6 +176,9 @@ public class StatusService extends Service implements Handler.Callback {
             HAS_CANCELLED_NOTIFICATION = true;
         } else if (Intents.ACTION_NOTIFICATION_CREATE.equals(action)) {
             mRemoteViewsHandler.obtainMessage(HANDLE_NOTIFICATION_CREATE).sendToTarget();
+        } else if (Intents.ACTION_PROGRAMMATIC_APPWIDGET_UPDATE.equals(action)) {
+            mUpdateRemoteViews = true;
+            sendStatusRequest();
         }
         // Stop the service if no new Intents are received for 20 seconds
         Handler handler = mCommandHandler;
@@ -197,6 +200,7 @@ public class StatusService extends Service implements Handler.Callback {
                 NotificationControls.showLoading(this);
                 mUpdateRemoteViews = true;
                 HAS_CANCELLED_NOTIFICATION = false;
+                sendStatusRequest();
                 return true;
             case HANDLE_REMOTE_VIEWS:
                 handleRemoteViews(msg);
@@ -344,6 +348,13 @@ public class StatusService extends Service implements Handler.Callback {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+    
+    private void sendStatusRequest() {
+        MediaServer server = new MediaServer(this, Preferences.get(this).getAuthority());
+        if(server.getAuthority() != null) {
+            server.status().get();
+        }
     }
     
     /**

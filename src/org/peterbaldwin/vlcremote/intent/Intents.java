@@ -18,10 +18,9 @@
 package org.peterbaldwin.vlcremote.intent;
 
 import android.content.Context;
-import org.peterbaldwin.vlcremote.model.Status;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
+import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.service.StatusService;
 
 public final class Intents {
@@ -55,6 +54,7 @@ public final class Intents {
     public static final String ACTION_ENQUEUE = "org.peterbaldwin.vlcremote.intent.action.ENQUEUE";
 
     public static final String ACTION_MANUAL_APPWIDGET_UPDATE = "org.peterbaldwin.vlcremote.intent.action.MANUAL_APPWIDGET_UPDATE";
+    public static final String ACTION_PROGRAMMATIC_APPWIDGET_UPDATE = "org.peterbaldwin.vlcremote.intent.action.PROGRAMMATIC_APPWIDGET_UPDATE";
 
     public static final String ACTION_STATUS = "org.peterbaldwin.vlcremote.intent.action.STATUS";
     public static final String ACTION_PLAYLIST = "org.peterbaldwin.vlcremote.intent.action.PLAYLIST";
