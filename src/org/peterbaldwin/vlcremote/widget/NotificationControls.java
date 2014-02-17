@@ -27,6 +27,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.widget.RemoteViews;
 import org.peterbaldwin.client.android.vlcremote.PlaybackActivity;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.Status;
@@ -51,7 +52,12 @@ public class NotificationControls {
         show(context, status, BitmapFactory.decodeResource(context.getResources(), R.drawable.albumart_mp_unknown));
     }
     
-    public static void show(Context context, Status status, Bitmap art) {       
+    public static void show(Context context, Status status, Bitmap art) {
+        RemoteViewsFactory views = new RemoteViewsFactory(context);
+        show(context, views.getNotifiation(status, art), views.getNotifiationExpanded(status, art));
+    }       
+    
+    public static void show(Context context, RemoteViews normal, RemoteViews expanded) {       
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         
         // Creates an explicit intent for an Activity in your app
@@ -69,16 +75,21 @@ public class NotificationControls {
         builder.setContentIntent(resultPendingIntent);
         
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        RemoteViewsFactory views = new RemoteViewsFactory(context);
-        Notification n = builder.setContent(views.getNotifiation(status, art))
+        Notification n = builder.setContent(normal)
                                 .setWhen(0)
                                 .setOngoing(true)
                                 .setSmallIcon(R.drawable.ic_vlc_server)
                                 .build();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            n.bigContentView = views.getNotifiationExpanded(status, art);
+            n.bigContentView = expanded;
         }
         notificationManager.notify(ID, n);
     }
+    
+    public static void showError(Context context, Throwable tr) {
+        RemoteViewsFactory views = new RemoteViewsFactory(context);
+        show(context, views.getNotification(tr), views.getNotificationExpanded(tr));
+    }
+    
     
 }

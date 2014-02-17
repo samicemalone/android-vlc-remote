@@ -30,6 +30,7 @@ import android.os.Process;
 import android.util.Log;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.peterbaldwin.client.android.vlcremote.MediaAppWidgetProvider;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
@@ -47,10 +48,13 @@ public class StatusService extends Service implements Handler.Callback {
     
     private static final String TAG = "StatusService";
 
+    private static final int REMOTE_STATUS = 0;
+    private static final int REMOTE_ERROR = -1;
+    
     private static final int HANDLE_STATUS = 1;
     private static final int HANDLE_ALBUM_ART = 2;
     private static final int HANDLE_STOP = 3;
-    private static final int HANDLE_NOTIFICATION = 4;
+    private static final int HANDLE_REMOTE_VIEWS = 4;
     private static final int HANDLE_NOTIFICATION_CREATE = 5;
 
     private static boolean isCommand(Uri uri) {
@@ -190,7 +194,7 @@ public class StatusService extends Service implements Handler.Callback {
                 NotificationControls.showLoading(this);
                 mUpdateRemoteViews = true;
                 return true;
-            case HANDLE_NOTIFICATION:
+            case HANDLE_REMOTE_VIEWS:
                 handleRemoteViews(msg);
                 return true;
             case HANDLE_STOP:
@@ -229,11 +233,8 @@ public class StatusService extends Service implements Handler.Callback {
                 Status status = server.status(uri).read();
                 if (seqNumber == mSequenceNumber.get()) {
                     sendBroadcast(Intents.status(status));
-                    if((checkStatusChanged(status) || mUpdateRemoteViews) && pref.isNotificationSet()) {
-                        Message n = mRemoteViewsHandler.obtainMessage(HANDLE_NOTIFICATION, seqNumber, -1, status);
-                        n.sendToTarget();
-                        mUpdateRemoteViews = false;
-                    }
+                    Message n = mRemoteViewsHandler.obtainMessage(HANDLE_REMOTE_VIEWS, seqNumber, REMOTE_STATUS, status);
+                    n.sendToTarget();
                     if (isCommand(uri)) {
                         // Check the status again after the command has had time to take effect.
                         msg = mStatusHandler.obtainMessage(HANDLE_STATUS, seqNumber, 0, readOnly(uri));
@@ -254,6 +255,7 @@ public class StatusService extends Service implements Handler.Callback {
                 Intent broadcast = Intents.error(tr);
                 broadcast.putExtra(Intents.EXTRA_FLAGS, flags);
                 sendBroadcast(broadcast);
+                mRemoteViewsHandler.obtainMessage(HANDLE_REMOTE_VIEWS, seqNumber, REMOTE_ERROR, tr).sendToTarget();
             }
         } else {
             Log.d(TAG, "Dropped stale status request: " + uri);
@@ -284,15 +286,54 @@ public class StatusService extends Service implements Handler.Callback {
     
     private void handleRemoteViews(Message msg) {
         int seqNumber = msg.arg1;
-        if (seqNumber == mSequenceNumber.get()) {
-            MediaServer server = new MediaServer(this, Preferences.get(this).getAuthority());
-            Bitmap bitmap;
-            try {
-                bitmap = server.art().read();
-            } catch(IOException ex) {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.albumart_mp_unknown);
-            }
-            NotificationControls.show(this, (Status) msg.obj, bitmap);
+        if (seqNumber != mSequenceNumber.get()) {
+            return;
+        }
+        Preferences pref = Preferences.get(this);
+        if(REMOTE_STATUS == msg.arg2) {
+            Status status = (Status) msg.obj;
+            MediaAppWidgetProvider.scheduleUpdate(this, status);
+            handleRemoteViewsStatus(status, pref);
+        } else if(REMOTE_ERROR == msg.arg2) {
+            handleRemoteViewsError((Throwable) msg.obj, pref);
+        }
+        mUpdateRemoteViews = false;
+    }
+    
+    private void handleRemoteViewsStatus(Status status, Preferences pref) {
+        if(!checkStatusChanged(status) && !mUpdateRemoteViews) {
+            return; 
+        }
+        int[] widgetIds = MediaAppWidgetProvider.getWidgetIds(this);
+        if(widgetIds.length == 0 && !pref.isNotificationSet()) {
+            return;
+        }
+        MediaServer server = new MediaServer(this, pref.getAuthority());
+        Bitmap bitmap;
+        try {
+            bitmap = server.art().read();
+        } catch(IOException ex) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.albumart_mp_unknown);
+        }
+        if(pref.isNotificationSet()) {
+            NotificationControls.show(this, status, bitmap);
+        }
+        if(widgetIds.length != 0) {
+            MediaAppWidgetProvider.update(this, status, bitmap);
+        }
+    }
+    
+    private void handleRemoteViewsError(Throwable tr, Preferences pref) {
+        MediaAppWidgetProvider.cancelPendingUpdate(this);
+        int[] widgetIds = MediaAppWidgetProvider.getWidgetIds(this);
+        if(widgetIds.length == 0 && !pref.isNotificationSet()) {
+            return;
+        }
+        if(pref.isNotificationSet()) {
+            NotificationControls.showError(this, tr);
+        }
+        if(widgetIds.length != 0) {
+            MediaAppWidgetProvider.update(this, tr);
         }
     }
     
@@ -314,6 +355,6 @@ public class StatusService extends Service implements Handler.Callback {
             return true;
         }
         return false;
-     }
+     }    
 
 }

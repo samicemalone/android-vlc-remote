@@ -318,8 +318,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.MANUAL_APPWIDGET_UPDATE" />
-                <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
-                <action android:name="org.peterbaldwin.vlcremote.intent.action.ERROR" />
             </intent-filter>
 
             <meta-data

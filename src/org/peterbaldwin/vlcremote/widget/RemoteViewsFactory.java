@@ -19,8 +19,10 @@ package org.peterbaldwin.vlcremote.widget;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.RemoteViews;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.intent.Intents;
@@ -59,10 +61,47 @@ public class RemoteViewsFactory {
         RemoteViews remote = new RemoteViews(context.getPackageName(), R.layout.notification_expanded);
         return getExpandedView(remote, status, bitmap);
     }
+
+    public RemoteViews getWidget(Status status, Bitmap bitmap) {
+        return getNormalView(getEmptyWidget(), status, bitmap);
+    }
+    
+    public RemoteViews getNotification(Throwable tr) {
+        return getErrorView(getEmptyNotification(), tr);
+    }
+    
+    public RemoteViews getNotificationExpanded(Throwable tr) {
+        return getErrorView(getEmptyNotificationExpanded(), tr);
+    }
+    
+    public RemoteViews getWidget(Throwable tr) {
+        return getErrorView(getEmptyWidget(), tr);
+    }
+    
+    public RemoteViews getWidget(String errorText) {
+        return setError(getEmptyWidget(), errorText);
+    }
+    
+    private RemoteViews getEmptyNotification() {
+        return new RemoteViews(context.getPackageName(), R.layout.notification_normal);
+    }
+    
+    private RemoteViews getEmptyNotificationExpanded() {
+        return new RemoteViews(context.getPackageName(), R.layout.notification_expanded);
+    }
+    
+    private RemoteViews getEmptyWidget() {
+        RemoteViews remote = new RemoteViews(context.getPackageName(), R.layout.album_appwidget);
+        return setLaunchIntent(remote, context);
+    }
+    
+    private RemoteViews getErrorView(RemoteViews remote, Throwable tr) {
+        return setError(remote, tr.getMessage() == null ? tr.getClass().getName() : tr.getMessage());
+    }
     
     private RemoteViews getNormalView(RemoteViews remote, Status status, Bitmap art) {
         setupCommonViews(remote, status, art);
-        if(status == null || status.isStopped()) {
+        if(status == null || status.isStopped() || server.getAuthority() == null) {
             resetText(remote, R.id.text);
             return remote;
         }
@@ -77,7 +116,7 @@ public class RemoteViewsFactory {
     private RemoteViews getExpandedView(RemoteViews remote, Status status, Bitmap art) {
         setupCommonViews(remote, status, art);
         remote.setOnClickPendingIntent(R.id.control_prev, server.status().command.playback.pendingPrevious());
-        if(status == null || status.isStopped()) {
+        if(status == null || status.isStopped() || server.getAuthority() == null) {
             resetText(remote, R.id.text1, R.id.text2);
             return remote;
         }
@@ -87,14 +126,20 @@ public class RemoteViewsFactory {
         remote.setTextViewText(R.id.title, track.getMediaHeading());
         remote.setTextViewText(R.id.text1, track.getMediaFirstText());
         remote.setTextViewText(R.id.text2, text2);
+        remote.setViewVisibility(R.id.control_prev, View.VISIBLE);
         return remote;
     }
     
     private void setupCommonViews(RemoteViews remote, Status status, Bitmap art) {
+        remote.setImageViewBitmap(R.id.art, art);
+        if(server.getAuthority() == null) {
+            setError(remote, context.getString(R.string.noserver));
+            return;
+        }
+        remote.setViewVisibility(R.id.control_next, View.VISIBLE);
         remote.setOnClickPendingIntent(R.id.control_play, server.status().command.playback.pendingPause());
         remote.setOnClickPendingIntent(R.id.control_next, server.status().command.playback.pendingNext());
         remote.setOnClickPendingIntent(R.id.control_close, PendingIntent.getService(context, 0, Intents.service(context, Intents.ACTION_NOTIFICATION_CANCEL), 0));
-        remote.setImageViewBitmap(R.id.art, art);
         if(status == null) {
             remote.setTextViewText(R.id.title, context.getString(R.string.loading));
         } else {
@@ -105,6 +150,17 @@ public class RemoteViewsFactory {
                 remote.setImageViewResource(R.id.control_play, status.isPaused() ? R.drawable.ic_media_play : R.drawable.ic_media_pause);
             }
         }
+    }
+    
+    private RemoteViews setError(RemoteViews remote, String title) {
+        remote.setTextViewText(R.id.title, title);
+        remote.setOnClickPendingIntent(R.id.control_play, server.status().pendingGet());
+        remote.setImageViewResource(R.id.control_play, R.drawable.ic_popup_sync_2);
+        remote.setImageViewResource(R.id.art, R.drawable.albumart_mp_unknown);
+        remote.setViewVisibility(R.id.control_prev, View.GONE);
+        remote.setViewVisibility(R.id.control_next, View.GONE);
+        resetText(remote, R.id.text, R.id.text1, R.id.text2);
+        return remote;
     }
     
     private Media parseMedia(Status status, String fileName) {
@@ -122,6 +178,13 @@ public class RemoteViewsFactory {
         for(int id : textViewIds) {
             remote.setTextViewText(id, "");
         }
+    }
+    
+    private static RemoteViews setLaunchIntent(RemoteViews remote, Context context) {
+        Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        PendingIntent pi = PendingIntent.getActivity(context, 0, launch, 0);
+        remote.setOnClickPendingIntent(R.id.text_container, pi);
+        return remote;
     }
     
 }
