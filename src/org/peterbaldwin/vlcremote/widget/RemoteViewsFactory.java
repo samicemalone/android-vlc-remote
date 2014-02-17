@@ -155,7 +155,7 @@ public class RemoteViewsFactory {
     private RemoteViews setError(RemoteViews remote, String title) {
         remote.setTextViewText(R.id.title, title);
         remote.setOnClickPendingIntent(R.id.control_play, server.status().pendingGet());
-        remote.setImageViewResource(R.id.control_play, R.drawable.ic_popup_sync_2);
+        remote.setImageViewResource(R.id.control_play, R.drawable.ic_menu_refresh);
         remote.setImageViewResource(R.id.art, R.drawable.albumart_mp_unknown);
         remote.setViewVisibility(R.id.control_prev, View.GONE);
         remote.setViewVisibility(R.id.control_next, View.GONE);
