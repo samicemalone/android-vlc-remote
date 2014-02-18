@@ -25,11 +25,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.preference.Preference;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 import org.peterbaldwin.client.android.vlcremote.PlaybackActivity;
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Status;
 
 /**
@@ -74,11 +76,12 @@ public class NotificationControls {
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
         
+        boolean isTransparent = Preferences.get(context).isNotificationIconTransparent();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification n = builder.setContent(normal)
                                 .setWhen(0)
                                 .setOngoing(true)
-                                .setSmallIcon(R.drawable.ic_vlc_server)
+                                .setSmallIcon(isTransparent ? R.drawable.ic_transparent : R.drawable.ic_vlc_server)
                                 .build();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             n.bigContentView = expanded;

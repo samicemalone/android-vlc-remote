@@ -60,12 +60,15 @@
     <string name="summary_preference_button_fourth">Choose the button to appear fourth</string>
     <string name="summary_preference_button_fifth">Choose the button to appear fifth</string>
     <string name="summary_preference_notification">Add basic playback controls to the notification drawer</string>
+    <string name="summary_preference_notification_icon">Use a transparent icon instead of VLC\'s cone in the notification drawer</string>
     <string name="preference_screen_interface_title">Interface Settings</string>
     <string name="preference_screen_interface_key">preference_screen_interface</string>
     <string name="preference_screen_presets_title">Presets</string>
     <string name="preference_screen_presets_key">preference_screen_presets</string>
     <string name="preference_screen_buttons_title">Choose Buttons</string>
     <string name="preference_screen_buttons_key">preference_screen_buttons</string>
+    <string name="preference_screen_notification_title">Notification Controls</string>
+    <string name="preference_screen_notification_key">preference_screen_notification</string>
     <string name="preference_title_audio_delay">Audio Delay</string>
     <string name="preference_key_audio_delay">audio_delay</string>
     <string name="preference_title_subtitle_delay">Subtitle Delay</string>
@@ -82,6 +85,8 @@
     <string name="preference_key_button_fifth">button_fifth</string>
     <string name="preference_title_notification">Notification Controls</string>
     <string name="preference_key_notification">notification</string>
+    <string name="preference_title_notification_icon_transparent">Use transparent icon</string>
+    <string name="preference_key_notification_icon_transparent">notification_icon_transparent</string>
     <string name="preference_category_phone_title">Phone</string>
     <string name="preference_server_subtitle_key">server_subtitle</string>
     <string name="preference_server_subtitle_title">Show Server Subtitle</string>

@@ -41,6 +41,7 @@ public final class Preferences {
     public static final String KEY_RESUME_ON_IDLE = "resume_on_idle";
     public static final String KEY_PARSE_PLAYLIST_ITEMS = "parse_playlist_items";
     public static final String KEY_NOTIFICATION = "notification";
+    public static final String KEY_NOTIFICATION_ICON_TRANSPARENT = "notification_icon_transparent";
     public static final String KEY_HIDE_DVD_TAB = "hide_dvd_tab";
     public static final String KEY_SORT_DIRECTORIES_FIRST = "sort_directories_first";
     public static final String KEY_SEEK_TIME = "seek_time";
@@ -136,6 +137,14 @@ public final class Preferences {
 	
     public boolean setNotification(boolean notification) {
         return mPreferences.edit().putBoolean(KEY_NOTIFICATION, notification).commit();
+    }
+    
+    public boolean isNotificationIconTransparent() {
+        return mPreferences.getBoolean(KEY_NOTIFICATION_ICON_TRANSPARENT, false);
+    }
+	
+    public boolean setNotificationIconTransparent(boolean isTransparent) {
+        return mPreferences.edit().putBoolean(KEY_NOTIFICATION_ICON_TRANSPARENT, isTransparent).commit();
     }
     
     public boolean isHideDVDTabSet() {
