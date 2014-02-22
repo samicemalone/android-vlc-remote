@@ -258,8 +258,7 @@ public class StatusService extends Service implements Handler.Callback {
                 if(JsonContentHandler.FILE_NOT_FOUND.equals(tr.getMessage())) {
                     USE_XML_STATUS = true;
                 }
-                String message = String.valueOf(tr);
-                Log.e(TAG, message, tr);
+                Log.e(TAG, tr.getMessage());
                 Intent broadcast = Intents.error(tr);
                 broadcast.putExtra(Intents.EXTRA_FLAGS, flags);
                 sendBroadcast(broadcast);
