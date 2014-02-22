@@ -17,6 +17,7 @@
 
 package org.peterbaldwin.vlcremote.model;
 
+import android.text.TextUtils;
 import java.io.Serializable;
 
 public final class Status implements Serializable {
@@ -87,6 +88,20 @@ public final class Status implements Serializable {
 
     public boolean isRepeat() {
         return mRepeat;
+    }
+    
+    /**
+     * Check if the given state matches the state of this status
+     * The status is considered to be equal if the state (playing, paused, 
+     * stopped) and the file name are equal.
+     * @param fileName file name
+     * @param state state. see {@link #getState()}
+     * @return true if the track filename and the state are the equal, false
+     * otherwise
+     */
+    public boolean equalsState(String fileName, String state) {
+        return TextUtils.equals(fileName, getTrack().getName()) &&
+               TextUtils.equals(state, mState);
     }
 
     public void setVolume(int volume) {

@@ -319,6 +319,10 @@ public final class MediaServer {
                 public void previous() {
                     execute("command=pl_previous");
                 }
+                
+                public PendingIntent pendingPrevious() {
+                    return pending(intent("command=pl_previous"));
+                }
 
                 public void chapter(int chapter) {
                     execute("command=chapter&val=" + chapter);

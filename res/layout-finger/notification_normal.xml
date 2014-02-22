@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:background="@drawable/appwidget_bg"
-    android:layout_height="64dp">
+    android:layout_height="fill_parent">
     
     <ImageView
         android:id="@+id/art"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:background="@drawable/albumart_mp_unknown"
         android:scaleType="fitXY" />
     
-     <LinearLayout
-        android:id="@+id/text_container"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -31,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
                 android:ellipsize="marquee"
-                android:text="@string/loading"
                 android:fadingEdge="horizontal"
                 android:singleLine="true" />
             
@@ -46,8 +42,8 @@
                 android:fadingEdge="horizontal"
                 android:singleLine="true" />
         
-     </LinearLayout>
-         
+    </LinearLayout>
+    
     <LinearLayout 
         android:id="@+id/controls"
         android:layout_width="wrap_content"
@@ -64,6 +60,12 @@
             android:id="@+id/control_next"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_media_next"
+            style="@style/actionButtonStyleSmall"/>
+
+        <ImageButton
+            android:id="@+id/control_close"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_menu_close_clear_cancel"
             style="@style/actionButtonStyleSmall"/>
         
     </LinearLayout>

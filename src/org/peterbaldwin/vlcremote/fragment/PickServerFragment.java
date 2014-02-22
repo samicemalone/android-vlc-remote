@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.app.PickServerActivity;
+import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Preferences;
 import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.preference.ProgressCategory;
@@ -73,6 +74,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
     private static final String KEY_SCREEN_INTERFACE = "preference_screen_interface";
     private static final String KEY_SCREEN_PRESETS = "preference_screen_presets";
     private static final String KEY_SCREEN_BUTTONS = "preference_screen_buttons";
+    private static final String KEY_SCREEN_NOTIFICATION = "preference_screen_notification";
     private static final String KEY_WIFI = "wifi";
     private static final String KEY_SERVERS = "servers";
     private static final String KEY_ADD_SERVER = "add_server";
@@ -309,6 +311,7 @@ public final class PickServerFragment extends PreferenceFragment implements Port
         return KEY_SCREEN_INTERFACE.equals(preferenceKey)            ||
                KEY_SCREEN_PRESETS.equals(preferenceKey)              ||
                KEY_SCREEN_BUTTONS.equals(preferenceKey)              ||
+               KEY_SCREEN_NOTIFICATION.equals(preferenceKey)         ||
                KEY_PAUSE_FOR_CALL.contains(preferenceKey)            ||
                Preferences.isButtonKey(preferenceKey)                ||
                Preferences.KEY_SEEK_TIME.equals(preferenceKey)       ||
@@ -331,6 +334,16 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             return true;
         } else if (Preferences.KEY_SERVER_SUBTITLE.equals(preference.getKey())) {
             Preferences.get(getActivity()).setServerSubtitle(((CheckBoxPreference) preference).isChecked());
+            return true;
+        } else if (Preferences.KEY_NOTIFICATION.equals(preference.getKey())) {
+            boolean isChecked = ((CheckBoxPreference) preference).isChecked();
+            Intent i = Intents.service(getActivity(), isChecked ? Intents.ACTION_NOTIFICATION_CREATE : Intents.ACTION_NOTIFICATION_CANCEL);
+            Preferences.get(getActivity()).setNotification(isChecked);
+            getActivity().startService(i);
+            return true;
+        } else if(Preferences.KEY_NOTIFICATION_ICON_TRANSPARENT.equals(preference.getKey())) {
+            Preferences.get(getActivity()).setNotificationIconTransparent(((CheckBoxPreference) preference).isChecked());
+            getActivity().startService(Intents.service(getActivity(), Intents.ACTION_NOTIFICATION_CREATE));
             return true;
         } else if(KEY_ADD_SERVER.equals(preference.getKey())) {
             ServerInfoDialog.addServerInstance().show(getFragmentManager(), DIALOG_ADD_SERVER);

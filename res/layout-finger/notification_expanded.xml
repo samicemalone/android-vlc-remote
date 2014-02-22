@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="128dp">
+    
+    <ImageView
+        android:id="@+id/art"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:scaleType="fitXY" />
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="fill_vertical"
+        android:layout_marginLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="2dp"
+        android:minHeight="128dp"
+        android:layout_toLeftOf="@+id/control_close"
+        android:layout_toRightOf="@+id/art">
+            
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@*android:style/TextAppearance.StatusBar.EventContent.Title"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true" />
+            
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="@*android:style/TextAppearance.StatusBar.EventContent"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true" />
+            
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="@*android:style/TextAppearance.StatusBar.EventContent"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true" />
+        
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/control_close"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_menu_close_clear_cancel"
+        style="@style/actionButtonStyleSmall"/>
+    
+    <ImageView
+        android:background="?android:dividerHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="1.0px"
+        android:layout_toRightOf="@+id/art"
+        android:layout_above="@+id/controls"
+        android:layout_alignParentRight="true" />
+    
+    <LinearLayout 
+        android:id="@+id/controls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@id/art"
+        android:divider="?android:listDivider"
+        android:showDividers="middle"
+        android:dividerPadding="12.0dip">
+        
+        <ImageButton
+            android:id="@+id/control_prev"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/ic_media_prev"
+            android:scaleType="fitCenter"
+            style="@style/actionButtonStyleWide" />
+        
+        <ImageButton
+            android:id="@+id/control_play"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/ic_media_play"
+            android:scaleType="fitCenter"
+            style="@style/actionButtonStyleWide" />
+
+        <ImageButton
+            android:id="@+id/control_next"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/ic_media_next"
+            android:scaleType="fitCenter"
+            style="@style/actionButtonStyleWide"/>
+        
+    </LinearLayout>
+    
+</RelativeLayout>

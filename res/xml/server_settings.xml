@@ -105,6 +105,29 @@
         
     </PreferenceScreen>
     
+    <PreferenceScreen
+        android:title="@string/preference_screen_notification_title"
+        android:key="@string/preference_screen_notification_key"
+        android:icon="@drawable/ic_menu_preferences"
+        android:persistent="false">
+
+        <CheckBoxPreference
+            android:key="@string/preference_key_notification"
+            android:persistent="true"
+            android:icon="@drawable/ic_menu_notifications"
+            android:summary="@string/summary_preference_notification"
+            android:title="@string/preference_title_notification" />
+
+        <CheckBoxPreference
+            android:key="@string/preference_key_notification_icon_transparent"
+            android:persistent="true"
+            android:icon="@drawable/ic_vlc_server"
+            android:dependency="@string/preference_key_notification"
+            android:summary="@string/summary_preference_notification_icon"
+            android:title="@string/preference_title_notification_icon_transparent" />
+        
+    </PreferenceScreen>
+    
     <PreferenceCategory android:title="@string/preference_category_phone_title">
         
         <CheckBoxPreference

@@ -17,10 +17,11 @@
 
 package org.peterbaldwin.vlcremote.intent;
 
-import org.peterbaldwin.vlcremote.model.Status;
-
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import org.peterbaldwin.vlcremote.model.Status;
+import org.peterbaldwin.vlcremote.service.StatusService;
 
 public final class Intents {
 
@@ -53,11 +54,14 @@ public final class Intents {
     public static final String ACTION_ENQUEUE = "org.peterbaldwin.vlcremote.intent.action.ENQUEUE";
 
     public static final String ACTION_MANUAL_APPWIDGET_UPDATE = "org.peterbaldwin.vlcremote.intent.action.MANUAL_APPWIDGET_UPDATE";
+    public static final String ACTION_PROGRAMMATIC_APPWIDGET_UPDATE = "org.peterbaldwin.vlcremote.intent.action.PROGRAMMATIC_APPWIDGET_UPDATE";
 
     public static final String ACTION_STATUS = "org.peterbaldwin.vlcremote.intent.action.STATUS";
     public static final String ACTION_PLAYLIST = "org.peterbaldwin.vlcremote.intent.action.PLAYLIST";
     public static final String ACTION_ART = "org.peterbaldwin.vlcremote.intent.action.ART";
     public static final String ACTION_ERROR = "org.peterbaldwin.vlcremote.intent.action.ERROR";
+    public static final String ACTION_NOTIFICATION_CREATE = "org.peterbaldwin.vlcremote.intent.action.notification.CREATE";
+    public static final String ACTION_NOTIFICATION_CANCEL = "org.peterbaldwin.vlcremote.intent.action.notification.CANCEL";
 
     public static final String EXTRA_STATUS = "org.peterbaldwin.vlcremote.intent.extra.STATUS";
     public static final String EXTRA_PLAYLIST = "org.peterbaldwin.vlcremote.intent.extra.PLAYLIST";
@@ -111,6 +115,12 @@ public final class Intents {
         Intent intent = new Intent(ACTION_ERROR);
         intent.putExtra(EXTRA_THROWABLE, t);
         return intent;
+    }
+    
+    public static Intent service(Context context, String action) {
+        Intent i = new Intent(action);
+        i.setClass(context, StatusService.class);
+        return i;
     }
 
     private Intents() {

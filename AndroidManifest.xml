@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.peterbaldwin.client.android.vlcremote"
-    android:versionCode="62"
-    android:versionName="0.7.1" >
+    android:versionCode="63"
+    android:versionName="0.7.2" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -318,8 +318,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="org.peterbaldwin.vlcremote.intent.action.MANUAL_APPWIDGET_UPDATE" />
-                <action android:name="org.peterbaldwin.vlcremote.intent.action.STATUS" />
-                <action android:name="org.peterbaldwin.vlcremote.intent.action.EXCEPTION" />
             </intent-filter>
 
             <meta-data
