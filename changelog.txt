@@ -1,3 +1,8 @@
+v0.7.2
+* Added preference for playback controls in the notification drawer
+* Updated widget to use the same style views as the notification
+* Added album art to widget/notification
+
 v0.7.1
 * Added next/previous chapter buttons for large enough screens (VLC 2.0+)
 * Can now choose the action bar buttons in Settings -> Interface Settings.
