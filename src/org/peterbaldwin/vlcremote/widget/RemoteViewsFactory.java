@@ -115,6 +115,7 @@ public class RemoteViewsFactory {
     
     private RemoteViews getExpandedView(RemoteViews remote, Status status, Bitmap art) {
         setupCommonViews(remote, status, art);
+        remote.setViewVisibility(R.id.control_prev, View.VISIBLE);
         remote.setOnClickPendingIntent(R.id.control_prev, server.status().command.playback.pendingPrevious());
         if(status == null || status.isStopped() || server.getAuthority() == null) {
             resetText(remote, R.id.text1, R.id.text2);
@@ -126,7 +127,6 @@ public class RemoteViewsFactory {
         remote.setTextViewText(R.id.title, track.getMediaHeading());
         remote.setTextViewText(R.id.text1, track.getMediaFirstText());
         remote.setTextViewText(R.id.text2, text2);
-        remote.setViewVisibility(R.id.control_prev, View.VISIBLE);
         return remote;
     }
     
