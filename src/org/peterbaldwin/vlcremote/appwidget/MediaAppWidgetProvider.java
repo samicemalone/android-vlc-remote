@@ -81,6 +81,8 @@ public class MediaAppWidgetProvider extends AppWidgetProvider {
         if (status.isPlaying() && time >= 0L && length > 0L && time <= length) {
             long delay = (length - time + 1) * 1000;
             scheduleUpdate(context, delay);
+        } else if(status.isPaused()) {
+            scheduleUpdate(context, 1000 * 60 * 15); // check again in 15 mins
         }
     }
     
