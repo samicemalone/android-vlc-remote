@@ -165,13 +165,13 @@ public class Server {
      * @return Server
      */
     public static Server fromKey(String key) {
-        int responseDelim = key.indexOf('#');
+        int responseDelim = key.lastIndexOf('#');
         if(responseDelim < 0) {
             return new Server(key);
         } else if(responseDelim == 0) {
             return null;
         }
-        int nicknameDelim = key.indexOf(';');
+        int nicknameDelim = key.lastIndexOf(';');
         String nickname = nicknameDelim > 0 ? key.substring(nicknameDelim + 1) : "";
         int response = Integer.valueOf(key.substring(responseDelim + 1, nicknameDelim));
         return new Server(nickname, key.substring(0, responseDelim), response);
