@@ -39,18 +39,7 @@ public class Server {
         this.nickname = nickname != null ? nickname : "";
         this.user = user != null ? user : "";
         this.password = password != null ? password : "";
-        StringBuilder authority = new StringBuilder();
-        if(!this.user.isEmpty()) {
-            authority.append(user);
-        }
-        if(!this.password.isEmpty()) {
-            authority.append(':').append(password);
-        }
-        if(hasUserInfo()) {
-            authority.append('@');
-        }
-        authority.append(host).append(':').append(port);
-        uri = Uri.parse("http://" + authority.toString());
+        this.uri = buildUri(host + ":" + port);
         this.responseCode = responseCode;
     }
     
@@ -59,8 +48,17 @@ public class Server {
     }
     
     public Server(String nickname, String authority, int responseCode) {
-        uri = Uri.parse("http://" + authority);
-        setUserInfo(uri.getUserInfo());
+        int authDelim = authority.lastIndexOf('@');
+        String hostAndPort;
+        if(authDelim >= 0) {
+            setUserInfo(authority.substring(0, authDelim));
+            hostAndPort = authority.substring(authDelim + 1);
+        } else {
+            hostAndPort = authority;
+            this.user = "";
+            this.password = "";
+        }
+        this.uri = buildUri(hostAndPort);
         this.responseCode = responseCode;
         this.nickname = nickname;
     }
@@ -73,19 +71,33 @@ public class Server {
         this(authority, DEFAULT_RESPONSE_CODE);
     }
     
+    private Uri buildUri(String hostAndPort) {
+        StringBuilder authority = new StringBuilder();
+        if(!this.user.isEmpty()) {
+            authority.append(Uri.encode(user));
+        }
+        if(!this.password.isEmpty()) {
+            authority.append(':').append(Uri.encode(password));
+        }
+        if(hasUserInfo()) {
+            authority.append('@');
+        }
+        authority.append(hostAndPort);
+        return Uri.parse("http://" + authority.toString());
+    }
+    
     /**
      * Set the user authentication information
      * @param userInfo String containing username and password separated by a
      * colon. e.g. user:pass.
      */
     private void setUserInfo(String userInfo) {
-        if(userInfo == null) {
-            return;
-        }
         int passDelim = userInfo.indexOf(':');
         if(passDelim < 0) {
             user = userInfo;
+            password = "";
         } else if(passDelim == 0) {
+            user = "";
             password = userInfo.substring(passDelim + 1, userInfo.length());
         } else {
             user = userInfo.substring(0, passDelim);
@@ -173,7 +185,8 @@ public class Server {
         }
         int nicknameDelim = key.lastIndexOf(';');
         String nickname = nicknameDelim > 0 ? key.substring(nicknameDelim + 1) : "";
-        int response = Integer.valueOf(key.substring(responseDelim + 1, nicknameDelim));
+        String responseStr = key.substring(responseDelim + 1, nicknameDelim);
+        int response = responseStr.isEmpty() ? DEFAULT_RESPONSE_CODE : Integer.valueOf(responseStr);
         return new Server(nickname, key.substring(0, responseDelim), response);
     }
     
