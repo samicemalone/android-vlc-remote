@@ -1,3 +1,9 @@
+v0.7.3
+* Change app name to "Remote for VLC (Fork)" due to trademarked name "VLC Remote"
+* Fix handling of passwords containing # or ;
+* Removed broken stream context menu item
+* Fixed crash due to logging
+
 v0.7.2
 * Added preference for playback controls in the notification drawer
 * Updated widget to use the same style views as the notification
