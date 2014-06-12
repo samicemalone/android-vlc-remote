@@ -40,6 +40,7 @@ import org.peterbaldwin.vlcremote.intent.Intents;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.Remote;
+import org.peterbaldwin.vlcremote.model.Server;
 import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.net.json.JsonStatusContentHandler;
 import org.peterbaldwin.vlcremote.net.xml.XmlDirectoryContentHandler;
@@ -57,12 +58,13 @@ public final class MediaServer {
 
     public MediaServer(Context context, String authority) {
         mContext = context;
-        mAuthority = authority;
+        Server s = Server.fromKey(authority + "#200;");
+        mAuthority = s.getUri().getEncodedAuthority();
     }
 
     public MediaServer(Context context, Uri data) {
         mContext = context;
-        mAuthority = data.getAuthority();
+        mAuthority = data.getEncodedAuthority();
     }
 
     public String getAuthority() {
