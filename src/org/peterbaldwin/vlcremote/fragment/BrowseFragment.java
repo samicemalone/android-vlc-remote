@@ -214,7 +214,7 @@ public class BrowseFragment extends MediaListFragment implements
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.browse_context, menu);
         menu.findItem(R.id.browse_context_open).setVisible(isDirectory(menuInfo));
-        menu.findItem(R.id.browse_context_stream).setVisible(!isDirectory(menuInfo));
+        menu.findItem(R.id.browse_context_stream).setVisible(false);
     }
 
     @Override
@@ -231,12 +231,12 @@ public class BrowseFragment extends MediaListFragment implements
                     case R.id.browse_context_play:
                         getMediaServer().status().command.input.play(file.getMrl(), file.getOptions());
                         return true;
-                    case R.id.browse_context_stream:
-                        getMediaServer().status().command.input.play(file.getMrl(),
-                                file.getStreamingOptions());
-                        Intent intent = file.getIntentForStreaming(getMediaServer().getAuthority());
-                        startActivity(intent);
-                        return true;
+//                    case R.id.browse_context_stream:
+//                        getMediaServer().status().command.input.play(file.getMrl(),
+//                                file.getStreamingOptions());
+//                        Intent intent = file.getIntentForStreaming(getMediaServer().getAuthority());
+//                        startActivity(intent);
+//                        return true;
                     case R.id.browse_context_enqueue:
                         getMediaServer().status().command.input.enqueue(file.getMrl());
                         // delay reloading playlist to give vlc time to queue and read metadata
