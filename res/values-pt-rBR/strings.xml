@@ -6,7 +6,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
     <string name="settings">Configurações</string>
-    <string name="troubleshooting">Solução de problemas</string>
+    <string name="install_guide">Guia de instalação</string>
+    <string name="faqs">Preguntas Frecuentes</string>
     <string name="scan">Procurar</string>
     <string name="playlist_title">Lista de reprodução</string>
     <string name="volume">Volume: </string>

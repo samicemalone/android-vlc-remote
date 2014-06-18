@@ -8,8 +8,8 @@
     <string name="settings">Opciones</string>
     <!-- Label for menu item to refresh a view (playlist, browse, etc.) -->
     <string name="refresh">Refrescar</string>
-    <string name="troubleshooting">Solución de problemas</string>
-    <string name="troubleshooting_condensed">Ayuda</string>
+    <string name="install_guide">Guía de instalación</string>
+    <string name="faqs">Preguntas Frecuentes</string>
     <string name="scan">Escanear</string>
     <string name="playlist_title">Lista de Reproducción</string>
     <string name="volume">Volumen: </string>

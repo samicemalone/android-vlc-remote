@@ -86,7 +86,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     
     private static final int REQUEST_PICK_SERVER = 1;
 
-    private static final Uri URI_TROUBLESHOOTING = Uri.parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
+    private static final Uri URI_INSTALL_GUIDE = Uri.parse("http://samicemalone.co.uk/remote-for-vlc/install.html");
+    private static final Uri URI_FAQS = Uri.parse("http://samicemalone.co.uk/remote-for-vlc/faq.html");
 
     private static final int VOLUME_LEVEL_UNKNOWN = -1;
 
@@ -322,7 +323,8 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         boolean isAllButtonsVisible = isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible());
         boolean isButtonGroupVisible = isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible;
         menu.findItem(R.id.menu_preferences).setVisible(defaultVisibility);
-        menu.findItem(R.id.menu_help).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_help_install).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_help_faqs).setVisible(defaultVisibility);
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_refresh).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_home).setVisible(isBrowseVisible);
@@ -342,10 +344,15 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             case R.id.menu_preferences:
                 pickServer();
                 return true;
-            case R.id.menu_help:
-                Intent intent = new Intent(Intent.ACTION_VIEW, URI_TROUBLESHOOTING);
+            case R.id.menu_help_install:
+                Intent intent = new Intent(Intent.ACTION_VIEW, URI_INSTALL_GUIDE);
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
                 startActivity(intent);
+                return true;
+            case R.id.menu_help_faqs:
+                Intent i = new Intent(Intent.ACTION_VIEW, URI_FAQS);
+                i.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
+                startActivity(i);
                 return true;
             case R.id.menu_action_button_first:
                 Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIRST);
