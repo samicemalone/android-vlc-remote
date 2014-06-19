@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListAdapter;
+import android.widget.Toast;
 import java.net.HttpURLConnection;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -369,20 +370,39 @@ public final class PickServerFragment extends PreferenceFragment implements Port
             setPauseForCall(Boolean.TRUE.equals(newValue));
             return true;
         } else if(Preferences.KEY_SEEK_TIME.equals(preference.getKey())) {
-            Preferences.get(getActivity()).setSeekTime((String) newValue);
-            return true;
+            if(isNumericOrToast(preference, (String) newValue, "The seek time entered is not valid")) {
+                Preferences.get(getActivity()).setSeekTime((String) newValue);
+                return true;
+            }
+            return false;
         } else if(Preferences.KEY_AUDIO_DELAY.equals(preference.getKey())) {
-            Preferences.get(getActivity()).setAudioDelayToggle(Integer.valueOf((String) newValue));
-            return true;
+            if(isNumericOrToast(preference, (String) newValue, "The audio delay entered is not valid")) {
+                Preferences.get(getActivity()).setAudioDelayToggle(Integer.valueOf((String) newValue));
+                return true;
+            }
+            return false;
         } else if(Preferences.KEY_SUBTITLE_DELAY.equals(preference.getKey())) {
-            Preferences.get(getActivity()).setSubtitleDelayToggle(Integer.valueOf((String) newValue));
-            return true;
+            if(isNumericOrToast(preference, (String) newValue, "The subtitle delay entered is not valid")) {
+                Preferences.get(getActivity()).setSubtitleDelayToggle(Integer.valueOf((String) newValue));
+                return true;
+            }
+            return false;
         } else if(Preferences.isButtonKey(preference.getKey())) {
             Preferences.get(getActivity()).setButton(preference.getKey(), (String) newValue);
             setButtonIcon(preference, (String) newValue);
             return true;
         }
         return false;
+    }
+    
+    private boolean isNumericOrToast(Preference preference, String value, String toastMessage) {
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch(NumberFormatException e) {
+            Toast.makeText(getActivity(), toastMessage, Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
     
     private void setButtonIcon(Preference preference, String button) {
