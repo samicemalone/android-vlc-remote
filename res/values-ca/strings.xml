@@ -24,6 +24,7 @@
     <string name="context_forget">Oblida</string>
     <string name="progress_scanning">S\'està escanejant</string>
     <string name="vlc_servers">Servidors VLC</string>
+    <string name="action_search_title">Búsqueda lista de reproducción</string>
     <string name="search_label">Entrada</string>
     <string name="search_hint">Introdueix un MRL</string>
     <string name="browse_empty">No s\'ha trobat cap fitxer</string>

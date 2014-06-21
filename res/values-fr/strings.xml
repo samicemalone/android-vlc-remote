@@ -28,6 +28,7 @@
     <string name="context_forget">Oublier</string>
     <string name="progress_scanning">Recherche en cours</string>
     <string name="vlc_servers">Serveurs VLC</string>
+    <string name="action_search_title">Recherche playlist</string>
     <string name="search_label">Entrée</string>
     <string name="search_hint">Entrer MRL</string>
     <string name="browse_empty">Aucun fichier trouvé</string>
