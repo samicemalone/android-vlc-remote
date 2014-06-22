@@ -10,4 +10,11 @@
         android:title="@string/menu_clear_playlist"
         android:icon="@drawable/ic_menu_clear_playlist"
         android:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/menu_action_search"
+        android:title="@string/action_search_title"
+        android:icon="@drawable/ic_menu_search"
+        android:iconifiedByDefault="true"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:actionViewClass="android.widget.SearchView" />
 </menu>

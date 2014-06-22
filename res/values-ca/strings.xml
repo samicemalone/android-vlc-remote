@@ -5,8 +5,8 @@
     <string name="ok">D\'acord</string>
     <string name="cancel">Cancel·la</string>
     <string name="settings">Paràmetres</string>
-    <string name="troubleshooting">Problemes</string>
-    <string name="troubleshooting_condensed">Problemes</string>
+    <string name="install_guide">Preguntas Frecuentes</string>
+    <string name="faqs">Guía de instalación</string>
     <string name="scan">Escaneja</string>
     <string name="playlist_title">Llista de reproducció</string>
     <string name="volume">Volum: </string>
@@ -24,6 +24,7 @@
     <string name="context_forget">Oblida</string>
     <string name="progress_scanning">S\'està escanejant</string>
     <string name="vlc_servers">Servidors VLC</string>
+    <string name="action_search_title">Búsqueda lista de reproducción</string>
     <string name="search_label">Entrada</string>
     <string name="search_hint">Introdueix un MRL</string>
     <string name="browse_empty">No s\'ha trobat cap fitxer</string>

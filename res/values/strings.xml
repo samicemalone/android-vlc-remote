@@ -8,8 +8,8 @@
     <string name="settings">Settings</string>
     <!-- Label for menu item to refresh a view (playlist, browse, etc.) -->
     <string name="refresh">Refresh</string>
-    <string name="troubleshooting">Troubleshooting</string>
-    <string name="troubleshooting_condensed">Help</string>
+    <string name="install_guide">Install Guide</string>
+    <string name="faqs">FAQ\'s</string>
     <string name="scan">Scan</string>
     <string name="playlist_title">Playlist</string>
     <string name="volume">Volume: </string>
@@ -93,6 +93,7 @@
     <string name="context_forget">Forget Server</string>
     <string name="progress_scanning">Scanning</string>
     <string name="vlc_servers">VLC Servers</string>
+    <string name="action_search_title">Search Playlist</string>
     <string name="search_label">Input</string>
     <string name="search_hint">Enter MRL</string>
     <string name="browse_empty">No files were found. This may be because you do not have permission to access the directory</string>

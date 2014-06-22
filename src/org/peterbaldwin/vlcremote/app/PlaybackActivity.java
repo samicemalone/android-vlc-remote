@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.SlidingDrawer;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
@@ -86,12 +87,14 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     
     private static final int REQUEST_PICK_SERVER = 1;
 
-    private static final Uri URI_TROUBLESHOOTING = Uri.parse("http://code.google.com/p/android-vlc-remote/wiki/Troubleshooting");
+    private static final Uri URI_INSTALL_GUIDE = Uri.parse("http://samicemalone.co.uk/remote-for-vlc/install.html");
+    private static final Uri URI_FAQS = Uri.parse("http://samicemalone.co.uk/remote-for-vlc/faq.html");
 
     private static final int VOLUME_LEVEL_UNKNOWN = -1;
 
     private static final String STATE_INPUT = "vlc:input";
     private static final String STATE_TAB = "vlc:tab";
+    private static final String STATE_SEARCH = "vlc:search";
 
     private static final String TAB_MEDIA = "media";
     private static final String TAB_PLAYLIST = "playlist";
@@ -139,6 +142,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     private ViewFlipper mFlipper;
     
     private LockableViewPager mPager;
+    
+    private String mRestoredSearch;
+    
+    private SearchView mSearchView;
+    
+    private SearchView.OnQueryTextListener mSearchViewOnQueryListener;
     
     private List<MediaServerListener> mMediaServerListeners = new ArrayList<MediaServerListener>();
     
@@ -309,7 +318,12 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.playback_options, menu);            
         getMenuInflater().inflate(R.menu.playlist_options, menu);            
-        getMenuInflater().inflate(R.menu.browse_options, menu);            
+        getMenuInflater().inflate(R.menu.browse_options, menu);
+        mSearchView = (SearchView) menu.findItem(R.id.menu_action_search).getActionView();
+        mSearchView.setQueryHint(getString(R.string.action_search_title));
+        if(mSearchViewOnQueryListener != null) {
+            mSearchView.setOnQueryTextListener(mSearchViewOnQueryListener);
+        }
         return true;
     }
 
@@ -322,7 +336,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         boolean isAllButtonsVisible = isBottomActionbarVisible || (mButtonsVisibleListener != null && mButtonsVisibleListener.isAllButtonsVisible());
         boolean isButtonGroupVisible = isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible;
         menu.findItem(R.id.menu_preferences).setVisible(defaultVisibility);
-        menu.findItem(R.id.menu_help).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_help_install).setVisible(defaultVisibility);
+        menu.findItem(R.id.menu_help_faqs).setVisible(defaultVisibility);
+        MenuItem i = menu.findItem(R.id.menu_action_search).setVisible(isPlaylistVisible);
+        onPrepareSearchView(i, isPlaylistVisible);
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_refresh).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_home).setVisible(isBrowseVisible);
@@ -335,6 +352,20 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.setGroupVisible(R.id.group_vlc_actions, isCurrentTab(TAB_MEDIA) && !isAllButtonsVisible);
         return true;
     }
+    
+    private void onPrepareSearchView(MenuItem searchItem, boolean isPlaylistVisible) {
+        if(!isPlaylistVisible) {
+            searchItem.collapseActionView();
+        } else if(isPlaylistVisible && mRestoredSearch != null) {
+            searchItem.expandActionView();
+            mSearchView.setQuery(mRestoredSearch, true);
+            mSearchView.clearFocus();
+            if(mRestoredSearch.equals("")) {
+                searchItem.collapseActionView();
+            }
+            mRestoredSearch = null;
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -342,10 +373,15 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
             case R.id.menu_preferences:
                 pickServer();
                 return true;
-            case R.id.menu_help:
-                Intent intent = new Intent(Intent.ACTION_VIEW, URI_TROUBLESHOOTING);
+            case R.id.menu_help_install:
+                Intent intent = new Intent(Intent.ACTION_VIEW, URI_INSTALL_GUIDE);
                 intent.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
                 startActivity(intent);
+                return true;
+            case R.id.menu_help_faqs:
+                Intent i = new Intent(Intent.ACTION_VIEW, URI_FAQS);
+                i.putExtra(Browser.EXTRA_APPLICATION_ID, getPackageName());
+                startActivity(i);
                 return true;
             case R.id.menu_action_button_first:
                 Buttons.sendCommand(mMediaServer, this, Preferences.KEY_BUTTON_FIRST);
@@ -452,6 +488,10 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         mReloadables = null;
     }
     
+    public void setSearchViewOnQueryTextListener(SearchView.OnQueryTextListener listener) {
+        mSearchViewOnQueryListener = listener;
+    }
+    
     public MediaServer addMediaServerListener(MediaServerListener l) {
         mMediaServerListeners.add(l);
         return mMediaServer;
@@ -497,6 +537,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         if (mTabHost != null) {
             outState.putString(STATE_TAB, mTabHost.getCurrentTabTag());
         }
+        outState.putString(STATE_SEARCH, mSearchView.getQuery().toString());
     }
 
     @Override
@@ -506,6 +547,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         if (mTabHost != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString(STATE_TAB));
         }
+        mRestoredSearch = savedInstanceState.getString(STATE_SEARCH);
     }
 
     private void changeInput(String input) {

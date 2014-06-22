@@ -5,8 +5,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Annulla</string>
     <string name="settings">Impostazioni</string>
-    <string name="troubleshooting">Risoluzione dei problemi</string>
-    <string name="troubleshooting_condensed">Risoluzione dei problemi</string>
+    <string name="install_guide">Guida all\'installazione</string>
+    <string name="faqs">Domande frequenti</string>
     <string name="scan">Scansione</string>
     <string name="playlist_title">Playlist</string>
     <string name="volume">Volume: </string>
@@ -29,6 +29,7 @@
     <string name="context_forget">Annulla</string>
     <string name="progress_scanning">Scansione</string>
     <string name="vlc_servers">Server VLC</string>
+    <string name="action_search_title">Ricerca playlist</string>
     <string name="search_label">Inserimento</string>
     <string name="search_hint">Inserisci MRL</string>
     <string name="browse_empty">Nessun file trovato</string>

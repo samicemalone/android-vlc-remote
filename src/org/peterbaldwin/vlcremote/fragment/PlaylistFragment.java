@@ -38,14 +38,16 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.Queue;
 import org.peterbaldwin.client.android.vlcremote.R;
+import org.peterbaldwin.vlcremote.app.PlaybackActivity;
 import org.peterbaldwin.vlcremote.intent.Intents;
-import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
 import org.peterbaldwin.vlcremote.listener.ProgressListener;
+import org.peterbaldwin.vlcremote.loader.PlaylistLoader;
 import org.peterbaldwin.vlcremote.model.Playlist;
 import org.peterbaldwin.vlcremote.model.PlaylistItem;
 import org.peterbaldwin.vlcremote.model.Reloadable;
@@ -57,7 +59,7 @@ import org.peterbaldwin.vlcremote.model.Track;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.widget.PlaylistAdapter;
 
-public class PlaylistFragment extends MediaListFragment implements
+public class PlaylistFragment extends MediaListFragment implements SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Remote<Playlist>>, Reloadable, ProgressListener {
     
     private static final int LOADER_PLAYLIST = 1;
@@ -70,12 +72,15 @@ public class PlaylistFragment extends MediaListFragment implements
 
     private String mCurrent;
     
+    private String mSearchQuery = "";
+    
     private Queue<PlaylistLoader> mActiveLoaders;
     
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((Reloader) activity).addReloadable(Tags.FRAGMENT_PLAYLIST, this);
+        ((PlaybackActivity) activity).setSearchViewOnQueryTextListener(this);
     }
 
     @Override
@@ -158,6 +163,22 @@ public class PlaylistFragment extends MediaListFragment implements
             MenuItem searchItem = menu.findItem(R.id.playlist_context_search);
             searchItem.setVisible(isSearchable(item));
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        mSearchQuery = query;
+        reload();
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if(!newText.equals(mSearchQuery)) {
+            mSearchQuery = newText;
+            reload();
+        }
+        return true;
     }
 
     private boolean isSearchable(PlaylistItem item) {
@@ -273,6 +294,7 @@ public class PlaylistFragment extends MediaListFragment implements
     public void onProgress(final int progress) {
         if(getActivity() != null) {
             getActivity().runOnUiThread(new Runnable() {
+                @Override
                 public void run() {
                     if(getActivity() != null) {
                         getActivity().getWindow().setFeatureInt(Window.FEATURE_PROGRESS, progress);
@@ -285,7 +307,7 @@ public class PlaylistFragment extends MediaListFragment implements
     @Override
     public Loader<Remote<Playlist>> onCreateLoader(int id, Bundle args) {
         setEmptyText(getText(R.string.loading));
-        String search = "";
+        String search = mSearchQuery == null ? "" : mSearchQuery;
         mActiveLoaders.offer(new PlaylistLoader(getActivity(), getMediaServer(), search, this));
         return mActiveLoaders.peek();
     }
