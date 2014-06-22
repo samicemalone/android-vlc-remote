@@ -18,7 +18,7 @@ mv src/uk/co/peterbaldwin src/uk/co/samicemalone
 rmdir src/org
 
 echo "Replacing package name"
-find . -type f ! -wholename './.git*' -print0 | xargs -0 perl -pi -e "s|org.peterbaldwin|uk.co.samicemalone|g;"
+find . -type f \( -name '*.java' -o -name '*.xml' -o -name ' *.properties' \) -print0 | xargs -0 perl -pi -e "s|org.peterbaldwin|uk.co.samicemalone|g;"
 find . -name '*.bak' -delete
 
 echo done
