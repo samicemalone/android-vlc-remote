@@ -7,6 +7,10 @@ This fork has increased the minimum API version on which it will run. It now req
 
 This has been tested with VLC 1.1, VLC 2.0.x, VLC 2.1.x and VLC 2.2.0 nightlies.
 
+##Install
+There is an install guide available at http://samicemalone.co.uk/remote-for-vlc/install.html.
+You can also find a list of FAQ's at http://samicemalone.co.uk/remote-for-vlc/faq.html.
+
 ##Changes
 
 * UI
