@@ -537,7 +537,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         if (mTabHost != null) {
             outState.putString(STATE_TAB, mTabHost.getCurrentTabTag());
         }
-        outState.putString(STATE_SEARCH, mSearchView.getQuery().toString());
+        if(mSearchView != null) {
+            outState.putString(STATE_SEARCH, mSearchView.getQuery().toString());
+        }
     }
 
     @Override
