@@ -21,7 +21,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.format.DateUtils;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.peterbaldwin.vlcremote.widget.Buttons;
@@ -36,6 +38,8 @@ public final class Preferences {
      */
     public static final String KEY_SERVER = "server";
     public static final String KEY_REMEMBERED_SERVERS = "remembered_servers";
+    public static final String KEY_LIBRARIES = "libraries";
+    public static final String KEY_LIBRARY_DIRECTORIES = "library_dirs_%s";
     public static final String KEY_BROWSE_DIRECTORY = "browse_directory";
     public static final String KEY_HOME_DIRECTORY = "home_directory";
     public static final String KEY_RESUME_ON_IDLE = "resume_on_idle";
@@ -252,6 +256,35 @@ public final class Preferences {
 
     public boolean setBrowseDirectory(String dir) {
         return mPreferences.edit().putString(KEY_BROWSE_DIRECTORY, dir).commit();
+    }
+    
+    private String getLibraryDirKey(String libraryName) {
+        return String.format(KEY_LIBRARY_DIRECTORIES, libraryName);
+    }
+    
+    public boolean setLibrary(String libraryName, Set<String> dirs) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        Set<String> libraries = getLibraries();
+        libraries.add(libraryName);
+        editor.putStringSet(KEY_LIBRARIES, libraries);
+        return editor.putStringSet(getLibraryDirKey(libraryName), dirs).commit();
+    }
+    
+    public boolean removeLibrary(String libraryName) {
+        SharedPreferences.Editor editor = mPreferences.edit();
+        Set<String> libraries = getLibraries();
+        libraries.remove(libraryName);
+        editor.putStringSet(KEY_LIBRARIES, libraries);
+        editor.remove(getLibraryDirKey(libraryName));
+        return editor.commit();
+    }
+    
+    public Set<String> getLibraries() {
+        return new HashSet<String>(mPreferences.getStringSet(KEY_LIBRARIES, new HashSet<String>()));
+    }
+    
+    public Set<String> getLibraryDirectories(String libraryName) {
+        return mPreferences.getStringSet(getLibraryDirKey(libraryName), new HashSet<String>());
     }
     
     public ArrayList<String> getRememberedServers() {

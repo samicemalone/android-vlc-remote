@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/browse_context_open" android:title="@string/context_open" />
+    <item android:id="@+id/browse_context_add_library" android:title="@string/context_add_library" />
+    <item android:id="@+id/browse_context_remove_library" android:title="@string/context_remove_library" />
+    <item android:id="@+id/browse_context_remove_from_library" android:title="@string/context_remove_from_library" />
     <item android:id="@+id/browse_context_play" android:title="@string/context_play" />
     <item android:id="@+id/browse_context_stream" android:title="@string/context_stream" />
     <item android:id="@+id/browse_context_enqueue" android:title="@string/context_enqueue" />

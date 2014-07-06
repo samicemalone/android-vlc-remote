@@ -32,6 +32,8 @@ public final class XmlDirectoryContentHandler extends XmlContentHandler<Director
 
     private File createFile(Attributes attributes) {
         String type = attributes.getValue("", "type");
+        boolean isDirectory = type != null && type.startsWith("dir");
+        File.Type fileType = isDirectory ? File.Type.DIRECTORY : File.Type.FILE;
         String sizeString = attributes.getValue("", "size");
         Long size = null;
         try {
@@ -50,7 +52,7 @@ public final class XmlDirectoryContentHandler extends XmlContentHandler<Director
             // appended by server with back-slash.
             path = path.replace('/', '\\');
         }
-        return new File(type, size, date, path, name, extension);
+        return new File(fileType, size, date, path, name, extension);
     }
 
     @Override
@@ -60,6 +62,7 @@ public final class XmlDirectoryContentHandler extends XmlContentHandler<Director
         Element element = root.getChild("", "element");
         element.setStartElementListener(new StartElementListener() {
             /** {@inheritDoc} */
+            @Override
             public void start(Attributes attributes) {
                 final String path = attributes.getValue("", "path");
                 if (path != null && !path.startsWith("/")) {
@@ -75,6 +78,9 @@ public final class XmlDirectoryContentHandler extends XmlContentHandler<Director
         Directory.ROOT_DIRECTORY = (File.PATH_TYPE == File.PATH_WINDOWS) ? Directory.WINDOWS_ROOT_DIRECTORY : Directory.UNIX_DIRECTORY;
         if(Directory.ROOT_DIRECTORY.equals(mDirectory.getPath())) {
             hideParent();
+            if(!mDirectory.isEmpty()) {
+                mDirectory.add(0, File.LIBRARIES);
+            }
         } else {
             setParentTop();
         }
@@ -106,6 +112,6 @@ public final class XmlDirectoryContentHandler extends XmlContentHandler<Director
                 return;
             }
         }
-        mDirectory.add(0, new File("dir", 0L, null, Directory.ROOT_DIRECTORY, "..", null));
+        mDirectory.add(0, new File(File.Type.DIRECTORY, 0L, null, Directory.ROOT_DIRECTORY, "..", null));
     }
 }
