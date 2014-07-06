@@ -9,6 +9,9 @@
         android:id="@android:id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="#ff222222"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:singleLine="true"
         android:ellipsize="start" />
     <FrameLayout
