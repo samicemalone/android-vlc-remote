@@ -187,14 +187,14 @@ public class BrowseFragment extends MediaListFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_refresh_directory:
-                getLoaderManager().restartLoader(Data.DIRECTORY, Bundle.EMPTY, this);
+                openDirectory(mDirectory, getDirectoryType(mDirectory));
                 return true;
             case R.id.menu_parent:
                 openParentDirectory();
                 return true;
             case R.id.menu_home:
                 mDirectory = mPreferences.getHomeDirectory();
-                getLoaderManager().restartLoader(Data.DIRECTORY, Bundle.EMPTY, this);
+                openDirectory(mDirectory, getDirectoryType(mDirectory));
                 return true;
             case R.id.menu_set_home:
                 mPreferences.setHomeDirectory(mDirectory);
@@ -255,7 +255,6 @@ public class BrowseFragment extends MediaListFragment implements
         File sel = getFile(menuInfo);
         boolean isBrowsable = sel != null && sel.isBrowsable();
         boolean isPlayable = sel != null && !sel.isParent();
-        //boolean isPlayable = sel != null && !Directory.ROOT_DIRECTORY.equals(sel.getNormalizedPath());
         boolean isAddable = sel != null && isBrowsable && !(sel.isParent() || sel.isLibrary() || sel.isLibraryName() || sel.isLibraryDir());
         boolean isLibraryContext = sel != null && sel.isLibraryName() && !sel.isParent();
         menu.findItem(R.id.browse_context_open).setVisible(isBrowsable);
