@@ -74,6 +74,7 @@ import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
+import org.peterbaldwin.vlcremote.preference.WhatsNewDialog;
 import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
 import org.peterbaldwin.vlcremote.widget.Buttons;
@@ -576,6 +577,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
         if(Preferences.get(this).isNotificationSet()) {
             startService(Intents.service(this, Intents.ACTION_NOTIFICATION_CREATE));
+        }
+        WhatsNewDialog dialog = new WhatsNewDialog(this);
+        if(!dialog.hasUserSeenDialog()) {
+            dialog.setDialogAsSeen();
+            dialog.build().show();
         }
     }
 

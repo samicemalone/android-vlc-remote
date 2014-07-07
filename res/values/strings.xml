@@ -15,6 +15,7 @@
     <string name="volume">Volume: </string>
     <string name="error_does_not_exist">The selected folder does not exist.</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_whats_new">What\'s New?</string>
     <string name="title_dialog_add_library">Add To New Library</string>
     <string name="title_dialog_remove_from_library">Remove directory from Library</string>
     <string name="title_pick_server">Pick Server</string>
