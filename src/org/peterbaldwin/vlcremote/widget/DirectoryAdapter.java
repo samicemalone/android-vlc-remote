@@ -25,9 +25,9 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
@@ -146,14 +146,14 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
         if(file.isLibraryDir() || file.isLibraryName()) {
             return mDirectory.getRealPaths(file.getName());
         }
-        Set<String> s = new HashSet<String>();
+        Set<String> s = new TreeSet<String>();
         if(file.isLibrary()) {
             for(String library : p.getLibraries()) {
                 s.addAll(p.getLibraryDirectories(library));
             }
             return s;
         }
-        s.add(file.getNormalizedPath());
+        s.add(file.getPath());
         return s;
     }
 
