@@ -43,6 +43,7 @@ You can also find a list of FAQ's at http://samicemalone.co.uk/remote-for-vlc/fa
     * Normalise file paths to avoid displaying any parent entries e.g. /path/../to/another/../path
     * If a directory is accessed without the correct permissions (or other error), send the user back to the previous directory instead of back home.
     * Added preference to display directories sorted before files.
+    * Added support for libraries which allows multiple directories to be viewed as a library. This is similar to Windows Libraries. This can be useful when your media is spanned across multiple drives.
 
 ##Media Filename Detection
 Filenames are matched against various regular expressions to detect the media information. The regular expressions are far from perfect and any improvements are welcome.
