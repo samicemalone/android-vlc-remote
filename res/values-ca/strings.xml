@@ -12,6 +12,8 @@
     <string name="volume">Volum: </string>
     <string name="error_does_not_exist">La carpeta seleccionada no existeix.</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_add_library">Afegir a una nova Biblioteca</string>
+    <string name="title_dialog_remove_from_library">Eliminar un directori de la biblioteca</string>
     <string name="title_pick_server">Tria el servidor</string>
     <string name="add_server">Afegeix un servidor VLC</string>
     <string name="label_hostname">Amfitrió o adreça IP</string>
@@ -29,6 +31,7 @@
     <string name="search_hint">Introdueix un MRL</string>
     <string name="browse_empty">No s\'ha trobat cap fitxer</string>
     <string name="browse_home">Inici</string>
+    <string name="browse_libraries">Biblioteques</string>
     <string name="browse_close">Tanca</string>
     <string name="connection_error">Cap connexió</string>
     <string name="no_media">No s\'ha seleccionat cap suport</string>
@@ -37,6 +40,12 @@
     <string name="context_enqueue">Afegeix a la llista de reproducció</string>
     <string name="context_dequeue">Elimina de la llista de reproducció</string>
     <string name="context_search">Cerca</string>
+    <string name="context_remove_library">Treure la biblioteca</string>
+    <string name="context_remove_from_library">Treure de la biblioteca&#8230;</string>
+    <string name="context_add_library">afegir a la biblioteca&#8230;</string>
+    <string name="context_add_library_new">Nova Biblioteca</string>
+    <string name="toast_added_to_library">Afegit %1$s a la biblioteca %2$s</string>
+    <string name="hint_library_add">Nome della libreria</string>
     <string name="menu_clear_playlist">Neteja la llista de reproducció</string>
     <string name="mediasearch">Cerca %s fent servir:</string>
     <string name="emptyplaylist">La llista de reproducció està buida.</string>

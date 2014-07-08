@@ -12,6 +12,8 @@
     <string name="volume">Volume: </string>
     <string name="error_does_not_exist">La cartella selezionata non esiste.</string>
     <string name="title">VLC Remoto [{0}]</string>
+    <string name="title_dialog_add_library">Aggiungere alla libreria nuova</string>
+    <string name="title_dialog_remove_from_library">Rimuovere directory dalla libreria</string>
     <string name="title_pick_server">Seleziona server</string>
     <string name="add_server">Aggiungi server VLC</string>
     <string name="label_hostname">Nome sistema o indirizzo IP</string>
@@ -34,6 +36,7 @@
     <string name="search_hint">Inserisci MRL</string>
     <string name="browse_empty">Nessun file trovato</string>
     <string name="browse_home">Menu principale</string>
+    <string name="browse_libraries">Librerie</string>
     <string name="browse_close">Chiudi</string>
     <string name="connection_error">Nessuna connessione</string>
     <string name="no_media">Nessun file selezionato</string>
@@ -42,6 +45,12 @@
     <string name="context_enqueue">Aggiungi alla playlist</string>
     <string name="context_dequeue">Rimuovi dalla playlist</string>
     <string name="context_search">Cerca</string>
+    <string name="context_remove_library">Rimuovere la libreria</string>
+    <string name="context_remove_from_library">Rimuovere dalla libreria&#8230;</string>
+    <string name="context_add_library">Aggiungi alla libreria&#8230;</string>
+    <string name="context_add_library_new">Nuova libreria</string>
+    <string name="toast_added_to_library">Aggiungi %1$s la libreria %2$s</string>
+    <string name="hint_library_add">Nome della libreria</string>
     <string name="menu_clear_playlist">Pulisci playlist</string>
     <string name="mediasearch">Cerca %s usando:</string>
     <string name="emptyplaylist">Playlist vuota.</string>

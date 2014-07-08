@@ -23,15 +23,42 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.peterbaldwin.vlcremote.util.MimeTypeMap;
 
 public final class File {
+    
+    public enum Type {
+        DIRECTORY(0),
+        FILE(1),
+        LIBRARY(2),
+        LIBRARY_NAME(3),
+        LIBRARY_DIRECTORY(4);
+        
+        private final int type;
+
+        private Type(int type) {
+            this.type = type;
+        }
+
+        public int getId() {
+            return type;
+        }
+    }
+    
+    public static File getLibrary(String libraryName) {
+        return new File(File.Type.LIBRARY_NAME, 0L, null, "library://" + libraryName, libraryName, null);
+    }
+
+    public static final File LIBRARIES = new File(Type.LIBRARY, 0L, null, "library://", "Libraries", null);
     
     public static final int PATH_UNIX = 0;
     public static final int PATH_WINDOWS = 1;
     public static int PATH_TYPE = PATH_UNIX;
 
     private static final MimeTypeMap sMimeTypeMap = MimeTypeMap.getSingleton();
+    private static final Pattern schemedPathPattern = Pattern.compile("^([A-Za-z]+://)?(.*)$");
 
     private static String parseExtension(String path) {
         int index = path.lastIndexOf('.');
@@ -59,14 +86,14 @@ public final class File {
         return path.substring(Math.max(bslash, fslash) + 1);
     }
 
-    private String mType;
+    private Type mType;
     private Long mSize;
     private String mDate;
     private String mPath;
     private String mName;
     private String mExtension;
 
-    public File(String type, Long size, String date, String path, String name, String extension) {
+    public File(Type type, Long size, String date, String path, String name, String extension) {
         mType = type;
         mSize = size;
         mDate = date;
@@ -75,17 +102,37 @@ public final class File {
         mExtension = extension != null ? extension : path != null ? parseExtension(path) : null;
     }
 
-    public String getType() {
+    public Type getType() {
         return mType;
     }
 
-    public void setType(String type) {
+    public void setType(Type type) {
         mType = type;
+    }
+    
+    public boolean isType(Type type) {
+        return mType == type;
     }
 
     public boolean isDirectory() {
         // Type is "directory" in VLC 1.0 and "dir" in VLC 1.1
-        return "directory".equals(mType) || "dir".equals(mType);
+        return mType == Type.DIRECTORY;
+    }
+    
+    public boolean isLibrary() {
+        return mType == Type.LIBRARY;
+    }
+    
+    public boolean isLibraryName() {
+        return mType == Type.LIBRARY_NAME;
+    }
+    
+    public boolean isLibraryDir() {
+        return mType == Type.LIBRARY_DIRECTORY;
+    }
+    
+    public boolean isBrowsable() {
+        return isLibrary() || isDirectory() || isLibraryName() || isLibraryDir();
     }
     
     /**
@@ -96,8 +143,8 @@ public final class File {
         return "..".equals(mName);
     }
 
-    public boolean isImage() {
-        String mimeType = getMimeType();
+    public static boolean isImage(String ext) {
+        String mimeType = getMimeType(ext);
         return mimeType != null && mimeType.startsWith("image/");
     }
 
@@ -132,7 +179,16 @@ public final class File {
      * @return 
      */
     public static String getNormalizedPath(String file) {
-        String[] st = file.split("(\\\\|/)+");
+        Matcher m = schemedPathPattern.matcher(file);
+        if(!m.find()) {
+            return Directory.ROOT_DIRECTORY;
+        }
+        String scheme = m.group(1);
+        String path = m.group(2);
+        if(scheme == null) {
+            scheme = "";
+        }
+        String[] st = path.split("(\\\\|/)+");
         ArrayDeque<String> segmentList = new ArrayDeque<String>();
         for(String segment : st) {
             if("..".equals(segment)) {
@@ -141,10 +197,11 @@ public final class File {
             }
             segmentList.offerFirst(segment);
         }
-        if(segmentList.isEmpty()) {
+        if(segmentList.isEmpty() && scheme.isEmpty()) {
             return Directory.ROOT_DIRECTORY;
         }
         StringBuilder sb = new StringBuilder();
+        sb.append(scheme);
         while(!segmentList.isEmpty()) {
             sb.append(segmentList.pollLast());
             if(segmentList.peekLast() != null) {
@@ -155,17 +212,19 @@ public final class File {
     }
 
     public String getMrl() {
-        if (isImage()) {
+        return getMrl(mPath, mExtension);
+    }
+    
+    public static String getMrl(String path, String extension) {
+        if (isImage(extension)) {
             return "fake://";
         } else {
-            java.io.File file = new java.io.File(mPath);
-            Uri uri = Uri.fromFile(file);
-            return uri.toString();
+            return Uri.fromFile(new java.io.File(path)).toString();
         }
     }
 
     public List<String> getOptions() {
-        if (isImage()) {
+        if (isImage(mExtension)) {
             return Collections.singletonList(":fake-file=" + getPath());
         } else {
             return Collections.emptyList();
@@ -227,9 +286,13 @@ public final class File {
     }
 
     public String getMimeType() {
-        if (mExtension != null) {
+        return getMimeType(mExtension);
+    }
+
+    public static String getMimeType(String ext) {
+        if (ext != null) {
             // See http://code.google.com/p/android/issues/detail?id=8806
-            String extension = mExtension.toLowerCase();
+            String extension = ext.toLowerCase();
             return sMimeTypeMap.getMimeTypeFromExtension(extension);
         } else {
             return null;

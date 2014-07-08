@@ -26,6 +26,8 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.peterbaldwin.client.android.vlcremote.R;
 import org.peterbaldwin.vlcremote.model.Directory;
 import org.peterbaldwin.vlcremote.model.File;
@@ -38,6 +40,8 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
     private Integer[] mPositionForSection = new Integer[0];
 
     private Integer[] mSectionForPosition = new Integer[0];
+    
+    private Directory mDirectory;
 
     public DirectoryAdapter(Context context) {
         super(context, R.layout.file_list_item, android.R.id.text1);
@@ -81,6 +85,7 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
         mSections = new Object[0];
         mPositionForSection = new Integer[0];
         mSectionForPosition = new Integer[0];
+        mDirectory = null;
     }
 
     @Override
@@ -88,13 +93,10 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
         View v = super.getView(position, convertView, parent);
         File file = getItem(position);
         ImageView icon = (ImageView) v.findViewById(android.R.id.icon);
-        if (file.isDirectory()) {
-            String name = file.getName();
-            if ("..".equals(name)) {
-                icon.setImageResource(R.drawable.ic_up);
-            } else {
-                icon.setImageResource(R.drawable.ic_directory);
-            }
+        if (file.isDirectory() || file.isLibraryDir()) {
+            icon.setImageResource("..".equals(file.getName()) ? R.drawable.ic_up : R.drawable.ic_directory);
+        } else if(file.isLibrary() || file.isLibraryName()) {
+            icon.setImageResource(R.drawable.ic_library);
         } else {
             String contentType = file.getMimeType();
             if (contentType != null) {
@@ -138,10 +140,27 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
             return "";
         }
     }
+    
+    public Set<String> getRealPaths(File file) {
+        Preferences p = Preferences.get(getContext());
+        if(file.isLibraryDir() || file.isLibraryName()) {
+            return mDirectory.getRealPaths(file.getName());
+        }
+        Set<String> s = new TreeSet<String>();
+        if(file.isLibrary()) {
+            for(String library : p.getLibraries()) {
+                s.addAll(p.getLibraryDirectories(library));
+            }
+            return s;
+        }
+        s.add(file.getPath());
+        return s;
+    }
 
     public void setDirectory(Directory items) {
         super.clear();
         if (items != null) {
+            mDirectory = items;
             int count = items.size();
             // Space for every letter and digit, plus a couple symbols
             int capacity = 48;
@@ -170,6 +189,7 @@ public class DirectoryAdapter extends ArrayAdapter<File> implements SectionIndex
             mSections = new Object[0];
             mPositionForSection = new Integer[0];
             mSectionForPosition = new Integer[0];
+            mDirectory = null;
         }
     }
 

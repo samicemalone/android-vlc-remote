@@ -74,6 +74,7 @@ import org.peterbaldwin.vlcremote.model.Status;
 import org.peterbaldwin.vlcremote.model.Tags;
 import org.peterbaldwin.vlcremote.net.MediaServer;
 import org.peterbaldwin.vlcremote.net.xml.XmlContentHandler;
+import org.peterbaldwin.vlcremote.preference.WhatsNewDialog;
 import org.peterbaldwin.vlcremote.sweep.PortSweeper;
 import org.peterbaldwin.vlcremote.util.FragmentUtil;
 import org.peterbaldwin.vlcremote.widget.Buttons;
@@ -343,6 +344,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_refresh).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_home).setVisible(isBrowseVisible);
+        menu.findItem(R.id.menu_libraries).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_parent).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_set_home).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_text_size).setVisible(isBrowseVisible);
@@ -537,7 +539,9 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         if (mTabHost != null) {
             outState.putString(STATE_TAB, mTabHost.getCurrentTabTag());
         }
-        outState.putString(STATE_SEARCH, mSearchView.getQuery().toString());
+        if(mSearchView != null) {
+            outState.putString(STATE_SEARCH, mSearchView.getQuery().toString());
+        }
     }
 
     @Override
@@ -574,6 +578,11 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         }
         if(Preferences.get(this).isNotificationSet()) {
             startService(Intents.service(this, Intents.ACTION_NOTIFICATION_CREATE));
+        }
+        WhatsNewDialog dialog = new WhatsNewDialog(this);
+        if(!dialog.hasUserSeenDialog()) {
+            dialog.setDialogAsSeen();
+            dialog.build().show();
         }
     }
 

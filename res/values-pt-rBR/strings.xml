@@ -13,6 +13,8 @@
     <string name="volume">Volume: </string>
     <string name="error_does_not_exist">A pasta selecionado não existe.</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_add_library">Adicionar uma nova biblioteca</string>
+    <string name="title_dialog_remove_from_library">Remova o diretório da biblioteca</string>
     <string name="title_pick_server">Escolha um servidor</string>
     <string name="add_server">Adicione um servidor VLC</string>
     <string name="label_hostname">Hostname ou enderço IP</string>
@@ -31,6 +33,7 @@
     <string name="search_hint">Entre a MRL</string>
     <string name="browse_empty">Nenhum arquivo encontrado</string>
     <string name="browse_home">Início</string>
+    <string name="browse_libraries">Bibliotecas</string>
     <string name="browse_close">Fechar</string>
     <string name="connection_error">Erro na conexão</string>
     <string name="no_media">Nenhuma mídia selecionada</string>
@@ -40,6 +43,12 @@
     <string name="context_enqueue">Adicionar a lista de reprodução</string>
     <string name="context_dequeue">Remover da lista de reprodução</string>
     <string name="context_search">Procurar</string>
+    <string name="context_remove_library">Remover a biblioteca</string>
+    <string name="context_remove_from_library">Remover da biblioteca&#8230;</string>
+    <string name="context_add_library">Adicionar à biblioteca&#8230;</string>
+    <string name="context_add_library_new">Nova biblioteca</string>
+    <string name="toast_added_to_library">Adicionado %1$s para a biblioteca %2$s</string>
+    <string name="hint_library_add">nome da biblioteca</string>
     <string name="menu_clear_playlist">Limpar lista de reprodução</string>
     <string name="mediasearch">Procure por %s usando:</string>
     <string name="emptyplaylist">Lista de reprodução vazia.</string>

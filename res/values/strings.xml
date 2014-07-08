@@ -15,6 +15,9 @@
     <string name="volume">Volume: </string>
     <string name="error_does_not_exist">The selected folder does not exist.</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_whats_new">What\'s New?</string>
+    <string name="title_dialog_add_library">Add To New Library</string>
+    <string name="title_dialog_remove_from_library">Remove directory from Library</string>
     <string name="title_pick_server">Pick Server</string>
     <string name="add_server">Add VLC Server</string>
     <string name="edit_server">Edit VLC Server</string>
@@ -98,6 +101,7 @@
     <string name="search_hint">Enter MRL</string>
     <string name="browse_empty">No files were found. This may be because you do not have permission to access the directory</string>
     <string name="browse_home">Home</string>
+    <string name="browse_libraries">Libraries</string>
     <string name="browse_close">Close</string>
     <string name="connection_error">No connection</string>
     <string name="no_media">No media selected</string>
@@ -109,6 +113,12 @@
     <string name="context_enqueue">Add to playlist</string>
     <string name="context_dequeue">Remove from playlist</string>
     <string name="context_search">Search</string>
+    <string name="context_remove_library">Remove Library</string>
+    <string name="context_remove_from_library">Remove from Library&#8230;</string>
+    <string name="context_add_library">Add to Library&#8230;</string>
+    <string name="context_add_library_new">New Library</string>
+    <string name="toast_added_to_library">Added %1$s to library %2$s</string>
+    <string name="hint_library_add">Library Name</string>
     <string name="toggle_fullscreen">Toggle fullscreen</string>
     <string name="audio_track">Audio track</string>
     <string name="subtitle_track">Subtitle track</string>
