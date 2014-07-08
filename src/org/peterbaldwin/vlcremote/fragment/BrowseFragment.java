@@ -360,11 +360,13 @@ public class BrowseFragment extends MediaListFragment implements
                 d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!libraries.contains(e.getText().toString())) {
+                        if(e.getText().toString().isEmpty()) {
+                            Toast.makeText(getActivity(), "Library name cannot be empty", Toast.LENGTH_SHORT).show();
+                        } else if(libraries.contains(e.getText().toString())) {
+                            Toast.makeText(getActivity(), "Library name already exists", Toast.LENGTH_SHORT).show();
+                        } else {
                             addDirectoryToLibrary(file, e.getText().toString());
                             dialog.dismiss();
-                        } else {
-                            Toast.makeText(getActivity(), "Library name already exists", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
