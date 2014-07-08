@@ -192,6 +192,9 @@ public class BrowseFragment extends MediaListFragment implements
             case R.id.menu_parent:
                 openParentDirectory();
                 return true;
+            case R.id.menu_libraries:
+                openDirectory(File.LIBRARIES.getPath(), Data.LIBRARIES);
+                return true;
             case R.id.menu_home:
                 mDirectory = mPreferences.getHomeDirectory();
                 openDirectory(mDirectory, getDirectoryType(mDirectory));

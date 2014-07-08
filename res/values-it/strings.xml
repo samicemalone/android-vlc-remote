@@ -34,6 +34,7 @@
     <string name="search_hint">Inserisci MRL</string>
     <string name="browse_empty">Nessun file trovato</string>
     <string name="browse_home">Menu principale</string>
+    <string name="browse_libraries">Librerie</string>
     <string name="browse_close">Chiudi</string>
     <string name="connection_error">Nessuna connessione</string>
     <string name="no_media">Nessun file selezionato</string>

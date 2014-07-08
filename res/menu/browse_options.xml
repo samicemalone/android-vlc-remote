@@ -17,6 +17,11 @@
         android:icon="@drawable/ic_menu_set_as"
         android:showAsAction="ifRoom|withText" />
     <item
+        android:id="@+id/menu_libraries"
+        android:title="@string/browse_libraries"
+        android:icon="@drawable/ic_menu_library"
+        android:showAsAction="ifRoom|withText" />
+    <item
         android:id="@+id/menu_text_size"
         android:title="@string/menu_browse_text_size"
         android:icon="@drawable/ic_menu_font_size"

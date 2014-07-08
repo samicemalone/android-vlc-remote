@@ -344,6 +344,7 @@ public class PlaybackActivity extends FragmentActivity implements TabHost.OnTabC
         menu.findItem(R.id.menu_clear_playlist).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_refresh).setVisible(isPlaylistVisible);
         menu.findItem(R.id.menu_home).setVisible(isBrowseVisible);
+        menu.findItem(R.id.menu_libraries).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_parent).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_set_home).setVisible(isBrowseVisible);
         menu.findItem(R.id.menu_text_size).setVisible(isBrowseVisible);

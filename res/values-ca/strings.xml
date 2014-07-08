@@ -29,6 +29,7 @@
     <string name="search_hint">Introdueix un MRL</string>
     <string name="browse_empty">No s\'ha trobat cap fitxer</string>
     <string name="browse_home">Inici</string>
+    <string name="browse_libraries">Biblioteques</string>
     <string name="browse_close">Tanca</string>
     <string name="connection_error">Cap connexió</string>
     <string name="no_media">No s\'ha seleccionat cap suport</string>

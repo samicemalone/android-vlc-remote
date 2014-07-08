@@ -31,6 +31,7 @@
     <string name="search_hint">Entre a MRL</string>
     <string name="browse_empty">Nenhum arquivo encontrado</string>
     <string name="browse_home">Início</string>
+    <string name="browse_libraries">Bibliotecas</string>
     <string name="browse_close">Fechar</string>
     <string name="connection_error">Erro na conexão</string>
     <string name="no_media">Nenhuma mídia selecionada</string>
