@@ -15,6 +15,8 @@
     <string name="volume">Volume : </string>
     <string name="error_does_not_exist">"Le dossier sélectionné n'existe pas."</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_add_library">Ajouter à une nouvelle bibliothèque</string>
+    <string name="title_dialog_remove_from_library">Supprimer un répertoire de la bibliothèque</string>
     <string name="title_pick_server">Choisissez un serveur</string>
     <string name="add_server">Ajouter un serveur VLC</string>
     <string name="label_hostname">"Nom d'hôte ou addresse IP"</string>
@@ -45,6 +47,12 @@
     <string name="context_enqueue">Ajouter à la liste</string>
     <string name="context_dequeue">Retirer de la liste</string>
     <string name="context_search">Rechercher</string>
+    <string name="context_remove_library">Supprimer la bibliothèque</string>
+    <string name="context_remove_from_library">Supprimer de la bibliothèque&#8230;</string>
+    <string name="context_add_library">Ajouter à la bibliothèque&#8230;</string>
+    <string name="context_add_library_new">Nouvelle bibliothèque</string>
+    <string name="toast_added_to_library">Ajouté %1$s à la bibliothèque %2$s</string>
+    <string name="hint_library_add">Nom de la bibliothèque</string>
     <!-- Menu item to navigate to parent directory -->
     <string name="menu_parent">Dossier parent</string>
     <!-- Menu item to navigate to parent directory (condensed) -->

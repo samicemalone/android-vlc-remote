@@ -15,6 +15,8 @@
     <string name="volume">Volumen: </string>
     <string name="error_does_not_exist">La carpeta seleccionada no existe.</string>
     <string name="title">VLC Remote [{0}]</string>
+    <string name="title_dialog_add_library">Añadir a una nueva biblioteca</string>
+    <string name="title_dialog_remove_from_library">Eliminar el directorio de la biblioteca</string>
     <string name="title_pick_server">Elije un Servidor</string>
     <string name="add_server">Añade un sevidor VLC</string>
     <string name="label_hostname">Anfitrión o dirección IP</string>
@@ -53,6 +55,12 @@
     <string name="context_enqueue">Añadir a la lista de reproducción</string>
     <string name="context_dequeue">Borrar de la lista de reproducción</string>
     <string name="context_search">Buscar</string>
+    <string name="context_remove_library">Quitar biblioteca</string>
+    <string name="context_remove_from_library">Quitar de biblioteca&#8230;</string>
+    <string name="context_add_library">Añadir a la biblioteca&#8230;</string>
+    <string name="context_add_library_new">Nueva biblioteca</string>
+    <string name="toast_added_to_library">Añadido %1$s a la biblioteca %2$s</string>
+    <string name="hint_library_add">Nombre de biblioteca</string>
     <string name="toggle_fullscreen">Cambiar a pantalla completa</string>
     <string name="audio_track">Pista de Audio</string>
     <string name="subtitle_track">Pista de Subtítulo</string>
